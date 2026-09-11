@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - ALLOWED_ORIGINS=*
+      - PORT=4000
       - DATABASE_URL=file:./data/omnistock.db
 
   frontend:
