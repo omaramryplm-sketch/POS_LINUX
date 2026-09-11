@@ -177,7 +177,7 @@ export default function AdminDashboard() {
   const fetchMonthlyReport = async () => {
     try {
       const res = await api.get(`/admin/reports/monthly?month=${selectedMonth}&year=${selectedYear}`);
-      setMonthlyReportData(res.data.data);
+      setMonthlyReportData(res.data);
     } catch (err) {
       console.error(err);
     }
