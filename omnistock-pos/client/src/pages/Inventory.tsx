@@ -596,7 +596,7 @@ export default function Inventory() {
     if (discrepancies.length === 0) {
       alert('No se detectaron diferencias en los productos contados. Reporte generado.');
       setConteoActivo(false);
-      setConteoProductos([]);
+      setTimeout(() => setConteoProductos([]), 2000);
       setActiveTab('CATALOGO');
       return;
     }
@@ -610,7 +610,7 @@ export default function Inventory() {
     if (!window.confirm(`Se generó el reporte. Se detectaron diferencias en ${discrepancies.length} producto(s):\n\n${summary}\n\n¿Deseas aplicar estos ajustes al inventario real en la base de datos?`)) {
       // End session without applying adjustments
       setConteoActivo(false);
-      setConteoProductos([]);
+      setTimeout(() => setConteoProductos([]), 2000);
       setActiveTab('CATALOGO');
       return;
     }
@@ -626,7 +626,7 @@ export default function Inventory() {
       await api.post('/admin/inventory/bulk-adjust', { adjustments });
       alert('¡Ajustes de inventario aplicados con éxito!');
       setConteoActivo(false);
-      setConteoProductos([]);
+      setTimeout(() => setConteoProductos([]), 2000);
       fetchProducts();
       setActiveTab('CATALOGO');
     } catch (err: any) {
@@ -639,7 +639,7 @@ export default function Inventory() {
   const handleCancelarConteo = () => {
     if (window.confirm('¿Estás seguro de cancelar la sesión de conteo actual? Se perderán todos los datos ingresados y no se modificará el stock.')) {
       setConteoActivo(false);
-      setConteoProductos([]);
+      setTimeout(() => setConteoProductos([]), 2000);
       setCycleSearchTerm('');
     }
   };
