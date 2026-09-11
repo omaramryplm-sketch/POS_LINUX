@@ -314,7 +314,7 @@ export default function Inventory() {
 
       try {
         const res = await api.post('/admin/inventory/import', { products: parsedProducts });
-        alert(CSV Importado!\n\nImportados/Actualizados: $res.data.importados\nErrores: $res.data.errores);
+        alert(`CSV Importado!\n\nImportados/Actualizados: ${res.data.importados}\nErrores: ${res.data.errores}`);
         fetchProducts();
       } catch (err) {
         console.error(err);
