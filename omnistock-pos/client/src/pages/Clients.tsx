@@ -309,7 +309,7 @@ export default function Clients() {
         </div>
       </div>
 
-            {/* Modal Editar Cliente */}
+      {/* Modal Editar Cliente */}
       {showEditModal && (
         <div className="fixed inset-0 z-[120] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
           <form onSubmit={async (e) => {
@@ -324,11 +324,11 @@ export default function Clients() {
                 <input type="text" required value={editClient.nombre} onChange={e => setEditClient({...editClient, nombre: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10" />
               </div>
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Teléfono</label>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">TelÃ©fono</label>
                 <input type="text" value={editClient.telefono} onChange={e => setEditClient({...editClient, telefono: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10" />
               </div>
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Dirección</label>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">DirecciÃ³n</label>
                 <input type="text" value={editClient.direccion} onChange={e => setEditClient({...editClient, direccion: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10" />
               </div>
             </div>
@@ -400,7 +400,3 @@ export default function Clients() {
     </div>
   );
 }
-
-
-
-
