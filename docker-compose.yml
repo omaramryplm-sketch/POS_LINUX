@@ -1,10 +1,8 @@
-services:
+﻿services:
   backend:
     build:
       context: ./omnistock-pos/server
       dockerfile: Dockerfile
-    ports:
-      - "4000:4000"
     volumes:
       - db_data:/app/prisma/data
     restart: unless-stopped
@@ -12,14 +10,25 @@ services:
       - ALLOWED_ORIGINS=*
       - PORT=4000
       - DATABASE_URL=file:./data/omnistock.db
+    networks:
+      - internal
 
   frontend:
     build:
       context: ./omnistock-pos/client
       dockerfile: Dockerfile
-    ports:
-      - "80:80"
     restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST:-192.168.10.241,master.192.168.10.241.nip.io}
+      - VIRTUAL_PORT=80
+    networks:
+      - internal
+      - proxy-tier
 
 volumes:
   db_data:
+
+networks:
+  internal:
+  proxy-tier:
+    external: true
