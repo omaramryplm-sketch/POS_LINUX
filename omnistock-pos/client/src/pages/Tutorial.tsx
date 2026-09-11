@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   BookOpen, ShoppingCart, TerminalSquare, AlertTriangle, 
   CreditCard, DollarSign, PackageCheck, PlayCircle
