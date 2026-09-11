@@ -10,6 +10,7 @@ services:
       - ./data:/app/prisma/data
     restart: unless-stopped
     environment:
+      - ALLOWED_ORIGINS=*
       - DATABASE_URL=file:./data/omnistock.db
 
   frontend:
