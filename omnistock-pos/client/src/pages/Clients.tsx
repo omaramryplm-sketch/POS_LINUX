@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { 
   Users, Search, UserPlus, Phone, MapPin, 
-  DollarSign, History, ShieldAlert, Ban, CheckCircle2, ArrowUpRight
+  DollarSign, History, ShieldAlert, Ban, CheckCircle2, ArrowUpRight, Edit
 } from 'lucide-react';
 
 export default function Clients() {
