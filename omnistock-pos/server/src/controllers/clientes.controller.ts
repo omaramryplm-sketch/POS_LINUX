@@ -35,7 +35,7 @@ export const createCliente = async (req: Request, res: Response) => {
         nombre,
         telefono,
         direccion,
-        limite_credito: Number(limite_credito) || 0
+        limite_credito: limite_credito !== undefined ? Number(limite_credito) : 100
       }
     });
     res.status(201).json({ status: 'success', data: mapToClienteDTO(newCliente) });

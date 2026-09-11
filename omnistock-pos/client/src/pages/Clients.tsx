@@ -15,7 +15,7 @@ export default function Clients() {
   const [clientDetail, setClientDetail] = useState<any>(null);
 
   // Form states
-  const [newClient, setNewClient] = useState({ nombre: '', telefono: '', direccion: '', limite_credito: 0 });
+  const [newClient, setNewClient] = useState({ nombre: '', telefono: '', direccion: '', limite_credito: 100 });
   const [abonoMonto, setAbonoMonto] = useState('');
   const [abonoNotas, setAbonoNotas] = useState('');
 
@@ -48,7 +48,7 @@ export default function Clients() {
     try {
       await api.post('/clientes', newClient);
       setShowAddModal(false);
-      setNewClient({ nombre: '', telefono: '', direccion: '', limite_credito: 0 });
+      setNewClient({ nombre: '', telefono: '', direccion: '', limite_credito: 100 });
       fetchClients();
     } catch (err) {
       alert('Error al crear cliente');
@@ -223,7 +223,7 @@ export default function Clients() {
                        <input 
                          type="number"
                          defaultValue={selectedClient.limite_credito}
-                         onBlur={(e) => handleUpdateClient(selectedClient.id, { limite_credito: e.target.value })}
+                         onBlur={(e) => handleUpdateClient(selectedClient.id, { limite_credito: Number(e.target.value) })}
                          className="bg-white border-0 rounded-xl px-4 py-2 w-full font-black text-xl text-indigo-600 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all"
                        />
                     </div>

@@ -719,6 +719,21 @@ export default function Inventory() {
             >
               <Download className="w-4 h-4" /> EXPORTAR EXCEL
             </button>
+            <button
+              onClick={() => {
+                const csvContent = "data:text/csv;charset=utf-8,SKU,DESCRIPCION,PRECIO_VENTA,PRECIO_COSTO,STOCK_ACTUAL,CATEGORIA,UNIDAD\nDUMMY01,Producto de Ejemplo,150.00,100.00,50,ABARROTES,PZA\n";
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "plantilla_productos.csv");
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+              }}
+              className="bg-slate-100 text-slate-600 px-8 py-3 rounded-2xl font-black text-xs hover:bg-slate-200 transition-all flex items-center gap-2 border border-slate-200 shadow-sm"
+            >
+              <Download className="w-4 h-4" /> PLANTILLA CSV
+            </button>
             <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept=".csv" />
             <button
               onClick={() => fileInputRef.current?.click()}
@@ -2150,4 +2165,5 @@ export default function Inventory() {
     </div>
   );
 }
+
 
