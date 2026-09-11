@@ -56,7 +56,17 @@ export const createCompra = async (req: Request, res: Response): Promise<void> =
         });
       }
 
-      // 3. Log Visit if Proveedor exists
+      // 3. Registrar como Gasto automáticamente
+      await (tx as any).gasto.create({
+        data: {
+          descripcion: `Compra a Proveedor (Folio #${compra.id})`,
+          monto: Number(total_compra),
+          categoria: 'COMPRA_INVENTARIO',
+          id_usuario: (req as any).user?.id || null
+        }
+      });
+
+      // 4. Log Visit if Proveedor exists
       if (id_proveedor) {
         await (tx as any).visitaProveedor.create({
           data: {

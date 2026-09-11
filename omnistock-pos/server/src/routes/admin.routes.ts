@@ -21,7 +21,8 @@ import {
   createCaja,
   updateCaja,
   deleteCaja,
-  getInventoryAdjustments
+  getInventoryAdjustments,
+  importInventory
 } from '../controllers/admin.controller.js';
 import { runScraper } from '../controllers/scraper.controller.js';
 import { authGuard, roleGuard } from '../middlewares/authGuard.js';
@@ -29,6 +30,7 @@ import { authGuard, roleGuard } from '../middlewares/authGuard.js';
 const router = Router();
 
 router.get('/stats', authGuard, roleGuard(['ADMIN']), getDashboardStats);
+router.post('/inventory/import', authGuard, roleGuard(['ADMIN']), importInventory);
 
 // Bulk Price Manager Routes
 router.get('/inventory-prices', authGuard, roleGuard(['ADMIN']), getInventoryPrices);

@@ -874,3 +874,58 @@ export const getInventoryAdjustments = async (req: Request, res: Response) => {
     res.status(500).json({ status: 'error', message: 'Error al obtener el historial de ajustes', errorId });
   }
 };
+
+export const importInventory = async (req: Request, res: Response) => {
+  try {
+    const { products } = req.body;
+    if (!products || !Array.isArray(products)) {
+      return res.status(400).json({ message: 'Productos invlidos o no proporcionados' });
+    }
+
+    let importados = 0;
+    let errores = 0;
+
+    for (const item of products) {
+      try {
+        const sku = item.sku;
+        const descripcion = item.descripcion;
+        const precio_venta = Number(item.precio_venta) || 0;
+        const precio_costo = Number(item.precio_costo) || 0;
+        const stock_actual = Number(item.stock_actual) || 0;
+        const categoria = item.categoria || 'General';
+        const unidad = item.unidad || 'PZA';
+
+        if (!sku || !descripcion) continue;
+
+        await prisma.producto.upsert({
+          where: { sku: sku },
+          update: {
+            descripcion,
+            precio_venta,
+            precio_costo,
+            stock_actual,
+            categoria,
+            unidad
+          },
+          create: {
+            sku,
+            descripcion,
+            precio_venta,
+            precio_costo,
+            stock_actual,
+            stock_minimo: 5,
+            categoria,
+            unidad
+          }
+        });
+        importados++;
+      } catch (err) {
+        errores++;
+      }
+    }
+
+    res.json({ status: 'success', importados, errores });
+  } catch (error) {
+    res.status(500).json({ message: 'Error importando inventario' });
+  }
+};

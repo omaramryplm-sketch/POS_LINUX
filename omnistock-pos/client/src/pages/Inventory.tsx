@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import api from '../api/axios';
-import { Search, Package, AlertTriangle, TrendingUp, Filter, Users, ShoppingCart, Plus, Check, X, Building2, Phone, RefreshCw, Edit, ChevronUp, ChevronDown, MessageSquare, Download } from 'lucide-react';
+import { Search, Upload, FileUp, Package, AlertTriangle, TrendingUp, Filter, Users, ShoppingCart, Plus, Check, X, Building2, Phone, RefreshCw, Edit, ChevronUp, ChevronDown, MessageSquare, Download } from 'lucide-react';
 import clsx from 'clsx';
 
 interface Product {
@@ -284,6 +284,46 @@ export default function Inventory() {
 
   const existingCategories = Array.from(new Set((products || []).map(p => p.categoria))).filter(Boolean).sort();
 
+    const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target?.result as string;
+      const lines = text.split('\n').filter(l => l.trim().length > 0);
+      if (lines.length <= 1) {
+        alert("El archivo est vaco o solo tiene encabezados.");
+        return;
+      }
+
+      const parsedProducts = [];
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(',');
+        parsedProducts.push({
+          sku: row[0]?.trim(),
+          descripcion: row[1]?.trim(),
+          precio_venta: row[2]?.trim(),
+          precio_costo: row[3]?.trim(),
+          stock_actual: row[4]?.trim(),
+          categoria: row[5]?.trim(),
+          unidad: row[6]?.trim()
+        });
+      }
+
+      try {
+        const res = await api.post('/admin/inventory/import', { products: parsedProducts });
+        alert(CSV Importado!\n\nImportados/Actualizados: $res.data.importados\nErrores: $res.data.errores);
+        fetchProducts();
+      } catch (err) {
+        console.error(err);
+        alert("Error importando productos del CSV.");
+      }
+    };
+    reader.readAsText(file);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
   const fetchProducts = useCallback(async () => {
     try {
       const res = await api.get(`/ventas/productos?q=${searchTerm}&limit=all`);
@@ -679,7 +719,14 @@ export default function Inventory() {
             >
               <Download className="w-4 h-4" /> EXPORTAR EXCEL
             </button>
-            <button 
+            <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept=".csv" />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-indigo-500 text-white px-8 py-3 rounded-2xl font-black text-xs hover:bg-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-indigo-500/20"
+            >
+              <Upload className="w-4 h-4" /> IMPORTAR CSV
+            </button>
+            <button
               onClick={() => setShowAddProductModal(true)}
               className="bg-emerald-500 text-white px-8 py-3 rounded-2xl font-black text-xs hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20"
             >
@@ -2103,3 +2150,4 @@ export default function Inventory() {
     </div>
   );
 }
+
