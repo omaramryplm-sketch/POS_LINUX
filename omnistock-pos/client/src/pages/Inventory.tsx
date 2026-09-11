@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import api from '../api/axios';
-import { Search, Upload, FileUp, Package, AlertTriangle, TrendingUp, Filter, Users, ShoppingCart, Plus, Check, X, Building2, Phone, RefreshCw, Edit, ChevronUp, ChevronDown, MessageSquare, Download } from 'lucide-react';
+import { Search, Upload, Package, AlertTriangle, TrendingUp, Filter, Users, ShoppingCart, Plus, Check, X, Building2, Phone, RefreshCw, Edit, ChevronUp, ChevronDown, MessageSquare, Download } from 'lucide-react';
 import clsx from 'clsx';
 
 interface Product {
