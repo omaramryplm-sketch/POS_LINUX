@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual del Administrador - OmniPOS</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 40px auto; padding: 20px; }
+        h1 { color: #0f172a; border-bottom: 2px solid #10b981; padding-bottom: 10px; }
+        h2 { color: #047857; margin-top: 30px; }
+        h3 { color: #1e293b; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; }
+        th, td { border: 1px solid #cbd5e1; padding: 12px; text-align: left; }
+        th { background-color: #f8fafc; font-weight: bold; color: #334155; }
+        .alert { background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .code { background-color: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <h1>Manual de Usuario - OmniStock POS</h1>
+    <p>Bienvenido a OmniStock POS. Este manual contiene la información esencial para arrancar y configurar tu Punto de Venta en la tienda.</p>
+    
+    <div class="alert">
+        <strong>Nota Importante:</strong> Para consultar el tutorial interactivo con imágenes, abre el sistema y haz clic en el botón <b>"Capacitación 🎓"</b> en el menú lateral.
+    </div>
+
+    <h2>1. Credenciales de Acceso (Por Defecto)</h2>
+    <p>Al instalar el sistema por primera vez, se generan dos usuarios principales. Te recomendamos cambiar las contraseñas en cuanto inicies sesión por primera vez.</p>
+    
+    <table>
+        <tr>
+            <th>Rol</th>
+            <th>Usuario</th>
+            <th>Contraseña</th>
+            <th>Permisos</th>
+        </tr>
+        <tr>
+            <td><strong>Administrador</strong></td>
+            <td>admin</td>
+            <td>admin123</td>
+            <td>Acceso total (Dashboard, Ajustes, Inventario masivo, Cortes)</td>
+        </tr>
+        <tr>
+            <td><strong>Cajero</strong></td>
+            <td>caja1</td>
+            <td>caja123</td>
+            <td>Solo ventas, capacitación y ver sus propios ajustes de usuario.</td>
+        </tr>
+    </table>
+
+    <h2>2. Solución de Problemas (Anti-Duplicidad)</h2>
+    <p>El sistema cuenta con una protección anti-duplicidad. Si el sistema dice "El puerto ya está en uso" o si la ventana principal se queda trabada en blanco:</p>
+    <ul>
+        <li>Busca en tu escritorio el acceso directo llamado <strong>Reiniciar OmniPOS</strong>.</li>
+        <li>Al darle doble clic, este programa forzará el cierre de todas las pantallas duplicadas y del motor interno, e iniciará el sistema de manera limpia.</li>
+    </ul>
+
+    <h2>3. Resumen Rápido de Operaciones</h2>
+    <h3>Ventas y Cobros</h3>
+    <ul>
+        <li><strong>Escanear:</strong> Simplemente "pistolea" el código de barras, no necesitas hacer clic en ningún lado.</li>
+        <li><strong>F1:</strong> Abre el buscador manual.</li>
+        <li><strong>F9:</strong> Abre directo la pantalla para ingresar con cuánto dinero te pagan (Cobrar).</li>
+    </ul>
+    
+    <h3>Ventas a Crédito (Fiado)</h3>
+    <p>Haz clic en "Asignar Cliente" antes de cobrar. Selecciona a la persona y, al presionar F9, elige la opción amarilla que dice <strong>Crédito</strong>. El total se sumará automáticamente a la cuenta de esa persona.</p>
+
+    <h3>Corte de Caja</h3>
+    <p>El corte se realiza con un clic en el botón "Corte de Caja". El sistema te pedirá que declares cuánto dinero tienes físicamente. Luego lo comparará con lo que el sistema dice (Ventas en Efectivo - Gastos) y te indicará si hay un sobrante o faltante, imprimiendo el Ticket de Arqueo.</p>
+    
+    <hr>
+    <p style="text-align: center; color: #64748b; font-size: 12px; margin-top: 40px;">OmniStock POS - Sistema Generado Automáticamente</p>
+
+</body>
+</html>

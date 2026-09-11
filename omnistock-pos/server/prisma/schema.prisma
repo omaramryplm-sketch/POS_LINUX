@@ -1,0 +1,195 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data/omnistock.db"
+}
+
+
+
+model Usuario {
+  id              String   @id @default(uuid())
+  username        String   @unique
+  password        String
+  nombre_completo String
+  rol             String   @default("CAJERO") // ADMIN or CAJERO
+  activo          Boolean  @default(true)
+  ventas          Venta[]
+  gastos          Gasto[]
+  ajustes         AjusteInventario[]
+  security        UserSecurity?
+}
+
+model UserSecurity {
+  id              String   @id @default(uuid())
+  id_usuario      String   @unique
+  failedAttempts  Int      @default(0)
+  lockedUntil     DateTime?
+  lastIp          String?
+  lastLogin       DateTime?
+  usuario         Usuario  @relation(fields: [id_usuario], references: [id])
+}
+
+model AjusteInventario {
+  id              Int      @id @default(autoincrement())
+  id_producto     Int
+  id_usuario      String?
+  cantidad        Float
+  motivo          String
+  fecha           DateTime @default(now())
+  producto        Producto @relation(fields: [id_producto], references: [id])
+  usuario         Usuario? @relation(fields: [id_usuario], references: [id])
+}
+
+model Producto {
+  id              Int      @id @default(autoincrement())
+  sku             String   @unique
+  descripcion     String
+  categoria       String
+  precio_costo    Float    @default(0)
+  precio_venta    Float
+  stock_actual    Float    @default(0)
+  stock_minimo    Float    @default(0)
+  stock_maximo    Float    @default(100)
+  unidad          String   @default("pza")
+  
+  detallesVenta   DetalleVenta[]
+  detallesCompra  DetalleCompra[]
+  sugerencias     SugerenciaPrecio[]
+  ajustes         AjusteInventario[]
+}
+
+model Venta {
+  id              Int      @id @default(autoincrement())
+  fecha           DateTime @default(now())
+  id_usuario      String
+  id_cliente      Int?
+  id_caja         Int?     // Relación con la caja
+  total           Float
+  descuento       Float    @default(0)
+  estado          String   @default("COMPLETA") // COMPLETA, CANCELADA, CREDITO
+  metodo_pago     String   @default("EFECTIVO") // EFECTIVO, TARJETA, CREDITO
+  referencia_pago String?
+  
+  usuario         Usuario  @relation(fields: [id_usuario], references: [id])
+  cliente         Cliente? @relation(fields: [id_cliente], references: [id])
+  caja            Caja?    @relation(fields: [id_caja], references: [id])
+  detalles        DetalleVenta[]
+}
+
+model Caja {
+  id              Int      @id @default(autoincrement())
+  nombre          String   @unique
+  estado          String   @default("ACTIVA") // ACTIVA, INACTIVA
+  ventas          Venta[]
+}
+
+model Cliente {
+  id              Int      @id @default(autoincrement())
+  nombre          String
+  telefono        String?
+  direccion       String?
+  limite_credito  Float    @default(0)
+  saldo_deudor    Float    @default(0)
+  betado          Boolean  @default(false)
+  fecha_registro  DateTime @default(now())
+  
+  ventas          Venta[]
+  abonos          AbonoCredito[]
+}
+
+model AbonoCredito {
+  id              Int      @id @default(autoincrement())
+  id_cliente      Int
+  monto           Float
+  fecha           DateTime @default(now())
+  metodo_pago     String   @default("EFECTIVO")
+  notas           String?
+  
+  cliente         Cliente  @relation(fields: [id_cliente], references: [id])
+}
+
+model Gasto {
+  id              Int      @id @default(autoincrement())
+  descripcion     String
+  monto           Float
+  fecha           DateTime @default(now())
+  categoria       String   @default("GENERAL")
+  id_usuario      String?
+  usuario         Usuario? @relation(fields: [id_usuario], references: [id])
+}
+
+model DetalleVenta {
+  id              Int      @id @default(autoincrement())
+  id_venta        Int
+  id_producto     Int
+  cantidad        Float
+  precio_unitario Float
+  subtotal        Float
+  venta           Venta    @relation(fields: [id_venta], references: [id])
+  producto        Producto @relation(fields: [id_producto], references: [id])
+}
+
+model Proveedor {
+  id              Int      @id @default(autoincrement())
+  nombre          String
+  contacto        String?
+  telefono        String?
+  email           String?
+  compras         Compra[]
+  visitas         VisitaProveedor[]
+}
+
+model VisitaProveedor {
+  id              Int      @id @default(autoincrement())
+  id_proveedor    Int
+  fecha_visita    DateTime
+  estado          String   @default("PROGRAMADA") // PROGRAMADA, COMPLETADA, CANCELADA
+  notas           String?
+  proveedor       Proveedor @relation(fields: [id_proveedor], references: [id])
+}
+
+model Compra {
+  id              Int      @id @default(autoincrement())
+  fecha           DateTime @default(now())
+  id_proveedor    Int?
+  proveedor       Proveedor? @relation(fields: [id_proveedor], references: [id])
+  total_compra    Float
+  detalles        DetalleCompra[]
+}
+
+model DetalleCompra {
+  id              Int      @id @default(autoincrement())
+  id_compra       Int
+  id_producto     Int
+  cantidad        Float
+  precio_costo    Float
+  subtotal        Float
+  compra          Compra   @relation(fields: [id_compra], references: [id])
+  producto        Producto @relation(fields: [id_producto], references: [id])
+}
+
+model SugerenciaPrecio {
+  id                     Int      @id @default(autoincrement())
+  id_producto            Int
+  precio_actual          Float
+  precio_sugerido        Float
+  competencia_referencia String
+  url_referencia         String?
+  estado                 String   @default("PENDIENTE") // PENDIENTE, APROBADA, RECHAZADA
+  fecha                  DateTime @default(now())
+  producto               Producto @relation(fields: [id_producto], references: [id])
+}
+
+model Config {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String
+  descripcion String?
+  updatedAt   DateTime @updatedAt
+}
