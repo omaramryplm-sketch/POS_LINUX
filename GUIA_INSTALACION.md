@@ -92,3 +92,4 @@ Busca en los resultados la línea que dice:
 `User 'admin' initialized with randomly generated password: [TU_CONTRASEÑA_AQUÍ]`
 
 Entra a `http://archivos.TU_IP.nip.io` con usuario **admin** y esa contraseña. ¡Luego puedes cambiarla en la sección de Ajustes!
+* **Para restaurar un respaldo:** `./restaurar_respaldo.sh` (Te pedirá el nombre del cliente y la ruta del archivo `.tar.gz`).
