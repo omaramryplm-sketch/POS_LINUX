@@ -8,15 +8,15 @@ read -p "¿Cuál es la IP del servidor? (ej. 127.0.0.1 o IP Pública): " IP_SERV
 docker rm -f filebrowser 2>/dev/null
 
 echo "⚙️ Configurando el explorador web..."
-# Crear archivo de base de datos vacío para que Docker no cree una carpeta por error
-touch ~/.filebrowser.db
+# Borramos el archivo vacío que causó el bug y usamos un Volumen Nativo de Docker
+rm -f ~/.filebrowser.db 2>/dev/null
 
 # Levantar el contenedor montando la carpeta padre (Proyectos)
 docker run -d \
     --name filebrowser \
     --net proxy-tier \
     -v $(dirname "$PWD"):/srv \
-    -v ~/.filebrowser.db:/database/filebrowser.db \
+    -v filebrowser_data:/database \
     -e VIRTUAL_HOST=archivos.${IP_SERVER}.nip.io \
     -e VIRTUAL_PORT=80 \
     --restart always \
