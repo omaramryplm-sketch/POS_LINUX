@@ -1,50 +1,58 @@
-﻿# 🚀 Guía de Despliegue Rápido (Nuevos Servidores)
+# 🚀 Guía Definitiva de Despliegue (VPS y Local)
 
-Este documento te guiará para levantar tu Punto de Venta desde cero absoluto en un **nuevo VPS** (DigitalOcean, Hostinger) o en una máquina **Local (WSL de Windows)** en menos de 5 minutos, sin dolores de cabeza.
-
----
-
-## 🛠️ Paso 1: Preparar la máquina al instante
-
-No pierdas tiempo instalando cosas manualmente. Si estás en un servidor nuevo o en WSL, simplemente descarga y ejecuta el preparador automático:
-
-```bash
-# 1. Clona el repositorio (Si tienes errores de SSL, copia y pega el comando de abajo primero)
-# git config --global http.sslVerify false
-git clone https://github.com/omaramryplm-sketch/POS_LINUX.git
-
-# 2. Entra a la carpeta y dale permisos
-cd POS_LINUX
-chmod +x *.sh
-
-# 3. Ejecuta la preparación mágica
-./preparar_servidor.sh
-```
-
-**⚠️ REGLA DE ORO:** Cuando termine el script `preparar_servidor.sh`, **CIERRA TU TERMINAL POR COMPLETO Y VUELVE A ENTRAR**. Si no lo haces, Linux no aplicará tus permisos de Docker ni encenderá tu consola inteligente `Fish`.
+Este documento te guiará para levantar tu Punto de Venta desde cero absoluto en un **nuevo VPS** (DigitalOcean, Hostinger) o en una máquina **Local (WSL de Windows)** sin dolores de cabeza.
 
 ---
 
-## 🛑 Paso 2: Liberar el Puerto 80 (Solo si estás en Windows/WSL)
+## 🛑 PASO 0: Preparativos (SOLO SI ESTÁS EN WINDOWS / WSL)
 
-Si estás trabajando localmente en Windows, Windows casi siempre secuestra el puerto 80 (IIS o Skype). Esto impide que el Cadenero (Proxy) encienda.
+Si estás instalando en un servidor VPS de internet, **sáltate este paso**. Si estás en tu laptop local con Windows, haz esto primero:
 
-Para liberar el puerto:
-1. Abre **PowerShell como Administrador** en Windows.
-2. Ejecuta:
+1. **Conectar Docker con Ubuntu:** Abre Docker Desktop en Windows > Engrane de Configuración > `Resources` > `WSL Integration`. Marca la casilla principal y asegúrate de encender el interruptor (switch) de `Ubuntu`. Dale a "Apply & restart".
+2. **Pausar Antivirus:** Los antivirus (Kaspersky, Avast) bloquean las descargas de Docker. Pausa la protección web (Web Shield) temporalmente.
+3. **Liberar Puerto 80:** Abre tu **PowerShell Azul de Windows como Administrador** y ejecuta esto para apagar el servicio que estorba:
    ```powershell
    Stop-Service -Name W3SVC -Force
    ```
-*(Si estás en un VPS Linux de internet, salta este paso, el puerto siempre está libre).*
 
 ---
 
-## 🌐 Paso 3: Levantar el Cadenero y Clientes
+## 🛠️ PASO 1: Descargar el Sistema
 
-Ahora que tu máquina tiene Docker, Fish y permisos:
+Abre tu terminal de Linux (Ubuntu/Fish) y ejecuta:
 
 ```bash
-# 1. Enciende el enrutador automático
+# Evita bloqueos de seguridad del antivirus al descargar:
+git config --global http.sslVerify false
+
+# Clona el sistema
+git clone https://github.com/omaramryplm-sketch/POS_LINUX.git
+
+# Entra y da permisos
+cd POS_LINUX
+chmod +x *.sh
+```
+
+---
+
+## 🤖 PASO 2: El Instalador Automático
+
+Ejecuta el robot que configurará todo por ti (instalará Docker, Fish, herramientas y permisos):
+
+```bash
+./preparar_servidor.sh
+```
+
+**⚠️ REGLA DE ORO:** Cuando termine el script, **CIERRA TU VENTANA DE UBUNTU POR COMPLETO Y VUELVE A ENTRAR**. Si no lo haces, Linux no aplicará tus permisos de administrador y Docker te dará un error de "Permission Denied".
+
+---
+
+## 🌐 PASO 3: Levantar el Cadenero y Clientes
+
+Vuelve a entrar a la carpeta de tu proyecto (`cd POS_LINUX`) y levanta todo:
+
+```bash
+# 1. Enciende el enrutador automático (Solo se hace una vez)
 ./setup_orquestador.sh
 
 # 2. Crea a tu primer cliente
@@ -59,6 +67,6 @@ Ahora que tu máquina tiene Docker, Fish y permisos:
 
 ## 🛠️ Herramientas de Mantenimiento
 
-* **Para actualizar a todos tus clientes con código nuevo:** `./actualizar_todos.sh`
+* **Para actualizar a todos tus clientes con código nuevo:** `./actualizar_todos.sh` (Asegúrate de pausar tu antivirus en Windows antes de correrlo).
 * **Para sacar copia de seguridad de las bases de datos:** `./respaldo_diario.sh`
 * **Para borrar todo un cliente de fábrica:** `cd ../POS_cliente && ./factory_reset.sh`
