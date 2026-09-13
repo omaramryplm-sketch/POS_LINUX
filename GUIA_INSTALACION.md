@@ -70,3 +70,25 @@ Vuelve a entrar a la carpeta de tu proyecto (`cd POS_LINUX`) y levanta todo:
 * **Para actualizar a todos tus clientes con código nuevo:** `./actualizar_todos.sh` (Asegúrate de pausar tu antivirus en Windows antes de correrlo).
 * **Para sacar copia de seguridad de las bases de datos:** `./respaldo_diario.sh`
 * **Para borrar todo un cliente de fábrica:** `cd ../POS_cliente && ./factory_reset.sh`
+
+---
+
+## 📁 Explorador de Archivos (Para descargar respaldos)
+
+Tu sistema incluye un explorador web visual (Filebrowser) para que descargues tus copias de seguridad fácilmente desde cualquier navegador.
+
+**Para instalarlo y encenderlo:**
+```bash
+./levantar_explorador.sh
+```
+Te pedirá la IP (usa tu IP Pública, o `127.0.0.1` si estás en local).
+
+**¿Cómo obtener la contraseña de acceso?**
+Por seguridad militar, Filebrowser genera una contraseña aleatoria y única al instalarse. Para verla, ejecuta este comando en tu terminal:
+```bash
+docker logs filebrowser
+```
+Busca en los resultados la línea que dice:
+`User 'admin' initialized with randomly generated password: [TU_CONTRASEÑA_AQUÍ]`
+
+Entra a `http://archivos.TU_IP.nip.io` con usuario **admin** y esa contraseña. ¡Luego puedes cambiarla en la sección de Ajustes!
