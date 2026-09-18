@@ -93,3 +93,5 @@ Busca en los resultados la línea que dice:
 
 Entra a `http://archivos.TU_IP.nip.io` con usuario **admin** y esa contraseña. ¡Luego puedes cambiarla en la sección de Ajustes!
 * **Para restaurar un respaldo:** `./restaurar_respaldo.sh` (Te pedirá el nombre del cliente y la ruta del archivo `.tar.gz`).
+* **El script ahora te permite cambiar el puerto:** Si en Windows el puerto 80 choca con IIS, el script te preguntará si quieres usar el 8080 (o el que quieras).
+* **Control de Errores Anti-Virus:** Si tu antivirus bloquea el sistema, el script se detendrá con un mensaje rojo claro en lugar de decirte que tuvo éxito.
