@@ -1,8 +1,8 @@
 #!/bin/bash
-echo "ADVERTENCIA: Esto borrará todas las ventas, productos y datos."
-echo "Restaurando el sistema de fábrica..."
+echo "ADVERTENCIA: Esto borrarï¿½ todas las ventas, productos y datos."
+echo "Restaurando el sistema de fï¿½brica..."
 # Apagamos el sistema y destruimos el volumen de datos (-v)
 docker compose down -v
-# Al levantar de nuevo, Docker extraerá la base de datos limpia de fábrica
+# Al levantar de nuevo, Docker extraerï¿½ la base de datos limpia de fï¿½brica
 docker compose up -d
-echo "El sistema ha sido restaurado y reiniciado con éxito."
+echo "El sistema ha sido restaurado y reiniciado con ï¿½xito."

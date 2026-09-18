@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 FECHA=$(date +"%Y-%m-%d_%H-%M")
 BACKUP_DIR="../BACKUPS_POS/$FECHA"
 

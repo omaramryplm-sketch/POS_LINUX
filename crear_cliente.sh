@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 echo "======================================"
 echo "  🛒 CREADOR DE PUNTO DE VENTA (NIP.IO)"

@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 echo "=========================================="
 echo " 🔄 RESTAURADOR DE BASE DE DATOS (BACKUPS)"
 echo "=========================================="

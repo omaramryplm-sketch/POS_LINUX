@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 echo "=========================================="
 echo " 🌐 CONFIGURACIÓN DEL ORQUESTADOR (PROXY) "
 echo "=========================================="
