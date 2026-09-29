@@ -13,6 +13,7 @@ import {
   bulkAdjustInventory,
   createProduct,
   updateProduct,
+  toggleProductStatus,
   getBusinessConfig,
   updateBusinessConfig,
   getMonthlyReport,
@@ -53,6 +54,7 @@ router.post('/inventory/bulk-adjust', authGuard, roleGuard(['ADMIN']), bulkAdjus
 router.get('/inventory/adjustments', authGuard, roleGuard(['ADMIN']), getInventoryAdjustments);
 router.post('/inventory/products', authGuard, roleGuard(['ADMIN']), createProduct);
 router.put('/inventory/products/:id', authGuard, roleGuard(['ADMIN']), updateProduct);
+router.patch('/inventory/products/:id/toggle-status', authGuard, roleGuard(['ADMIN']), toggleProductStatus);
 
 // Global Config
 router.get('/config', authGuard, roleGuard(['ADMIN']), getBusinessConfig);

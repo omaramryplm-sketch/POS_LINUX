@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import api from '../api/axios';
-import { Search, Upload, Package, AlertTriangle, TrendingUp, Filter, Users, ShoppingCart, Plus, Check, X, Building2, Phone, RefreshCw, Edit, ChevronUp, ChevronDown, MessageSquare, Download } from 'lucide-react';
+import { Search, Upload, Package, AlertTriangle, TrendingUp, Filter, Users, ShoppingCart, Plus, Check, X, Building2, Phone, RefreshCw, Edit, ChevronUp, ChevronDown, MessageSquare, Download, Ban } from 'lucide-react';
 import clsx from 'clsx';
 
 interface Product {
@@ -18,6 +18,9 @@ interface Product {
   cantidad_sugerida?: number; // From suggestions API
   ventas_semana?: number; 
   ultima_compra?: string | null;
+  activo?: boolean;
+  descontinuado?: boolean;
+  motivo_baja?: string | null;
 }
 
 interface Proveedor {
@@ -247,6 +250,7 @@ export default function Inventory() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'DISCONTINUED'>('ALL');
   const [showAjusteModal, setShowAjusteModal] = useState(false);
   const [selectedForAjuste, setSelectedForAjuste] = useState<Product | null>(null);
   const [ajusteData, setAjusteData] = useState({ cantidad: '', motivo: 'Ajuste de inventario' });
@@ -261,7 +265,9 @@ export default function Inventory() {
   const [editProductData, setEditProductData] = useState({
     sku: '', descripcion: '', precio_venta: '', precio_costo: '', 
     stock_actual: '', stock_minimo: '', stock_maximo: '', 
-    categoria: '', unidad: ''
+    categoria: '', unidad: '',
+    descontinuado: false,
+    motivo_baja: ''
   });
 
   // Proveedores State
@@ -326,7 +332,7 @@ export default function Inventory() {
   };
   const fetchProducts = useCallback(async () => {
     try {
-      const res = await api.get(`/ventas/productos?q=${searchTerm}&limit=all`);
+      const res = await api.get(`/ventas/productos?q=${searchTerm}&limit=all&includeInactive=true`);
       setProducts(res.data.data || []);
     } catch {
       console.error('Error fetching products');
@@ -488,6 +494,42 @@ export default function Inventory() {
         alert(axiosErr.response?.data?.message || 'Error al actualizar producto');
       } else {
         alert('Error al actualizar producto');
+      }
+    }
+  };
+
+  const handleToggleDescontinuado = async (product: Product) => {
+    const nuevoEstado = !product.descontinuado;
+    const accion = nuevoEstado ? 'desactivar y marcar como DESCONTINUADO por baja venta' : 'reactivar para ventas';
+    let motivo = product.motivo_baja || '';
+
+    if (nuevoEstado) {
+      const inputMotivo = window.prompt(
+        `¿Deseas ${accion} el producto "${product.descripcion}"?\nAl descontinuarlo, ya no aparecerá en el punto de venta para cobrar.\n\nIndica el motivo de baja:`,
+        product.motivo_baja || 'Baja venta / Sin rotación'
+      );
+      if (inputMotivo === null) return;
+      motivo = inputMotivo.trim() || 'Baja venta / Sin rotación';
+    } else {
+      if (!window.confirm(`¿Confirmas reactivar el producto "${product.descripcion}" para que vuelva a estar disponible en ventas?`)) {
+        return;
+      }
+      motivo = '';
+    }
+
+    try {
+      await api.patch(`/admin/inventory/products/${product.id}/toggle-status`, {
+        descontinuado: nuevoEstado,
+        motivo
+      });
+      fetchProducts();
+      alert(`Producto ${nuevoEstado ? 'descontinuado' : 'reactivado'} correctamente.`);
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosErr = err as { response: { data: { message: string } } };
+        alert(axiosErr.response?.data?.message || 'Error al cambiar estado del producto');
+      } else {
+        alert('Error al cambiar estado del producto');
       }
     }
   };
@@ -749,7 +791,7 @@ export default function Inventory() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
               <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
                 <Package className="w-7 h-7" />
@@ -760,27 +802,82 @@ export default function Inventory() {
               </div>
             </div>
             <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
+              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
+                <Check className="w-7 h-7" />
+              </div>
+              <div>
+                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Activos en POS</p>
+                <p className="text-2xl font-black text-[var(--text-main)]">
+                  {(products || []).filter(p => !p.descontinuado).length}
+                </p>
+              </div>
+            </div>
+            <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
               <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center text-red-600">
                 <AlertTriangle className="w-7 h-7" />
               </div>
               <div>
                 <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Bajo Stock</p>
                 <p className="text-2xl font-black text-[var(--text-main)]">
-                  {(products || []).filter(p => p.stock_actual <= p.stock_minimo).length}
+                  {(products || []).filter(p => !p.descontinuado && p.stock_actual <= p.stock_minimo).length}
                 </p>
               </div>
             </div>
             <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
-              <div className="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600">
-                <TrendingUp className="w-7 h-7" />
+              <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600">
+                <Ban className="w-7 h-7" />
               </div>
               <div>
-                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Valor Inventario</p>
+                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Descontinuados</p>
                 <p className="text-2xl font-black text-[var(--text-main)]">
-                  ${(products || []).reduce((acc, p) => acc + (p.precio_venta * p.stock_actual), 0).toLocaleString()}
+                  {(products || []).filter(p => p.descontinuado).length}
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Filtros de Estado del Catálogo */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 px-1">
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl">
+              <button
+                onClick={() => { setStatusFilter('ALL'); setCurrentPage(1); }}
+                className={clsx(
+                  "px-4 py-2 rounded-xl text-xs font-black transition-all",
+                  statusFilter === 'ALL'
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                    : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                )}
+              >
+                TODOS ({(products || []).length})
+              </button>
+              <button
+                onClick={() => { setStatusFilter('ACTIVE'); setCurrentPage(1); }}
+                className={clsx(
+                  "px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5",
+                  statusFilter === 'ACTIVE'
+                    ? "bg-emerald-500 text-white shadow-sm"
+                    : "text-slate-500 hover:text-emerald-600"
+                )}
+              >
+                <Check className="w-3.5 h-3.5" /> ACTIVOS ({(products || []).filter(p => !p.descontinuado).length})
+              </button>
+              <button
+                onClick={() => { setStatusFilter('DISCONTINUED'); setCurrentPage(1); }}
+                className={clsx(
+                  "px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5",
+                  statusFilter === 'DISCONTINUED'
+                    ? "bg-amber-500 text-white shadow-sm"
+                    : "text-slate-500 hover:text-amber-600"
+                )}
+              >
+                <Ban className="w-3.5 h-3.5" /> DESCONTINUADOS / BAJA VENTA ({(products || []).filter(p => p.descontinuado).length})
+              </button>
+            </div>
+            {statusFilter === 'DISCONTINUED' && (
+              <span className="text-xs text-amber-700 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 px-4 py-2 rounded-xl">
+                Productos fuera del catálogo de cobro del POS
+              </span>
+            )}
           </div>
 
           <div className="bg-[var(--bg-card)] rounded-[3rem] border border-[var(--border-color)] shadow-xl overflow-hidden">
@@ -836,11 +933,15 @@ export default function Inventory() {
                     <tr><td colSpan={6} className="px-8 py-20 text-center text-slate-400 font-bold">Cargando catálogo...</td></tr>
                   ) : (() => {
                     const filteredAndSorted = (products || [])
-                      .filter(p => 
-                        p.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                        p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        p.categoria.toLowerCase().includes(searchTerm.toLowerCase())
-                      )
+                      .filter(p => {
+                        if (statusFilter === 'ACTIVE' && p.descontinuado) return false;
+                        if (statusFilter === 'DISCONTINUED' && !p.descontinuado) return false;
+                        return (
+                          p.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          p.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+                        );
+                      })
                       .sort((a, b) => {
                         if (sortConfig) {
                           const aValue = a[sortConfig.key as keyof Product];
@@ -868,22 +969,36 @@ export default function Inventory() {
                     return (
                       <>
                         {paginated.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-50/50 transition-colors group">
+                      <tr key={p.id} className={clsx(
+                        "transition-colors group",
+                        p.descontinuado ? "bg-amber-50/20 hover:bg-amber-50/40 opacity-80" : "hover:bg-slate-50/50"
+                      )}>
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-4">
                             <div className={clsx(
                               "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
-                              p.stock_actual <= p.stock_minimo 
-                                ? "bg-red-50 text-red-500 group-hover:bg-red-500 group-hover:text-white" 
-                                : "bg-slate-100 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white"
+                              p.descontinuado
+                                ? "bg-amber-100 text-amber-600"
+                                : p.stock_actual <= p.stock_minimo 
+                                  ? "bg-red-50 text-red-500 group-hover:bg-red-500 group-hover:text-white" 
+                                  : "bg-slate-100 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white"
                             )}>
-                              <Package className="w-6 h-6" />
+                              {p.descontinuado ? <Ban className="w-6 h-6" /> : <Package className="w-6 h-6" />}
                             </div>
                             <div>
-                              <p className={clsx(
-                                "font-black transition-colors",
-                                p.stock_actual <= p.stock_minimo ? "text-red-700" : "text-slate-800 group-hover:text-emerald-600"
-                              )}>{p.descripcion}</p>
+                              <div className="flex items-center gap-2">
+                                <p className={clsx(
+                                  "font-black transition-colors",
+                                  p.descontinuado 
+                                    ? "text-slate-600 line-through decoration-amber-500" 
+                                    : p.stock_actual <= p.stock_minimo ? "text-red-700" : "text-slate-800 group-hover:text-emerald-600"
+                                )}>{p.descripcion}</p>
+                                {p.descontinuado && (
+                                  <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md text-[9px] font-black uppercase tracking-wider">
+                                    Descontinuado {p.motivo_baja ? `· ${p.motivo_baja}` : ''}
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-xs text-slate-400 font-bold tracking-tight">SKU: {p.sku}</p>
                             </div>
                           </div>
@@ -905,6 +1020,18 @@ export default function Inventory() {
                           </div>
                         </td>
                         <td className="px-8 py-6 text-right flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleToggleDescontinuado(p)}
+                            className={clsx(
+                              "p-2 rounded-xl transition-all",
+                              p.descontinuado
+                                ? "bg-amber-100 hover:bg-emerald-600 hover:text-white text-amber-700"
+                                : "bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-600"
+                            )}
+                            title={p.descontinuado ? `Reactivar producto (Baja: ${p.motivo_baja || 'Baja venta'})` : "Desactivar por baja venta (Descontinuar)"}
+                          >
+                            <Ban className="w-5 h-5" />
+                          </button>
                           <button 
                             onClick={() => { 
                               setSelectedForEdit(p);
@@ -917,7 +1044,9 @@ export default function Inventory() {
                                 stock_minimo: p.stock_minimo.toString(),
                                 stock_maximo: p.stock_maximo.toString(),
                                 categoria: p.categoria,
-                                unidad: p.unidad
+                                unidad: p.unidad,
+                                descontinuado: !!p.descontinuado,
+                                motivo_baja: p.motivo_baja || ''
                               });
                               setShowEditProductModal(true); 
                             }}
@@ -2130,6 +2259,37 @@ export default function Inventory() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Estado de Venta / Descontinuado */}
+              <div className="space-y-4 pt-2 border-t border-[var(--border-color)]">
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-main)] rounded-2xl">
+                  <div>
+                    <p className="text-xs font-black text-[var(--text-main)] uppercase tracking-wider">Descontinuar por Baja Venta</p>
+                    <p className="text-[11px] text-[var(--text-muted)] font-medium">Al desactivarlo, se ocultará del punto de venta y no se podrá cobrar.</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={editProductData.descontinuado} 
+                      onChange={e => setEditProductData({ ...editProductData, descontinuado: e.target.checked })} 
+                      className="sr-only peer" 
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                  </label>
+                </div>
+                {editProductData.descontinuado && (
+                  <div>
+                    <label className="block text-[10px] font-black text-amber-600 uppercase mb-2">Motivo de Baja</label>
+                    <input 
+                      type="text" 
+                      placeholder="Ej. Baja venta, sin rotación..." 
+                      value={editProductData.motivo_baja}
+                      onChange={e => setEditProductData({ ...editProductData, motivo_baja: e.target.value })}
+                      className="w-full bg-amber-50/50 border border-amber-200 rounded-2xl p-4 font-bold text-amber-900 outline-none focus:ring-4 focus:ring-amber-500/20 text-xs" 
+                    />
+                  </div>
+                )}
               </div>
             </div>
 

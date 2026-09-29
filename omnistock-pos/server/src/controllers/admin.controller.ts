@@ -580,7 +580,7 @@ export const updateProduct = async (req: Request, res: Response) => {
   const { 
     sku, descripcion, precio_venta, precio_costo, 
     stock_actual, stock_minimo, stock_maximo, 
-    categoria, unidad 
+    categoria, unidad, descontinuado, motivo_baja 
   } = req.body;
   const userId = (req as any).user?.id;
 
@@ -602,19 +602,31 @@ export const updateProduct = async (req: Request, res: Response) => {
     const diff = newStock - oldProduct.stock_actual;
 
     const product = await prisma.$transaction(async (tx) => {
+      const updateData: any = {
+        sku,
+        descripcion,
+        precio_venta: parseFloat(precio_venta.toString()),
+        precio_costo: parseFloat(precio_costo.toString()) || 0,
+        stock_actual: newStock,
+        stock_minimo: parseFloat(stock_minimo.toString()) || 0,
+        stock_maximo: parseFloat(stock_maximo.toString()) || 0,
+        categoria: categoria || 'General',
+        unidad: unidad || 'PZ'
+      };
+
+      if (descontinuado !== undefined) {
+        updateData.descontinuado = Boolean(descontinuado);
+        updateData.activo = !Boolean(descontinuado);
+        if (descontinuado && motivo_baja) {
+          updateData.motivo_baja = motivo_baja;
+        } else if (!descontinuado) {
+          updateData.motivo_baja = null;
+        }
+      }
+
       const updated = await tx.producto.update({
         where: { id: Number(id) },
-        data: {
-          sku,
-          descripcion,
-          precio_venta: parseFloat(precio_venta.toString()),
-          precio_costo: parseFloat(precio_costo.toString()) || 0,
-          stock_actual: newStock,
-          stock_minimo: parseFloat(stock_minimo.toString()) || 0,
-          stock_maximo: parseFloat(stock_maximo.toString()) || 0,
-          categoria: categoria || 'General',
-          unidad: unidad || 'PZ'
-        }
+        data: updateData
       });
 
       // Si hubo cambio en el stock, registrar ajuste para auditoría
@@ -637,6 +649,32 @@ export const updateProduct = async (req: Request, res: Response) => {
     const errorId = `ERR-UPDATE-PROD-${Date.now()}`;
     console.error(`[${errorId}] Error updating product:`, err);
     res.status(500).json({ status: 'error', message: 'Internal server error', errorId });
+  }
+};
+
+// Alternar estado de producto (Descontinuado por baja venta o Reactivado)
+export const toggleProductStatus = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { descontinuado, motivo } = req.body;
+  try {
+    const isDescontinuado = Boolean(descontinuado);
+    const product = await prisma.producto.update({
+      where: { id: Number(id) },
+      data: {
+        descontinuado: isDescontinuado,
+        activo: !isDescontinuado,
+        motivo_baja: isDescontinuado ? (motivo || 'Baja venta') : null
+      }
+    });
+    res.json({ 
+      status: 'success', 
+      data: product, 
+      message: isDescontinuado ? 'Producto descontinuado por baja venta' : 'Producto reactivado exitosamente' 
+    });
+  } catch (err) {
+    const errorId = `ERR-TOGGLE-PROD-${Date.now()}`;
+    console.error(`[${errorId}] Error toggling product status:`, err);
+    res.status(500).json({ status: 'error', message: 'Error al cambiar estado del producto', errorId });
   }
 };
 

@@ -97,8 +97,17 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
 
 export const getProducts = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { q, limit } = req.query;
-    let whereClause = {};
+    const { q, limit, includeInactive } = req.query;
+    const allowInactive = includeInactive === 'true';
+
+    // Filtro base: En el Punto de Venta solo se muestran productos activos
+    let baseFilter: any = {};
+    if (!allowInactive) {
+      baseFilter = {
+        descontinuado: false,
+        activo: true
+      };
+    }
 
     if (q && typeof q === 'string' && q.trim() !== '') {
       const term = q.trim();
@@ -109,11 +118,20 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
       });
 
       if (exactProduct) {
+        if (!allowInactive && (exactProduct.descontinuado || !exactProduct.activo)) {
+          res.json({ 
+            status: 'success', 
+            data: [], 
+            message: 'PRODUCTO_DESCONTINUADO' 
+          });
+          return;
+        }
         res.json({ status: 'success', data: [exactProduct] });
         return;
       }
 
-      whereClause = {
+      baseFilter = {
+        ...baseFilter,
         OR: [
           { sku: { contains: term } },
           { descripcion: { contains: term } },
@@ -123,7 +141,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     }
 
     const products = await prisma.producto.findMany({
-      where: whereClause,
+      where: baseFilter,
       ...(limit !== 'all' && { take: Number(limit) || 20 })
     });
     
