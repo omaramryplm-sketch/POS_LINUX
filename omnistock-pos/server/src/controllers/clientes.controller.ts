@@ -69,28 +69,48 @@ export const registrarAbono = async (req: Request, res: Response) => {
   const errorId = `ERR-ABON-${Date.now()}`;
   try {
     const { id_cliente, monto, metodo_pago, notas } = req.body;
+    const montoAbono = Number(monto);
+
+    if (!montoAbono || montoAbono <= 0) {
+      res.status(400).json({ status: 'error', code: 'INVALID_AMOUNT', message: 'El monto debe ser mayor a 0' });
+      return;
+    }
+
     const result = await prisma.$transaction(async (tx) => {
+      const clienteActual = await tx.cliente.findUnique({
+        where: { id: Number(id_cliente) }
+      });
+
+      if (!clienteActual) {
+        throw new Error('CLIENT_NOT_FOUND');
+      }
+
+      if (montoAbono > clienteActual.saldo_deudor) {
+        throw new Error('AMOUNT_EXCEEDS_DEBT');
+      }
+
       const abono = await tx.abonoCredito.create({
         data: {
           id_cliente: Number(id_cliente),
-          monto: Number(monto),
-          metodo_pago,
+          monto: montoAbono,
+          metodo_pago: metodo_pago || 'EFECTIVO',
           notas
         }
       });
 
       const cliente = await tx.cliente.update({
         where: { id: Number(id_cliente) },
-        data: { saldo_deudor: { decrement: Number(monto) } }
+        data: { saldo_deudor: { decrement: montoAbono } }
       });
 
       return { abono, cliente };
     });
 
     res.json({ status: 'success', message: 'Abono registrado con éxito', data: result });
-  } catch (err) {
+  } catch (err: any) {
     console.error(`[${errorId}] Error al registrar abono:`, err);
-    res.status(500).json({ status: 'error', code: 'INTERNAL_ERROR', error_id: errorId });
+    const code = err.message?.includes('_') ? err.message : 'INTERNAL_ERROR';
+    res.status(400).json({ status: 'error', code, error_id: errorId });
   }
 };
 

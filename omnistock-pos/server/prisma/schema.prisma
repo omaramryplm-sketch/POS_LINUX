@@ -44,6 +44,8 @@ model AjusteInventario {
   fecha           DateTime @default(now())
   producto        Producto @relation(fields: [id_producto], references: [id])
   usuario         Usuario? @relation(fields: [id_usuario], references: [id])
+
+  @@index([id_producto], name: "idx_ajuste_producto")
 }
 
 model Producto {
@@ -62,6 +64,8 @@ model Producto {
   detallesCompra  DetalleCompra[]
   sugerencias     SugerenciaPrecio[]
   ajustes         AjusteInventario[]
+
+  @@index([categoria], name: "idx_producto_categoria")
 }
 
 model Venta {
@@ -80,6 +84,9 @@ model Venta {
   cliente         Cliente? @relation(fields: [id_cliente], references: [id])
   caja            Caja?    @relation(fields: [id_caja], references: [id])
   detalles        DetalleVenta[]
+
+  @@index([id_usuario, fecha], name: "idx_venta_usuario_fecha")
+  @@index([id_cliente, fecha], name: "idx_venta_cliente_fecha")
 }
 
 model Caja {
@@ -112,6 +119,8 @@ model AbonoCredito {
   notas           String?
   
   cliente         Cliente  @relation(fields: [id_cliente], references: [id])
+
+  @@index([id_cliente, fecha], name: "idx_abono_cliente_fecha")
 }
 
 model Gasto {
@@ -122,6 +131,8 @@ model Gasto {
   categoria       String   @default("GENERAL")
   id_usuario      String?
   usuario         Usuario? @relation(fields: [id_usuario], references: [id])
+
+  @@index([fecha], name: "idx_gasto_fecha")
 }
 
 model DetalleVenta {
@@ -133,6 +144,9 @@ model DetalleVenta {
   subtotal        Float
   venta           Venta    @relation(fields: [id_venta], references: [id])
   producto        Producto @relation(fields: [id_producto], references: [id])
+
+  @@index([id_venta], name: "idx_detalle_venta")
+  @@index([id_producto], name: "idx_detalle_producto")
 }
 
 model Proveedor {
@@ -172,6 +186,9 @@ model DetalleCompra {
   subtotal        Float
   compra          Compra   @relation(fields: [id_compra], references: [id])
   producto        Producto @relation(fields: [id_producto], references: [id])
+
+  @@index([id_compra], name: "idx_detalle_compra")
+  @@index([id_producto], name: "idx_compra_producto")
 }
 
 model SugerenciaPrecio {

@@ -101,11 +101,23 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     let whereClause = {};
 
     if (q && typeof q === 'string' && q.trim() !== '') {
+      const term = q.trim();
+
+      // Ruta rápida (Índice B-Tree único): Escaneo de código de barras
+      const exactProduct = await prisma.producto.findUnique({
+        where: { sku: term }
+      });
+
+      if (exactProduct) {
+        res.json({ status: 'success', data: [exactProduct] });
+        return;
+      }
+
       whereClause = {
         OR: [
-          { sku: { contains: q } },
-          { descripcion: { contains: q } },
-          { categoria: { contains: q } }
+          { sku: { contains: term } },
+          { descripcion: { contains: term } },
+          { categoria: { contains: term } }
         ]
       };
     }

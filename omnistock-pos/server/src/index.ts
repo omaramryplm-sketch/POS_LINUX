@@ -13,6 +13,7 @@ import proveedoresRoutes from './routes/proveedores.routes.js';
 import usersRoutes from './routes/users.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import clientesRoutes from './routes/clientes.routes.js';
+import { initSqlite } from './lib/prisma.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -70,6 +71,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'OmniStock POS API is running' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`); // Dashboard Active
+  await initSqlite();
 });
