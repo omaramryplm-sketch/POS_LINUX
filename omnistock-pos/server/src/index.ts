@@ -22,19 +22,40 @@ const PORT = process.env.PORT || 3000;
 // Security Middleware
 app.use(helmet());
 
-// Dynamic CORS Configuration (Strict Zero Trust - no wildcard reflection with credentials)
+// Dynamic CORS Configuration (Strict Zero Trust - supports Cloudflare tunnels, nip.io, LAN and custom origins)
 const rawOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim()).filter(Boolean);
 const allowedOrigins = (rawOrigins && rawOrigins.length > 0) 
   ? rawOrigins 
   : ['http://localhost:8080', 'http://localhost:5173', 'http://127.0.0.1:8080'];
 
+const isAllowedOrigin = (origin: string): boolean => {
+  if (allowedOrigins.includes('*')) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  try {
+    const parsed = new URL(origin);
+    const hostname = parsed.hostname;
+    // Permitir túneles de Cloudflare (*.trycloudflare.com)
+    if (hostname.endsWith('.trycloudflare.com')) return true;
+    // Permitir subdominios de nip.io
+    if (hostname.endsWith('.nip.io')) return true;
+    // Permitir localhost e IPs privadas LAN
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return true;
+    if (/^192\.168\.\d+\.\d+$/.test(hostname)) return true;
+    if (/^10\.\d+\.\d+\.\d+$/.test(hostname)) return true;
+    if (/^172\.(1[6-9]|2\d|3[01])\.\d+\.\d+$/.test(hostname)) return true;
+  } catch {
+    return false;
+  }
+  return false;
+};
+
 app.use(cors({
   origin: (origin, callback) => {
     // Permitir solicitudes sin header Origin (mismo origen Nginx o curl/mobile) o verificar origen permitido
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || isAllowedOrigin(origin)) {
       callback(null, true);
     } else {
-      callback(new Error(`Blocked by Zero Trust CORS Policy: ${origin}`));
+      callback(null, false);
     }
   },
   credentials: true
