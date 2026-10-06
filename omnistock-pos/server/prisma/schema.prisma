@@ -89,7 +89,7 @@ model Venta {
   caja            Caja?    @relation(fields: [id_caja], references: [id])
   detalles        DetalleVenta[]
 
-  @@index([id_usuario, fecha], name: "idx_venta_usuario_fecha")
+  @@index([fecha], name: "idx_venta_fecha")
   @@index([id_cliente, fecha], name: "idx_venta_cliente_fecha")
 }
 
