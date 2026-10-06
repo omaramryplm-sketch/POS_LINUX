@@ -13,7 +13,7 @@ import { createClienteSchema, updateClienteSchema, abonoSchema } from '../schema
 const router = Router();
 
 router.get('/', authGuard, getClientes);
-router.post('/', authGuard, roleGuard(['ADMIN']), validate(createClienteSchema), createCliente);
+router.post('/', authGuard, roleGuard(['ADMIN', 'CAJERO']), validate(createClienteSchema), createCliente);
 router.get('/:id', authGuard, getClienteDetail);
 router.post('/abono', authGuard, roleGuard(['ADMIN', 'CAJERO']), validate(abonoSchema), registrarAbono);
 router.put('/:id', authGuard, roleGuard(['ADMIN']), validate(updateClienteSchema), updateCliente);

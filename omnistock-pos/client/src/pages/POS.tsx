@@ -1643,14 +1643,12 @@ export default function POS() {
                )}
             </div>
 
-             {user?.rol === 'ADMIN' && (
-               <button 
-                 onClick={() => setShowQuickClientModal(true)}
-                 className="mt-4 w-full py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-slate-800 active:scale-95 transition-all shadow-md"
-               >
-                 <Plus className="w-4 h-4" /> REGISTRAR NUEVO CLIENTE
-               </button>
-             )}
+            <button 
+              onClick={() => setShowQuickClientModal(true)}
+              className="mt-4 w-full py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-slate-800 active:scale-95 transition-all shadow-md"
+            >
+              <Plus className="w-4 h-4" /> REGISTRAR NUEVO CLIENTE
+            </button>
           </div>
         </div>
       )}

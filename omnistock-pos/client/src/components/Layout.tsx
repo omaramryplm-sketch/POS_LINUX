@@ -28,7 +28,7 @@ export default function Layout() {
 
   const navItems = [
     { name: 'Punto de Venta', path: '/', icon: ShoppingCart, roles: ['ADMIN', 'CAJERO'] },
-    { name: 'Clientes', path: '/clients', icon: Users, roles: ['ADMIN'] },
+    { name: 'Clientes', path: '/clients', icon: Users, roles: ['ADMIN', 'CAJERO'] },
     { name: 'Panel Admin', path: '/admin', icon: LayoutDashboard, roles: ['ADMIN'] },
     { name: 'Inventario', path: '/admin/inventory', icon: Package, roles: ['ADMIN'] },
     { name: 'Ajuste Precios', path: '/admin/bulk-prices', icon: Tags, roles: ['ADMIN'] },

@@ -35,68 +35,94 @@ interface DashboardData {
 interface ReporteCorteProps {
   corte: any;
   declarado: string;
+  fondoInicial: string;
   fechaEmision: string;
   cajaNombre: string;
 }
 
-const ReporteCortePrintComponent = React.forwardRef<HTMLDivElement, ReporteCorteProps>(({ corte, declarado, fechaEmision, cajaNombre }, ref) => {
+const ReporteCortePrintComponent = React.forwardRef<HTMLDivElement, ReporteCorteProps>(({ corte, declarado, fondoInicial, fechaEmision, cajaNombre }, ref) => {
   if (!corte) return null;
   const decVal = parseFloat(declarado) || 0;
-  const diff = decVal - corte.efectivoEsperado;
+  const fondoVal = parseFloat(fondoInicial) || 0;
+  const totalEsperadoEnGaveta = Math.round((fondoVal + (corte.efectivoEsperado || 0)) * 100) / 100;
+  const diff = declarado !== '' ? Math.round((decVal - totalEsperadoEnGaveta) * 100) / 100 : 0;
 
   return (
     <div ref={ref} className="p-12 bg-white text-slate-800 font-sans leading-relaxed text-xs max-w-[800px] mx-auto print:p-6 print:text-[10px]">
       {/* Header / Membrete */}
       <div className="text-center border-b-2 border-slate-900 pb-6 mb-6">
         <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-1">OMNISTOCK POS</h1>
-        <p className="text-sm font-bold uppercase tracking-wider text-slate-500">Reporte de Corte de Caja</p>
+        <p className="text-sm font-bold uppercase tracking-wider text-slate-500">Reporte de Corte de Caja y Arqueo</p>
         <p className="text-[10px] text-slate-400 font-bold uppercase mt-2">Caja: {cajaNombre} | Fecha de Corte: {new Date(corte.fecha).toLocaleDateString('es-MX')}</p>
       </div>
 
       {/* Info de Emisión */}
-      <div className="flex justify-between mb-8 text-[10px] font-bold text-slate-500 uppercase">
+      <div className="flex justify-between mb-6 text-[10px] font-bold text-slate-500 uppercase">
         <span>Fecha de Emisión: {fechaEmision}</span>
-        <span>Generado por: Administrador</span>
+        <span>Generado por: Administrador / Supervisor</span>
       </div>
 
-      {/* Resumen Financiero */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center">
-          <p className="font-bold text-slate-500 uppercase tracking-widest text-[8px] mb-1">Ventas Netas ({corte.ventas.cantidad})</p>
-          <p className="text-lg font-black text-slate-900">${corte.ventas.total.toFixed(2)}</p>
-        </div>
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center">
-          <p className="font-bold text-slate-500 uppercase tracking-widest text-[8px] mb-1">Gastos Totales ({corte.gastos.cantidad})</p>
-          <p className="text-lg font-black text-slate-900">-${corte.gastos.total.toFixed(2)}</p>
-        </div>
-        <div className="p-4 bg-slate-900 text-white rounded-xl text-center">
-          <p className="font-bold text-slate-400 uppercase tracking-widest text-[8px] mb-1">Efectivo Esperado</p>
-          <p className="text-lg font-black">${corte.efectivoEsperado.toFixed(2)}</p>
+      {/* Desglose de Métodos de Pago y Operaciones */}
+      <div className="border border-slate-200 rounded-2xl p-5 mb-6">
+        <h2 className="font-black text-xs uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-2 mb-3">Desglose Operativo por Medios de Pago</h2>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-[11px]">
+          <div className="flex justify-between py-1 border-b border-slate-100">
+            <span className="text-slate-500 font-medium">Ventas en Efectivo:</span>
+            <span className="font-bold font-mono text-slate-900">${(corte.ventas.efectivo || 0).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-slate-100">
+            <span className="text-slate-500 font-medium">Cobranza / Abonos Efectivo:</span>
+            <span className="font-bold font-mono text-emerald-700">+${(corte.abonos?.total || 0).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-slate-100">
+            <span className="text-slate-500 font-medium">Salidas Caja Chica (Gastos):</span>
+            <span className="font-bold font-mono text-red-600">-${(corte.gastos?.totalCaja || 0).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-slate-100">
+            <span className="text-slate-500 font-medium">Ventas con Tarjeta (Bancos):</span>
+            <span className="font-bold font-mono text-blue-700">${(corte.ventas.tarjeta || 0).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-slate-100">
+            <span className="text-slate-500 font-medium">Ventas a Crédito (Cuentas x Cobrar):</span>
+            <span className="font-bold font-mono text-amber-700">${(corte.ventas.credito || 0).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-slate-100">
+            <span className="text-slate-500 font-medium">Total Facturación Bruta ({corte.ventas.cantidad} vts):</span>
+            <span className="font-black font-mono text-slate-900">${corte.ventas.total.toFixed(2)}</span>
+          </div>
         </div>
       </div>
 
-      {/* Arqueo de Caja */}
-      <div className="border border-slate-950 rounded-2xl p-6 mb-8">
-        <h2 className="font-black text-sm uppercase tracking-wide border-b border-slate-200 pb-2 mb-4">Arqueo de Caja (Conciliación)</h2>
-        <div className="space-y-3">
+      {/* Arqueo de Caja (Gaveta Física) */}
+      <div className="border border-slate-950 rounded-2xl p-6 mb-8 bg-slate-50/50">
+        <h2 className="font-black text-sm uppercase tracking-wide border-b border-slate-300 pb-2 mb-4 text-slate-900">Arqueo y Conciliación de Efectivo en Gaveta</h2>
+        <div className="space-y-2.5 text-xs">
           <div className="flex justify-between font-bold">
-            <span className="text-slate-500 uppercase tracking-wider text-[9px]">Efectivo Esperado:</span>
-            <span className="text-slate-800">${corte.efectivoEsperado.toFixed(2)}</span>
+            <span className="text-slate-600 uppercase tracking-wider text-[10px]">(+) Fondo Inicial de Caja (Apertura / Cambio):</span>
+            <span className="text-slate-800 font-mono">${fondoVal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between font-bold">
-            <span className="text-slate-500 uppercase tracking-wider text-[9px]">Efectivo Físico Declarado:</span>
-            <span className="text-slate-800">{declarado !== '' ? `$${decVal.toFixed(2)}` : 'No declarado'}</span>
+            <span className="text-slate-600 uppercase tracking-wider text-[10px]">(+) Flujo Neto del Turno (Ventas + Abonos - Gastos):</span>
+            <span className="text-slate-800 font-mono">${corte.efectivoEsperado.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between font-black text-sm border-t border-slate-100 pt-3">
+          <div className="flex justify-between font-black text-slate-900 border-t border-slate-200 pt-2">
+            <span className="uppercase tracking-wider text-[10px]">(=) Efectivo Total Esperado en Gaveta:</span>
+            <span className="font-mono text-sm">${totalEsperadoEnGaveta.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between font-bold border-t border-slate-200 pt-2">
+            <span className="text-slate-600 uppercase tracking-wider text-[10px]">Efectivo Físico Contado (Declarado):</span>
+            <span className="text-slate-800 font-mono">{declarado !== '' ? `$${decVal.toFixed(2)}` : 'No declarado'}</span>
+          </div>
+          <div className="flex justify-between font-black text-sm border-t-2 border-slate-900 pt-3">
             <span className="uppercase tracking-wider text-[10px]">Diferencia de Arqueo:</span>
             {declarado === '' ? (
               <span className="text-slate-400 font-bold italic">N/D</span>
             ) : Math.abs(diff) < 0.01 ? (
-              <span className="text-emerald-600">+$0.00 (Arqueo Cuadrado)</span>
+              <span className="text-emerald-700 font-mono">+$0.00 (Arqueo Cuadrado)</span>
             ) : diff > 0 ? (
-              <span className="text-indigo-600">+${diff.toFixed(2)} (Sobrante)</span>
+              <span className="text-indigo-700 font-mono">+${diff.toFixed(2)} (Sobrante)</span>
             ) : (
-              <span className="text-red-600">-${Math.abs(diff).toFixed(2)} (Faltante)</span>
+              <span className="text-red-600 font-mono">-${Math.abs(diff).toFixed(2)} (Faltante)</span>
             )}
           </div>
         </div>
@@ -160,6 +186,7 @@ export default function AdminDashboard() {
   const [selectedCajaCorte, setSelectedCajaCorte] = useState<string>('all');
   const [availableCajas, setAvailableCajas] = useState<any[]>([]);
   const [efectivoFisicoDeclarado, setEfectivoFisicoDeclarado] = useState<string>('');
+  const [fondoInicialCaja, setFondoInicialCaja] = useState<string>('');
   const [fechaEmisionCorte, setFechaEmisionCorte] = useState<string>('');
   const printCorteRef = useRef<HTMLDivElement>(null);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
@@ -268,6 +295,7 @@ export default function AdminDashboard() {
       setCorteData(res.data.data);
       setSelectedCajaCorte(cajaId);
       setEfectivoFisicoDeclarado('');
+      setFondoInicialCaja('');
       setShowCorteModal(true);
     } catch (err) {
       alert('Error al generar corte');
@@ -954,67 +982,101 @@ export default function AdminDashboard() {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="p-6 bg-emerald-50 rounded-[2rem] border border-emerald-100">
-                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">Ventas Netas ({corteData.ventas.cantidad})</p>
-                <p className="text-4xl font-black text-emerald-700">${corteData.ventas.total.toFixed(2)}</p>
+            {/* Desglose Operativo de Medios de Pago */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+              <div className="p-4 bg-emerald-50 dark:bg-emerald-950/30 rounded-2xl border border-emerald-100 dark:border-emerald-900/50">
+                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Ventas Efectivo</p>
+                <p className="text-xl font-black text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">${(corteData.ventas.efectivo || 0).toFixed(2)}</p>
               </div>
-              <div className="p-6 bg-red-50 rounded-[2rem] border border-red-100">
-                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Gastos Totales ({corteData.gastos.cantidad})</p>
-                <p className="text-4xl font-black text-red-700">-${corteData.gastos.total.toFixed(2)}</p>
+              <div className="p-4 bg-teal-50 dark:bg-teal-950/30 rounded-2xl border border-teal-100 dark:border-teal-900/50">
+                <p className="text-[9px] font-black text-teal-600 uppercase tracking-widest mb-1">Abonos Cobrados</p>
+                <p className="text-xl font-black text-teal-700 dark:text-teal-400 font-mono tabular-nums">+${(corteData.abonos?.total || 0).toFixed(2)}</p>
+              </div>
+              <div className="p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50">
+                <p className="text-[9px] font-black text-red-600 uppercase tracking-widest mb-1">Caja Chica (Gastos)</p>
+                <p className="text-xl font-black text-red-700 dark:text-red-400 font-mono tabular-nums">-${(corteData.gastos?.totalCaja || 0).toFixed(2)}</p>
+              </div>
+              <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-100 dark:border-blue-900/50">
+                <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Ventas Tarjeta</p>
+                <p className="text-xl font-black text-blue-700 dark:text-blue-400 font-mono tabular-nums">${(corteData.ventas.tarjeta || 0).toFixed(2)}</p>
+              </div>
+              <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/50">
+                <p className="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1">Ventas Crédito</p>
+                <p className="text-xl font-black text-amber-700 dark:text-amber-400 font-mono tabular-nums">${(corteData.ventas.credito || 0).toFixed(2)}</p>
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 text-white mb-6 sm:mb-8 relative overflow-hidden">
+            <div className="bg-slate-900 rounded-2xl sm:rounded-[2rem] p-5 sm:p-7 text-white mb-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Efectivo Esperado en Caja</p>
-              <p className="text-3xl sm:text-5xl lg:text-6xl font-black text-emerald-400 tracking-tighter font-mono tabular-nums">${corteData.efectivoEsperado.toFixed(2)}</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Flujo Neto de Efectivo del Turno</p>
+                  <p className="text-xs text-slate-500 font-semibold">(Ventas Efectivo + Cobranza de Abonos - Gastos de Mostrador)</p>
+                </div>
+                <p className="text-3xl sm:text-5xl font-black text-emerald-400 tracking-tighter font-mono tabular-nums">${corteData.efectivoEsperado.toFixed(2)}</p>
+              </div>
             </div>
 
-            {/* Reconciliation Fields (NUEVO) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-              <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl sm:rounded-[2rem]">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Efectivo Físico Declarado ($)</label>
+            {/* Reconciliation Fields con Fondo Inicial */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">(+) Fondo Inicial de Caja ($)</label>
+                <p className="text-[9px] text-slate-400 mb-2">Dinero base para cambio al abrir turno</p>
                 <input 
                   type="number" 
                   min="0"
                   step="0.01"
-                  placeholder="Ingresa efectivo real..."
-                  value={efectivoFisicoDeclarado}
-                  onChange={e => setEfectivoFisicoDeclarado(e.target.value)}
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 sm:p-4 font-bold text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/10 text-lg sm:text-xl font-mono tabular-nums" 
+                  placeholder="Ej. 500.00"
+                  value={fondoInicialCaja}
+                  onChange={e => setFondoInicialCaja(e.target.value)}
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 font-bold text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/10 text-lg font-mono tabular-nums" 
                 />
               </div>
 
-              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] flex flex-col justify-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Resultado de Arqueo</span>
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Efectivo Físico Contado ($)</label>
+                <p className="text-[9px] text-slate-400 mb-2">Total de billetes y monedas en gaveta</p>
+                <input 
+                  type="number" 
+                  min="0"
+                  step="0.01"
+                  placeholder="Ingresa conteo físico..."
+                  value={efectivoFisicoDeclarado}
+                  onChange={e => setEfectivoFisicoDeclarado(e.target.value)}
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 font-bold text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/10 text-lg font-mono tabular-nums" 
+                />
+              </div>
+
+              <div className="p-4 rounded-2xl flex flex-col justify-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Resultado de Arqueo</span>
                 {efectivoFisicoDeclarado === '' ? (
-                  <span className="text-slate-400 text-sm font-bold italic">Pendiente de declarar</span>
+                  <span className="text-slate-400 text-xs font-bold italic">Pendiente de contar gaveta</span>
                 ) : (() => {
+                  const fondo = parseFloat(fondoInicialCaja) || 0;
                   const declarado = parseFloat(efectivoFisicoDeclarado) || 0;
-                  const diff = declarado - corteData.efectivoEsperado;
-                  if (Math.abs(diff) < 0.01) {
-                    return (
-                      <div>
-                        <p className="text-lg sm:text-xl font-black text-emerald-600">Arqueo Cuadrado</p>
-                        <p className="text-[10px] font-bold text-emerald-500 uppercase">Sin diferencias</p>
-                      </div>
-                    );
-                  } else if (diff > 0) {
-                    return (
-                      <div>
-                        <p className="text-lg sm:text-xl font-black text-indigo-600 font-mono tabular-nums">Sobrante: +${diff.toFixed(2)}</p>
-                        <p className="text-[10px] font-bold text-indigo-500 uppercase">Dinero de más en caja</p>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div>
-                        <p className="text-lg sm:text-xl font-black text-red-600 font-mono tabular-nums">Faltante: -${Math.abs(diff).toFixed(2)}</p>
-                        <p className="text-[10px] font-bold text-red-500 uppercase">Falta dinero en caja</p>
-                      </div>
-                    );
-                  }
+                  const esperadoTotal = Math.round((fondo + corteData.efectivoEsperado) * 100) / 100;
+                  const diff = Math.round((declarado - esperadoTotal) * 100) / 100;
+                  return (
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase">Esperado en gaveta: <span className="font-mono font-black text-slate-800 dark:text-slate-200">${esperadoTotal.toFixed(2)}</span></p>
+                      {Math.abs(diff) < 0.01 ? (
+                        <div className="mt-1">
+                          <p className="text-lg font-black text-emerald-600">Arqueo Cuadrado</p>
+                          <p className="text-[9px] font-bold text-emerald-500 uppercase">Sin faltantes ni sobrantes</p>
+                        </div>
+                      ) : diff > 0 ? (
+                        <div className="mt-1">
+                          <p className="text-lg font-black text-indigo-600 font-mono tabular-nums">Sobrante: +${diff.toFixed(2)}</p>
+                          <p className="text-[9px] font-bold text-indigo-500 uppercase">Dinero de más en gaveta</p>
+                        </div>
+                      ) : (
+                        <div className="mt-1">
+                          <p className="text-lg font-black text-red-600 font-mono tabular-nums">Faltante: -${Math.abs(diff).toFixed(2)}</p>
+                          <p className="text-[9px] font-bold text-red-500 uppercase">Falta dinero en gaveta</p>
+                        </div>
+                      )}
+                    </div>
+                  );
                 })()}
               </div>
             </div>
@@ -1289,6 +1351,7 @@ export default function AdminDashboard() {
           ref={printCorteRef}
           corte={corteData}
           declarado={efectivoFisicoDeclarado}
+          fondoInicial={fondoInicialCaja}
           fechaEmision={fechaEmisionCorte}
           cajaNombre={selectedCajaCorte === 'all' ? 'Resumen General' : (availableCajas.find(c => c.id.toString() === selectedCajaCorte)?.nombre || 'Caja')}
         />

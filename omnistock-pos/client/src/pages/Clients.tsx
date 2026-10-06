@@ -72,7 +72,7 @@ export default function Clients() {
     try {
       const res = await api.post('/clientes/abono', {
         id_cliente: selectedClient.id,
-        monto: abonoMonto,
+        monto: parseFloat(abonoMonto) || 0,
         metodo_pago: 'EFECTIVO',
         notas: abonoNotas
       });
