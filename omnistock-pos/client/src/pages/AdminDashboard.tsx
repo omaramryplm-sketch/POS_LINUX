@@ -80,6 +80,12 @@ const ReporteCortePrintComponent = React.forwardRef<HTMLDivElement, ReporteCorte
             <span className="text-slate-500 font-medium">Salidas Caja Chica (Gastos):</span>
             <span className="font-bold font-mono text-red-600">-${(corte.gastos?.totalCaja || 0).toFixed(2)}</span>
           </div>
+          {corte.devoluciones?.total > 0 && (
+            <div className="flex justify-between py-1 border-b border-slate-100">
+              <span className="text-slate-500 font-medium">Reembolsos / Devoluciones Efectivo:</span>
+              <span className="font-bold font-mono text-rose-600">-${(corte.devoluciones.total || 0).toFixed(2)}</span>
+            </div>
+          )}
           <div className="flex justify-between py-1 border-b border-slate-100">
             <span className="text-slate-500 font-medium">Ventas con Tarjeta (Bancos):</span>
             <span className="font-bold font-mono text-blue-700">${(corte.ventas.tarjeta || 0).toFixed(2)}</span>
@@ -297,7 +303,7 @@ export default function AdminDashboard() {
       setCorteData(res.data.data);
       setSelectedCajaCorte(cajaId);
       setEfectivoFisicoDeclarado('');
-      setFondoInicialCaja('');
+      setFondoInicialCaja(res.data.data?.fondoInicialDefault !== undefined ? String(res.data.data.fondoInicialDefault) : '500');
       setShowCorteModal(true);
     } catch (err) {
       alert('Error al generar corte');
@@ -1045,7 +1051,7 @@ export default function AdminDashboard() {
                           </span>
                         </div>
                         <p className="text-xs text-slate-400 font-medium">
-                          (Ventas Efectivo + Cobranza de Abonos − Salidas Caja Chica)
+                          (Ventas Efectivo + Cobranza de Abonos − Salidas Caja Chica{corteData.devoluciones?.total > 0 ? ` − Reembolsos Efectivo $${corteData.devoluciones.total.toFixed(2)}` : ''})
                         </p>
                       </div>
 

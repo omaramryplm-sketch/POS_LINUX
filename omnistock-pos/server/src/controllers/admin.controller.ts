@@ -42,52 +42,56 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
     const totalCostOfSales = daySalesDetails.reduce((acc, d) => acc + (d.cantidad * (d.producto?.precio_costo || 0)), 0);
 
-    // 3. Wastage Metrics (Pérdidas por Merma)
+    // 3. Wastage Metrics (Pérdidas por Merma y caducidad)
     const dayAjustesMerma = await prisma.ajusteInventario.findMany({
       where: { 
         fecha: { gte: start, lte: end },
-        motivo: { contains: 'Merma' }
+        OR: [
+          { motivo: { contains: 'Merma' } },
+          { motivo: { contains: 'merma' } },
+          { motivo: { contains: 'Caduc' } },
+          { motivo: { contains: 'Dañad' } },
+          { motivo: { contains: 'Robo' } },
+          { motivo: { contains: 'Extravío' } }
+        ]
       },
       include: { producto: { select: { precio_costo: true } } }
     });
 
     const totalWastage = dayAjustesMerma.reduce((acc, a) => acc + (Math.abs(a.cantidad) * (a.producto?.precio_costo || 0)), 0);
 
+    // 2. Sales Chart (Current Week vs Last Week) - Consulta consolidada de alto rendimiento
+    const windowStart = startOfDay(subDays(today, 15));
+    const windowEnd = endOfDay(today);
+    const windowVentas = await prisma.venta.findMany({
+      where: {
+        fecha: { gte: windowStart, lte: windowEnd },
+        estado: 'COMPLETA'
+      } as any,
+      select: { fecha: true, total: true }
+    });
 
-    // 2. Sales Chart (Current Week vs Last Week)
+    // Mapear ventas por fecha YYYY-MM-DD en memoria (O(N) ultrarrápido)
+    const formatDay = (dt: Date) => dt.toISOString().slice(0, 10);
+    const ventasPorDia = new Map<string, number>();
+    for (const v of windowVentas) {
+      const dayKey = formatDay(v.fecha);
+      ventasPorDia.set(dayKey, (ventasPorDia.get(dayKey) || 0) + Number(v.total || 0));
+    }
+
     const salesChart = [];
     for (let i = 6; i >= 0; i--) {
       const d = subDays(today, i);
-      const s = startOfDay(d);
-      const e = endOfDay(d);
-      
-      const sPrev = startOfDay(subDays(d, 7));
-      const ePrev = endOfDay(subDays(d, 7));
-
-      const sYest = startOfDay(subDays(d, 1));
-      const eYest = endOfDay(subDays(d, 1));
-
-      const daily = await prisma.venta.aggregate({
-        where: { fecha: { gte: s, lte: e }, estado: 'COMPLETA' } as any,
-        _sum: { total: true }
-      });
-
-      const dailyPrev = await prisma.venta.aggregate({
-        where: { fecha: { gte: sPrev, lte: ePrev }, estado: 'COMPLETA' } as any,
-        _sum: { total: true }
-      });
-
-      const dailyYest = await prisma.venta.aggregate({
-        where: { fecha: { gte: sYest, lte: eYest }, estado: 'COMPLETA' } as any,
-        _sum: { total: true }
-      });
+      const dayKey = formatDay(d);
+      const prevKey = formatDay(subDays(d, 7));
+      const yestKey = formatDay(subDays(d, 1));
 
       salesChart.push({
         name: d.toLocaleDateString('es-MX', { weekday: 'short' }),
-        fullDate: d.toISOString().split('T')[0],
-        current: Number((daily as any)._sum.total || 0),
-        prev: Number((dailyPrev as any)._sum.total || 0),
-        yesterday: Number((dailyYest as any)._sum.total || 0)
+        fullDate: dayKey,
+        current: Math.round((ventasPorDia.get(dayKey) || 0) * 100) / 100,
+        prev: Math.round((ventasPorDia.get(prevKey) || 0) * 100) / 100,
+        yesterday: Math.round((ventasPorDia.get(yestKey) || 0) * 100) / 100
       });
     }
 
@@ -585,10 +589,22 @@ export const getCorteCaja = async (req: Request, res: Response) => {
     const totalVentasEfectivo = vEfectivo._sum?.total || 0;
     const totalAbonosEfectivo = aEfectivo._sum?.monto || 0;
     const totalGastosCaja = gCaja._sum?.monto || 0;
+    // 3.5 Reembolsos y devoluciones en efectivo entregados durante el turno
+    const devoluciones = await (prisma as any).registroDevolucion.aggregate({
+      where: { fecha: { gte: start, lte: end } },
+      _sum: { monto_reembolso: true },
+      _count: { id: true }
+    });
+    const dReembolsos = devoluciones as any;
+    const totalReembolsos = dReembolsos._sum?.monto_reembolso || 0;
+
+    // Obtener fondo inicial predeterminado de configuración
+    const configFondo = await prisma.config.findUnique({ where: { key: 'FONDO_INICIAL_DEFAULT' } });
+    const fondoInicialDefault = configFondo ? parseFloat(configFondo.value) || 0 : 500;
 
     // Efectivo real esperado en gaveta:
-    // Ventas en Efectivo + Abonos de Fiado en Efectivo - Gastos retirados de caja
-    const efectivoEsperado = Math.round((totalVentasEfectivo + totalAbonosEfectivo - totalGastosCaja) * 100) / 100;
+    // Ventas en Efectivo + Abonos de Fiado en Efectivo - Gastos de caja chica - Reembolsos entregados
+    const efectivoEsperado = Math.round((totalVentasEfectivo + totalAbonosEfectivo - totalGastosCaja - totalReembolsos) * 100) / 100;
 
     res.json({
       status: 'success',
@@ -610,12 +626,17 @@ export const getCorteCaja = async (req: Request, res: Response) => {
           total: vCanceladas._sum?.total || 0,
           cantidad: vCanceladas._count?.id || 0,
         },
+        devoluciones: {
+          total: totalReembolsos,
+          cantidad: dReembolsos._count?.id || 0
+        },
         gastos: {
           total: gTotales._sum?.monto || 0,
           totalCaja: totalGastosCaja,
           cantidad: gTotales._count?.id || 0,
           detalles: listaGastos
         },
+        fondoInicialDefault: fondoInicialDefault,
         efectivoEsperado: efectivoEsperado
       }
     });

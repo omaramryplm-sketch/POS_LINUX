@@ -431,10 +431,11 @@ class TestOmniStockIntegration(unittest.TestCase):
         efectivo_ventas = d["ventas"]["efectivo"]
         abonos_efectivo = d["abonos"]["total"]
         gastos_caja = d["gastos"]["totalCaja"]
+        devoluciones_efectivo = d.get("devoluciones", {}).get("total", 0.0)
         efectivo_esperado = d["efectivoEsperado"]
         
-        # Fórmula esperada: EfectivoEsperado = VentasEfectivo + AbonosEfectivo - GastosCaja
-        calculado = round(efectivo_ventas + abonos_efectivo - gastos_caja, 2)
+        # Fórmula financiera exacta: EfectivoEsperado = VentasEfectivo + AbonosEfectivo - GastosCaja - Devoluciones
+        calculado = round(efectivo_ventas + abonos_efectivo - gastos_caja - devoluciones_efectivo, 2)
         self.assertEqual(efectivo_esperado, calculado)
 
         # Conciliación con fondo inicial:
