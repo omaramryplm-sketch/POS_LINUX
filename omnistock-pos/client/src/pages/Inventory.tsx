@@ -2035,12 +2035,12 @@ export default function Inventory() {
                   onChange={e => setAjusteData({...ajusteData, motivo: e.target.value})}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 font-bold text-slate-700 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm" 
                 >
-                  <option value="Merma (Dañado/Caducado)">🛑 Merma (Dañado/Caducado)</option>
-                  <option value="Merma (Robo/Extravío)">⚠️ Merma (Robo/Extravío)</option>
-                  <option value="Corrección por Auditoría">🔍 Corrección por Auditoría</option>
-                  <option value="Consumo Interno">🏢 Consumo Interno</option>
-                  <option value="Devolución a Proveedor">📦 Devolución a Proveedor</option>
-                  <option value="Otro">📝 Otro</option>
+                  <option value="Merma (Dañado/Caducado)">Merma (Dañado / Caducado)</option>
+                  <option value="Merma (Robo/Extravío)">Merma (Robo / Extravío)</option>
+                  <option value="Corrección por Auditoría">Corrección por Auditoría</option>
+                  <option value="Consumo Interno">Consumo Interno</option>
+                  <option value="Devolución a Proveedor">Devolución a Proveedor</option>
+                  <option value="Otro">Otro</option>
                 </select>
               </div>
             </div>

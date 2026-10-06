@@ -435,9 +435,9 @@ export default function POS() {
         setSearchResults(products);
       } else {
         if (res.data?.message === 'PRODUCTO_DESCONTINUADO_AGOTADO') {
-          setError('⚠️ Producto DESCONTINUADO y AGOTADO (sin existencias para venta).');
+          setError('Producto descontinuado y agotado (sin existencias para venta).');
         } else if (res.data?.message === 'PRODUCTO_INACTIVO') {
-          setError('⚠️ Producto inactivo en el sistema.');
+          setError('Producto inactivo en el sistema.');
         } else {
           setError('No se encontraron productos.');
         }
@@ -704,7 +704,7 @@ export default function POS() {
                 onClick={() => setPaymentMethod('CREDITO')}
                 className={`py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all disabled:opacity-40 ${paymentMethod === 'CREDITO' ? 'bg-white dark:bg-slate-900 shadow-sm text-amber-600 dark:text-amber-400' : 'text-[var(--text-muted)]'}`}
               >
-                Crédito {!selectedClient && '🔒'}
+                Crédito {!selectedClient && '(Bloqueado)'}
               </button>
             </div>
             
@@ -1743,7 +1743,7 @@ export default function POS() {
                 ))
               ) : (
                 <div className="p-6 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 font-bold text-xs">
-                  ⚠️ No hay cajas activas registradas. Contacta al administrador.
+                  No hay cajas activas registradas. Contacta al administrador.
                 </div>
               )}
             </div>

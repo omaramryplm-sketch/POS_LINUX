@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function seedLastWeek() {
-  console.log('🌱 Sembrando ventas para el 27 de abril...');
+  console.log('[Seed] Sembrando ventas para el 27 de abril...');
   
   const targetDate = new Date('2026-04-27T12:00:00Z');
   const productos = await prisma.producto.findMany({ take: 5 });
@@ -37,7 +37,7 @@ async function seedLastWeek() {
     });
   }
 
-  console.log('✅ Ventas del 27 de abril creadas con éxito.');
+  console.log('[Seed] Ventas del 27 de abril creadas con éxito.');
 }
 
 seedLastWeek()

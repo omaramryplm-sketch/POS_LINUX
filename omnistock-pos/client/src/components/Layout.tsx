@@ -32,7 +32,7 @@ export default function Layout() {
     { name: 'Panel Admin', path: '/admin', icon: LayoutDashboard, roles: ['ADMIN'] },
     { name: 'Inventario', path: '/admin/inventory', icon: Package, roles: ['ADMIN'] },
     { name: 'Ajuste Precios', path: '/admin/bulk-prices', icon: Tags, roles: ['ADMIN'] },
-    { name: 'Capacitación 🎓', path: '/capacitacion', icon: BookOpen, roles: ['ADMIN', 'CAJERO'] },
+    { name: 'Capacitación', path: '/capacitacion', icon: BookOpen, roles: ['ADMIN', 'CAJERO'] },
   ];
 
   return (

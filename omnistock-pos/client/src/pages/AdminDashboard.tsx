@@ -7,7 +7,8 @@ import {
   TrendingUp, AlertTriangle, Activity, PackageCheck, 
   ShoppingCart, ChevronRight, Package, DollarSign,
   MessageSquare, User as UserIcon, X,
-  Calculator, Banknote, Coins, Receipt, CreditCard, CheckCircle2, ArrowUpRight, ArrowDownRight, Printer
+  Calculator, Banknote, Coins, Receipt, CreditCard, CheckCircle2, ArrowUpRight, ArrowDownRight, Printer,
+  Store, Monitor, Clock
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, 
@@ -989,7 +990,8 @@ export default function AdminDashboard() {
                       : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                   )}
                 >
-                  <span>🏢 Resumen General</span>
+                  <Store className="w-3.5 h-3.5 shrink-0" />
+                  <span>Resumen General</span>
                 </button>
                 {availableCajas.map((caja) => (
                   <button
@@ -1003,7 +1005,8 @@ export default function AdminDashboard() {
                         : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                     )}
                   >
-                    <span>💻 {caja.nombre}</span>
+                    <Monitor className="w-3.5 h-3.5 shrink-0" />
+                    <span>{caja.nombre}</span>
                   </button>
                 ))}
               </div>
@@ -1262,7 +1265,8 @@ export default function AdminDashboard() {
                           {!hasInput ? (
                             <div>
                               <span className="inline-flex items-center gap-1.5 text-xs font-black text-slate-500 dark:text-slate-400">
-                                <span>⏳</span> Pendiente de conteo
+                                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                <span>Pendiente de conteo</span>
                               </span>
                               <p className="text-[10px] text-slate-400 mt-0.5">Ingresa el conteo físico para validar</p>
                             </div>

@@ -8,7 +8,7 @@ export const initSqlite = async () => {
     await prisma.$queryRawUnsafe(`PRAGMA journal_mode = WAL;`);
     await prisma.$queryRawUnsafe(`PRAGMA busy_timeout = 5000;`);
     await prisma.$queryRawUnsafe(`PRAGMA synchronous = NORMAL;`);
-    console.log('✅ SQLite configurado en modo WAL y timeout 5000ms.');
+    console.log('[SQLite] Configurado en modo WAL y timeout 5000ms.');
   } catch (error) {
     console.error('Error configurando PRAGMAs en SQLite:', error);
   }
