@@ -23,32 +23,22 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Check Lockout Status
-    if (user.security?.lockedUntil && user.security.lockedUntil > new Date()) {
-      res.status(423).json({ 
-        status: 'error',
-        code: 'ACCOUNT_LOCKED',
-        message: 'Account temporarily locked. Please try again later.' 
-      });
-      return;
-    }
-
-    // Verify Password with Argon2
+    // Verify Password with Argon2 (uniform timing with dummy hash branch)
     const isValidPassword = await argon2.verify(user.password, password);
 
     if (!isValidPassword) {
-      // Update Failed Attempts
+      // Track failed attempts and IP for auditing without locking account globally
+      // (Brute force protection is enforced per-IP by authLimiter to prevent denial of service)
       await prisma.userSecurity.upsert({
         where: { id_usuario: user.id },
         update: { 
           failedAttempts: { increment: 1 },
-          lockedUntil: (user.security?.failedAttempts || 0) + 1 >= 5 
-            ? new Date(Date.now() + 15 * 60 * 1000) // 15 min lockout
-            : null
+          lastIp: clientIp
         },
         create: {
           id_usuario: user.id,
-          failedAttempts: 1
+          failedAttempts: 1,
+          lastIp: clientIp
         }
       });
 

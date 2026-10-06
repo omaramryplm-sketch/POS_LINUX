@@ -18,6 +18,7 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
     const ventaResult = await prisma.$transaction(async (tx) => {
       // 1. Process items, verify stock and calculate server-side pricing
       let calculatedGrossTotal = 0;
+      let totalCatalogo = 0;
       const processedDetails = [];
 
       for (const item of items) {
@@ -35,6 +36,9 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
         }
 
         if (product.stock_actual < item.cantidad) throw new Error(`INSUFFICIENT_STOCK`);
+
+        // Suma de valor de lista de catálogo
+        totalCatalogo += Math.round(product.precio_venta * item.cantidad * 100) / 100;
 
         // Determinación flexible y segura del precio unitario (soporte para pronta caducidad / ofertas)
         let unitPrice = product.precio_venta;
@@ -76,9 +80,10 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
         });
       }
 
+      totalCatalogo = Math.round(totalCatalogo * 100) / 100;
       calculatedGrossTotal = Math.round(calculatedGrossTotal * 100) / 100;
 
-      // 2. Validación de descuento global
+      // 2. Validación de descuento global y prevención de acumulación excesiva (Anti-Stacking)
       const parsedDiscount = Math.max(0, parseFloat(descuento) || 0);
       if (userRole !== 'ADMIN' && parsedDiscount > Math.round(calculatedGrossTotal * 0.50 * 100) / 100) {
         throw new Error(`DESCUENTO_EXCEDE_LIMITE_CAJERO`);
@@ -89,17 +94,37 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
 
       const calculatedFinalTotal = Math.round((calculatedGrossTotal - parsedDiscount) * 100) / 100;
 
-      // 3. Verify Client Status and Limits using strictly verified calculatedFinalTotal
-      if (id_cliente) {
-        const client = await tx.cliente.findUnique({ where: { id: Number(id_cliente) } });
-        if (client?.betado) {
-          throw new Error(`CLIENT_BANNED`);
+      // Anti-Stacking: Para cajeros, el descuento acumulado total (descuento en producto + descuento de ticket)
+      // no puede exceder el 50% del valor de catálogo total
+      if (userRole !== 'ADMIN') {
+        const maxPermittedDiscount = Math.round(totalCatalogo * 0.50 * 100) / 100;
+        const totalDiscountGiven = Math.round((totalCatalogo - calculatedFinalTotal) * 100) / 100;
+        if (totalDiscountGiven > (maxPermittedDiscount + 0.01)) {
+          throw new Error(`DESCUENTO_EXCEDE_LIMITE_CAJERO`);
         }
-        if (metodo_pago === 'CREDITO' || metodo_pago === 'CREDIT') {
-          const projectedDebt = client!.saldo_deudor + calculatedFinalTotal;
-          if (projectedDebt > client!.limite_credito) {
-            throw new Error(`INSUFFICIENT_CREDIT`);
-          }
+      }
+
+      // 3. Verify Client Status and Limits using strictly verified calculatedFinalTotal
+      const isCredit = metodo_pago === 'CREDITO' || metodo_pago === 'CREDIT';
+      let client = null;
+
+      if (id_cliente) {
+        client = await tx.cliente.findUnique({ where: { id: Number(id_cliente) } });
+        if (!client) {
+          throw new Error(`CLIENTE_NO_ENCONTRADO`);
+        }
+        if (client.betado) {
+          throw new Error(`CLIENTE_BETADO`);
+        }
+      }
+
+      if (isCredit) {
+        if (!client) {
+          throw new Error(`CLIENTE_REQUERIDO_CREDITO`);
+        }
+        const projectedDebt = client.saldo_deudor + calculatedFinalTotal;
+        if (projectedDebt > client.limite_credito) {
+          throw new Error(`INSUFFICIENT_CREDIT`);
         }
       }
 
@@ -107,12 +132,12 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
       const newVenta = await tx.venta.create({
         data: {
           id_usuario: userId,
-          id_cliente: id_cliente ? Number(id_cliente) : null,
+          id_cliente: client ? client.id : null,
           id_caja: Number(id_caja),
           total: calculatedFinalTotal,
           descuento: parsedDiscount,
-          metodo_pago: (metodo_pago === 'CREDIT' || metodo_pago === 'CREDITO') ? 'CREDITO' : metodo_pago || 'EFECTIVO',
-          estado: (metodo_pago === 'CREDIT' || metodo_pago === 'CREDITO') ? 'CREDITO' : 'COMPLETA',
+          metodo_pago: isCredit ? 'CREDITO' : metodo_pago || 'EFECTIVO',
+          estado: isCredit ? 'CREDITO' : 'COMPLETA',
           referencia_pago: referencia_pago,
           detalles: {
             create: processedDetails
@@ -124,10 +149,10 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
         }
       });
 
-      // 5. Update client debt if credit
-      if ((metodo_pago === 'CREDITO' || metodo_pago === 'CREDIT') && id_cliente) {
+      // 5. Update client debt atomically if credit
+      if (isCredit && client) {
         await tx.cliente.update({
-          where: { id: Number(id_cliente) },
+          where: { id: client.id },
           data: {
             saldo_deudor: {
               increment: calculatedFinalTotal

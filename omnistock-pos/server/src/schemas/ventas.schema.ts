@@ -14,6 +14,14 @@ export const createVentaSchema = z.object({
     id_cliente: z.coerce.number().int().positive().optional().nullable(),
     descuento: z.coerce.number().nonnegative().finite().optional().default(0),
     id_caja: z.coerce.number().int().positive('id_caja debe ser un número entero válido'),
+  }).refine((data) => {
+    if (data.metodo_pago === 'CREDITO' || data.metodo_pago === 'CREDIT') {
+      return typeof data.id_cliente === 'number' && data.id_cliente > 0;
+    }
+    return true;
+  }, {
+    message: 'El id_cliente es obligatorio y debe ser un ID válido para ventas a crédito',
+    path: ['id_cliente']
   })
 });
 

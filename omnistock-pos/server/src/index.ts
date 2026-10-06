@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -60,8 +60,18 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const heavyOpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { status: 429, message: 'Too many resource-intensive requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use('/api/', globalLimiter);
 app.use('/api/auth/', authLimiter);
+app.use('/api/admin/scrape', heavyOpLimiter);
+app.use('/api/admin/export/backup', heavyOpLimiter);
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -76,6 +86,16 @@ app.use('/api/clientes', clientesRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'OmniStock POS API is running' });
+});
+
+// Global Error Handler (Uniform JSON responses, prevents internal stack leak)
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const status = typeof err.status === 'number' ? err.status : 500;
+  res.status(status).json({
+    status: 'error',
+    code: err.code || (status === 500 ? 'INTERNAL_SERVER_ERROR' : 'BAD_REQUEST'),
+    message: status === 500 ? 'Internal server error' : err.message
+  });
 });
 
 app.listen(PORT, async () => {

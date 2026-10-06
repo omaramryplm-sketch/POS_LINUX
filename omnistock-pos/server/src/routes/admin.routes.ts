@@ -63,7 +63,7 @@ router.post('/scrape', authGuard, roleGuard(['ADMIN']), runScraper);
 
 // Cancellation and Expenses
 router.post('/cancel-sale/:id', authGuard, roleGuard(['ADMIN']), cancelSale);
-router.post('/gastos', authGuard, validate(addGastoSchema), addGasto);
+router.post('/gastos', authGuard, roleGuard(['ADMIN']), validate(addGastoSchema), addGasto);
 router.get('/corte', authGuard, roleGuard(['ADMIN']), getCorteCaja);
 router.patch('/inventory/adjust', authGuard, roleGuard(['ADMIN']), validate(adjustInventorySchema), adjustInventory);
 router.post('/inventory/bulk-adjust', authGuard, roleGuard(['ADMIN']), validate(bulkAdjustInventorySchema), bulkAdjustInventory);
