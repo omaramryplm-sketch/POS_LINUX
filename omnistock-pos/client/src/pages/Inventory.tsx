@@ -737,98 +737,100 @@ export default function Inventory() {
                 className="w-full pl-12 pr-4 py-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl sm:rounded-2xl text-[var(--text-main)] focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none text-xs sm:text-sm"
               />
             </div>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-              <button 
-                onClick={() => handleExportCSV(
-                  products,
-                  'catalogo_productos',
-                  [
-                    { key: 'sku', label: 'SKU' },
-                    { key: 'descripcion', label: 'Descripción' },
-                    { key: 'categoria', label: 'Categoría' },
-                    { key: 'precio_venta', label: 'Precio de Venta' },
-                    { key: 'precio_costo', label: 'Precio de Costo' },
-                    { key: 'stock_actual', label: 'Stock Actual' },
-                    { key: 'stock_minimo', label: 'Stock Mínimo' },
-                    { key: 'stock_maximo', label: 'Stock Máximo' },
-                    { key: 'unidad', label: 'Unidad' }
-                  ]
-                )}
-                className="flex-1 sm:flex-none bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2 active:scale-95"
-                title="Exportar Catálogo a Excel/CSV"
-              >
-                <Download className="w-4 h-4" /> EXPORTAR
-              </button>
-              <button
-                onClick={() => {
-                  const csvContent = "data:text/csv;charset=utf-8,SKU,DESCRIPCION,PRECIO_VENTA,PRECIO_COSTO,STOCK_ACTUAL,CATEGORIA,UNIDAD\nDUMMY01,Producto de Ejemplo,150.00,100.00,50,ABARROTES,PZA\n";
-                  const encodedUri = encodeURI(csvContent);
-                  const link = document.createElement("a");
-                  link.setAttribute("href", encodedUri);
-                  link.setAttribute("download", "plantilla_productos.csv");
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
-                }}
-                className="flex-1 sm:flex-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 shadow-sm active:scale-95"
-              >
-                <Download className="w-4 h-4" /> PLANTILLA
-              </button>
-              <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept=".csv" />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="flex-1 sm:flex-none bg-indigo-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-indigo-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 active:scale-95"
-              >
-                <Upload className="w-4 h-4" /> IMPORTAR
-              </button>
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
               <button
                 onClick={() => setShowAddProductModal(true)}
-                className="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95"
+                className="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 order-first sm:order-last"
               >
                 <Plus className="w-4 h-4" /> NUEVO PRODUCTO
               </button>
+              <div className="grid grid-cols-3 sm:flex gap-2">
+                <button 
+                  onClick={() => handleExportCSV(
+                    products,
+                    'catalogo_productos',
+                    [
+                      { key: 'sku', label: 'SKU' },
+                      { key: 'descripcion', label: 'Descripción' },
+                      { key: 'categoria', label: 'Categoría' },
+                      { key: 'precio_venta', label: 'Precio de Venta' },
+                      { key: 'precio_costo', label: 'Precio de Costo' },
+                      { key: 'stock_actual', label: 'Stock Actual' },
+                      { key: 'stock_minimo', label: 'Stock Mínimo' },
+                      { key: 'stock_maximo', label: 'Stock Máximo' },
+                      { key: 'unidad', label: 'Unidad' }
+                    ]
+                  )}
+                  className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  title="Exportar Catálogo a Excel/CSV"
+                >
+                  <Download className="w-3.5 h-3.5" /> EXPORTAR
+                </button>
+                <button
+                  onClick={() => {
+                    const csvContent = "data:text/csv;charset=utf-8,SKU,DESCRIPCION,PRECIO_VENTA,PRECIO_COSTO,STOCK_ACTUAL,CATEGORIA,UNIDAD\nDUMMY01,Producto de Ejemplo,150.00,100.00,50,ABARROTES,PZA\n";
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", "plantilla_productos.csv");
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                  }}
+                  className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 shadow-sm active:scale-95"
+                >
+                  <Download className="w-3.5 h-3.5" /> PLANTILLA
+                </button>
+                <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept=".csv" />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-indigo-500 text-white px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs hover:bg-indigo-600 transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/20 active:scale-95"
+                >
+                  <Upload className="w-3.5 h-3.5" /> IMPORTAR
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
-              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
-                <Package className="w-7 h-7" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 shrink-0">
+                <Package className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
-              <div>
-                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Total Productos</p>
-                <p className="text-2xl font-black text-[var(--text-main)]">{(products || []).length}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Total Productos</p>
+                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">{(products || []).length}</p>
               </div>
             </div>
-            <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
-              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
-                <Check className="w-7 h-7" />
+            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 shrink-0">
+                <Check className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
-              <div>
-                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Activos en POS</p>
-                <p className="text-2xl font-black text-[var(--text-main)]">
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Activos POS</p>
+                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">
                   {(products || []).filter(p => !p.descontinuado).length}
                 </p>
               </div>
             </div>
-            <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
-              <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center text-red-600">
-                <AlertTriangle className="w-7 h-7" />
+            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-red-600 shrink-0">
+                <AlertTriangle className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
-              <div>
-                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Bajo Stock</p>
-                <p className="text-2xl font-black text-[var(--text-main)]">
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Bajo Stock</p>
+                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">
                   {(products || []).filter(p => !p.descontinuado && p.stock_actual <= p.stock_minimo).length}
                 </p>
               </div>
             </div>
-            <div className="bg-[var(--bg-card)] p-6 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-4">
-              <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600">
-                <Ban className="w-7 h-7" />
+            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-amber-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-600 shrink-0">
+                <Ban className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
-              <div>
-                <p className="text-xs font-black text-[var(--text-muted)] uppercase tracking-widest">Descontinuados</p>
-                <p className="text-2xl font-black text-[var(--text-main)]">
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Descontinuados</p>
+                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">
                   {(products || []).filter(p => p.descontinuado).length}
                 </p>
               </div>
@@ -837,11 +839,11 @@ export default function Inventory() {
 
           {/* Filtros de Estado del Catálogo */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 px-1">
-            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl w-full sm:w-auto">
               <button
                 onClick={() => { setStatusFilter('ALL'); setCurrentPage(1); }}
                 className={clsx(
-                  "px-4 py-2 rounded-xl text-xs font-black transition-all",
+                  "flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all text-center",
                   statusFilter === 'ALL'
                     ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                     : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -852,7 +854,7 @@ export default function Inventory() {
               <button
                 onClick={() => { setStatusFilter('ACTIVE'); setCurrentPage(1); }}
                 className={clsx(
-                  "px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5",
+                  "flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5",
                   statusFilter === 'ACTIVE'
                     ? "bg-emerald-500 text-white shadow-sm"
                     : "text-slate-500 hover:text-emerald-600"
@@ -863,175 +865,129 @@ export default function Inventory() {
               <button
                 onClick={() => { setStatusFilter('DISCONTINUED'); setCurrentPage(1); }}
                 className={clsx(
-                  "px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5",
+                  "w-full sm:w-auto px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5",
                   statusFilter === 'DISCONTINUED'
                     ? "bg-amber-500 text-white shadow-sm"
                     : "text-slate-500 hover:text-amber-600"
                 )}
               >
-                <Ban className="w-3.5 h-3.5" /> DESCONTINUADOS / BAJA VENTA ({(products || []).filter(p => p.descontinuado).length})
+                <Ban className="w-3.5 h-3.5" /> DESCONTINUADOS ({(products || []).filter(p => p.descontinuado).length})
               </button>
             </div>
             {statusFilter === 'DISCONTINUED' && (
-              <span className="text-xs text-amber-700 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 px-4 py-2 rounded-xl">
-                Productos fuera del catálogo de cobro del POS
+              <span className="text-xs text-amber-700 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 px-3 py-1.5 rounded-xl">
+                Fuera de venta regular POS
               </span>
             )}
           </div>
 
-          <div className="bg-[var(--bg-card)] rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-xl overflow-hidden">
-            <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
-              <table className="w-full text-left border-collapse relative min-w-[780px]">
-                <thead className="sticky top-0 bg-[var(--bg-card)] z-10 shadow-sm">
-                  <tr className="bg-[var(--bg-main)] border-b border-[var(--border-color)]">
-                    <th 
-                      className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-emerald-500 transition-colors"
-                      onClick={() => setSortConfig({ key: 'descripcion', direction: sortConfig?.key === 'descripcion' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
-                    >
-                      <div className="flex items-center gap-1">
-                        Producto {sortConfig?.key === 'descripcion' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
-                      </div>
-                    </th>
-                    <th 
-                      className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center cursor-pointer hover:text-emerald-500 transition-colors"
-                      onClick={() => setSortConfig({ key: 'categoria', direction: sortConfig?.key === 'categoria' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
-                    >
-                      <div className="flex items-center justify-center gap-1">
-                        Categoría {sortConfig?.key === 'categoria' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
-                      </div>
-                    </th>
-                    <th 
-                      className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-emerald-500 transition-colors"
-                      onClick={() => setSortConfig({ key: 'precio_venta', direction: sortConfig?.key === 'precio_venta' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
-                    >
-                      <div className="flex items-center justify-end gap-1">
-                        Precio {sortConfig?.key === 'precio_venta' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
-                      </div>
-                    </th>
-                    <th 
-                      className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-emerald-500 transition-colors"
-                      onClick={() => setSortConfig({ key: 'precio_costo', direction: sortConfig?.key === 'precio_costo' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
-                    >
-                      <div className="flex items-center justify-end gap-1">
-                        Costo {sortConfig?.key === 'precio_costo' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
-                      </div>
-                    </th>
-                    <th 
-                      className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center cursor-pointer hover:text-emerald-500 transition-colors"
-                      onClick={() => setSortConfig({ key: 'stock_actual', direction: sortConfig?.key === 'stock_actual' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
-                    >
-                      <div className="flex items-center justify-center gap-1">
-                        Stock {sortConfig?.key === 'stock_actual' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
-                      </div>
-                    </th>
-                    <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
+          {(() => {
+            const filteredAndSorted = (products || [])
+              .filter(p => {
+                if (statusFilter === 'ACTIVE' && p.descontinuado) return false;
+                if (statusFilter === 'DISCONTINUED' && !p.descontinuado) return false;
+                return (
+                  p.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                  p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  p.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+              })
+              .sort((a, b) => {
+                if (sortConfig) {
+                  const aValue = a[sortConfig.key as keyof Product];
+                  const bValue = b[sortConfig.key as keyof Product];
+                  
+                  const aVal = aValue !== null && aValue !== undefined ? aValue : '';
+                  const bVal = bValue !== null && bValue !== undefined ? bValue : '';
+                  
+                  if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+                  if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+                  return 0;
+                }
+
+                const aCritical = a.stock_actual <= a.stock_minimo;
+                const bCritical = b.stock_actual <= b.stock_minimo;
+                if (aCritical && !bCritical) return -1;
+                if (!aCritical && bCritical) return 1;
+                return (a.stock_actual / (a.stock_minimo || 1)) - (b.stock_actual / (b.stock_minimo || 1));
+              });
+
+            const totalPages = Math.ceil(filteredAndSorted.length / itemsPerPage);
+            const paginated = filteredAndSorted.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+            return (
+              <div className="bg-[var(--bg-card)] rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-xl overflow-hidden">
+                {/* --- VISTA MÓVIL (TARJETAS) --- */}
+                <div className="md:hidden divide-y divide-[var(--border-color)]">
                   {loading ? (
-                    <tr><td colSpan={6} className="px-8 py-20 text-center text-slate-400 font-bold">Cargando catálogo...</td></tr>
-                  ) : (() => {
-                    const filteredAndSorted = (products || [])
-                      .filter(p => {
-                        if (statusFilter === 'ACTIVE' && p.descontinuado) return false;
-                        if (statusFilter === 'DISCONTINUED' && !p.descontinuado) return false;
-                        return (
-                          p.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          p.categoria.toLowerCase().includes(searchTerm.toLowerCase())
-                        );
-                      })
-                      .sort((a, b) => {
-                        if (sortConfig) {
-                          const aValue = a[sortConfig.key as keyof Product];
-                          const bValue = b[sortConfig.key as keyof Product];
-                          
-                          const aVal = aValue !== null && aValue !== undefined ? aValue : '';
-                          const bVal = bValue !== null && bValue !== undefined ? bValue : '';
-                          
-                          if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-                          if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-                          return 0;
-                        }
-
-                        const aCritical = a.stock_actual <= a.stock_minimo;
-                        const bCritical = b.stock_actual <= b.stock_minimo;
-                        if (aCritical && !bCritical) return -1;
-                        if (!aCritical && bCritical) return 1;
-                        // Si ambos están en el mismo estado, ordenar por el que tiene menos stock relativo
-                        return (a.stock_actual / (a.stock_minimo || 1)) - (b.stock_actual / (b.stock_minimo || 1));
-                      });
-
-                    const totalPages = Math.ceil(filteredAndSorted.length / itemsPerPage);
-                    const paginated = filteredAndSorted.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-                    return (
-                      <>
-                        {paginated.map((p) => (
-                      <tr key={p.id} className={clsx(
-                        "transition-colors group",
-                        p.descontinuado ? "bg-amber-50/20 hover:bg-amber-50/40 opacity-80" : "hover:bg-slate-50/50"
+                    <div className="p-8 text-center text-slate-400 font-bold text-sm">Cargando catálogo...</div>
+                  ) : paginated.length === 0 ? (
+                    <div className="p-8 text-center text-slate-400 font-bold text-sm">No se encontraron productos</div>
+                  ) : (
+                    paginated.map((p) => (
+                      <div key={p.id} className={clsx(
+                        "p-4 flex flex-col gap-3 transition-colors",
+                        p.descontinuado ? "bg-amber-50/20 dark:bg-amber-950/20" : "hover:bg-slate-50/50 dark:hover:bg-slate-800/30"
                       )}>
-                        <td className="px-8 py-6">
-                          <div className="flex items-center gap-4">
-                            <div className={clsx(
-                              "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
-                              p.descontinuado
-                                ? "bg-amber-100 text-amber-600"
-                                : p.stock_actual <= p.stock_minimo 
-                                  ? "bg-red-50 text-red-500 group-hover:bg-red-500 group-hover:text-white" 
-                                  : "bg-slate-100 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white"
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500">
+                                {p.categoria}
+                              </span>
+                              {p.descontinuado && (
+                                <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300">
+                                  Descontinuado
+                                </span>
+                              )}
+                            </div>
+                            <p className={clsx(
+                              "font-black text-sm mt-1 leading-snug",
+                              p.descontinuado 
+                                ? "text-slate-500 line-through decoration-amber-500" 
+                                : p.stock_actual <= p.stock_minimo ? "text-red-600 dark:text-red-400" : "text-slate-800 dark:text-white"
                             )}>
-                              {p.descontinuado ? <Ban className="w-6 h-6" /> : <Package className="w-6 h-6" />}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className={clsx(
-                                  "font-black transition-colors",
-                                  p.descontinuado 
-                                    ? "text-slate-600 line-through decoration-amber-500" 
-                                    : p.stock_actual <= p.stock_minimo ? "text-red-700" : "text-slate-800 group-hover:text-emerald-600"
-                                )}>{p.descripcion}</p>
-                                {p.descontinuado && (
-                                  <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md text-[9px] font-black uppercase tracking-wider">
-                                    Descontinuado {p.motivo_baja ? `· ${p.motivo_baja}` : ''}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-xs text-slate-400 font-bold tracking-tight">SKU: {p.sku}</p>
-                            </div>
+                              {p.descripcion}
+                            </p>
+                            <p className="text-[10px] font-bold text-slate-400">SKU: {p.sku}</p>
                           </div>
-                        </td>
-                        <td className="px-8 py-6 text-center">
-                          <span className="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-wider">{p.categoria}</span>
-                        </td>
-                        <td className="px-8 py-6 text-right font-black text-slate-700">${p.precio_venta}</td>
-                        <td className="px-8 py-6 text-right font-bold text-slate-500">${p.precio_costo?.toFixed(2) || '0.00'}</td>
-                        <td className="px-8 py-6 text-center">
-                          <div className="flex flex-col items-center gap-1">
+                          
+                          <div className="text-right shrink-0">
                             <span className={clsx(
-                              "px-4 py-1 rounded-full text-xs font-black",
-                              p.stock_actual <= p.stock_minimo ? "bg-red-100 text-red-600 animate-pulse" : "bg-emerald-100 text-emerald-600"
+                              "px-2.5 py-1 rounded-xl text-xs font-black inline-block",
+                              p.stock_actual <= p.stock_minimo ? "bg-red-100 text-red-600 animate-pulse" : "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
                             )}>
                               {p.stock_actual} {p.unidad}
                             </span>
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Min: {p.stock_minimo}</span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter block mt-0.5">Min: {p.stock_minimo}</span>
                           </div>
-                        </td>
-                        <td className="px-8 py-6 text-right flex items-center justify-end gap-2">
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs py-2 px-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
+                          <div>
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Precio Venta</span>
+                            <span className="font-black text-slate-900 dark:text-white text-sm">${p.precio_venta}</span>
+                          </div>
+                          <div className="text-center">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Costo</span>
+                            <span className="font-bold text-slate-500 dark:text-slate-400">${p.precio_costo?.toFixed(2) || '0.00'}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Margen</span>
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                              {p.precio_costo ? `${Math.round(((p.precio_venta - p.precio_costo) / p.precio_venta) * 100)}%` : 'N/A'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
                           <button
-                            onClick={() => handleToggleDescontinuado(p)}
-                            className={clsx(
-                              "p-2 rounded-xl transition-all",
-                              p.descontinuado
-                                ? "bg-amber-100 hover:bg-emerald-600 hover:text-white text-amber-700"
-                                : "bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-600"
-                            )}
-                            title={p.descontinuado ? `Reactivar producto (Baja: ${p.motivo_baja || 'Baja venta'})` : "Desactivar por baja venta (Descontinuar)"}
+                            onClick={() => { setSelectedForAjuste(p); setShowAjusteModal(true); }}
+                            className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-900 hover:text-white text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 active:scale-95"
                           >
-                            {p.descontinuado ? <RefreshCw className="w-5 h-5" /> : <Ban className="w-5 h-5" />}
+                            <RefreshCw className="w-3.5 h-3.5" /> AJUSTAR
                           </button>
-                          <button 
+                          <button
                             onClick={() => { 
                               setSelectedForEdit(p);
                               setEditProductData({
@@ -1049,57 +1005,216 @@ export default function Inventory() {
                               });
                               setShowEditProductModal(true); 
                             }}
-                            className="p-2 bg-slate-100 hover:bg-emerald-500 hover:text-white text-slate-600 rounded-xl transition-all"
+                            className="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl transition-all"
                             title="Editar Maestro"
                           >
-                            <Edit className="w-5 h-5" />
+                            <Edit className="w-4 h-4" />
                           </button>
-                          <button 
-                            onClick={() => { setSelectedForAjuste(p); setShowAjusteModal(true); }}
-                            className="px-4 py-2 bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-600 rounded-xl text-xs font-black transition-all"
+                          <button
+                            onClick={() => handleToggleDescontinuado(p)}
+                            className={clsx(
+                              "p-2.5 rounded-xl transition-all",
+                              p.descontinuado
+                                ? "bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 hover:bg-emerald-600 hover:text-white"
+                                : "bg-slate-100 dark:bg-slate-800 hover:bg-amber-500 hover:text-white text-slate-600 dark:text-slate-300"
+                            )}
+                            title={p.descontinuado ? "Reactivar producto" : "Descontinuar"}
                           >
-                            AJUSTAR
+                            {p.descontinuado ? <RefreshCw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
                           </button>
-                        </td>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* --- VISTA DESKTOP (TABLA) --- */}
+                <div className="hidden md:block overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
+                  <table className="w-full text-left border-collapse relative min-w-[780px]">
+                    <thead className="sticky top-0 bg-[var(--bg-card)] z-10 shadow-sm">
+                      <tr className="bg-[var(--bg-main)] border-b border-[var(--border-color)]">
+                        <th 
+                          className="px-6 lg:px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-emerald-500 transition-colors"
+                          onClick={() => setSortConfig({ key: 'descripcion', direction: sortConfig?.key === 'descripcion' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
+                        >
+                          <div className="flex items-center gap-1">
+                            Producto {sortConfig?.key === 'descripcion' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-4 lg:px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center cursor-pointer hover:text-emerald-500 transition-colors"
+                          onClick={() => setSortConfig({ key: 'categoria', direction: sortConfig?.key === 'categoria' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
+                        >
+                          <div className="flex items-center justify-center gap-1">
+                            Categoría {sortConfig?.key === 'categoria' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-4 lg:px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-emerald-500 transition-colors"
+                          onClick={() => setSortConfig({ key: 'precio_venta', direction: sortConfig?.key === 'precio_venta' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
+                        >
+                          <div className="flex items-center justify-end gap-1">
+                            Precio {sortConfig?.key === 'precio_venta' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-4 lg:px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-emerald-500 transition-colors"
+                          onClick={() => setSortConfig({ key: 'precio_costo', direction: sortConfig?.key === 'precio_costo' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
+                        >
+                          <div className="flex items-center justify-end gap-1">
+                            Costo {sortConfig?.key === 'precio_costo' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-4 lg:px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center cursor-pointer hover:text-emerald-500 transition-colors"
+                          onClick={() => setSortConfig({ key: 'stock_actual', direction: sortConfig?.key === 'stock_actual' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}
+                        >
+                          <div className="flex items-center justify-center gap-1">
+                            Stock {sortConfig?.key === 'stock_actual' && (sortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>)}
+                          </div>
+                        </th>
+                        <th className="px-6 lg:px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
                       </tr>
-                        ))}
-                        {totalPages > 1 && (
-                          <tr>
-                            <td colSpan={6} className="px-8 py-4 bg-slate-50/30">
-                              <div className="flex items-center justify-between">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                  Mostrando {paginated.length} de {filteredAndSorted.length} productos
-                                </p>
-                                <div className="flex gap-2">
-                                  <button 
-                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                    disabled={currentPage === 1}
-                                    className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black disabled:opacity-50 hover:bg-slate-100 transition-all uppercase"
-                                  >
-                                    Anterior
-                                  </button>
-                                  <div className="flex items-center px-4 text-[10px] font-black text-slate-700">
-                                    Página {currentPage} de {totalPages}
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                      {loading ? (
+                        <tr><td colSpan={6} className="px-8 py-20 text-center text-slate-400 font-bold">Cargando catálogo...</td></tr>
+                      ) : paginated.length === 0 ? (
+                        <tr><td colSpan={6} className="px-8 py-20 text-center text-slate-400 font-bold">No se encontraron productos</td></tr>
+                      ) : (
+                        paginated.map((p) => (
+                          <tr key={p.id} className={clsx(
+                            "transition-colors group",
+                            p.descontinuado ? "bg-amber-50/20 dark:bg-amber-950/20 hover:bg-amber-50/40 opacity-80" : "hover:bg-slate-50/50 dark:hover:bg-slate-800/40"
+                          )}>
+                            <td className="px-6 lg:px-8 py-5">
+                              <div className="flex items-center gap-3 lg:gap-4">
+                                <div className={clsx(
+                                  "w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center transition-all shrink-0",
+                                  p.descontinuado
+                                    ? "bg-amber-100 text-amber-600"
+                                    : p.stock_actual <= p.stock_minimo 
+                                      ? "bg-red-50 text-red-500 group-hover:bg-red-500 group-hover:text-white" 
+                                      : "bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white"
+                                )}>
+                                  {p.descontinuado ? <Ban className="w-5 h-5 lg:w-6 lg:h-6" /> : <Package className="w-5 h-5 lg:w-6 lg:h-6" />}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <p className={clsx(
+                                      "font-black text-sm lg:text-base transition-colors truncate max-w-xs",
+                                      p.descontinuado 
+                                        ? "text-slate-600 dark:text-slate-400 line-through decoration-amber-500" 
+                                        : p.stock_actual <= p.stock_minimo ? "text-red-700 dark:text-red-400" : "text-slate-800 dark:text-white group-hover:text-emerald-600"
+                                    )}>{p.descripcion}</p>
+                                    {p.descontinuado && (
+                                      <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded-md text-[9px] font-black uppercase tracking-wider shrink-0">
+                                        Descontinuado {p.motivo_baja ? `· ${p.motivo_baja}` : ''}
+                                      </span>
+                                    )}
                                   </div>
-                                  <button 
-                                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                                    disabled={currentPage === totalPages}
-                                    className="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black disabled:opacity-50 hover:bg-slate-800 transition-all uppercase"
-                                  >
-                                    Siguiente
-                                  </button>
+                                  <p className="text-xs text-slate-400 font-bold tracking-tight">SKU: {p.sku}</p>
                                 </div>
                               </div>
                             </td>
+                            <td className="px-4 lg:px-6 py-5 text-center">
+                              <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 rounded-lg text-[10px] font-black uppercase tracking-wider">{p.categoria}</span>
+                            </td>
+                            <td className="px-4 lg:px-6 py-5 text-right font-black text-slate-800 dark:text-white">${p.precio_venta}</td>
+                            <td className="px-4 lg:px-6 py-5 text-right font-bold text-slate-500 dark:text-slate-400">${p.precio_costo?.toFixed(2) || '0.00'}</td>
+                            <td className="px-4 lg:px-6 py-5 text-center">
+                              <div className="flex flex-col items-center gap-1">
+                                <span className={clsx(
+                                  "px-3 lg:px-4 py-1 rounded-full text-xs font-black",
+                                  p.stock_actual <= p.stock_minimo ? "bg-red-100 text-red-600 animate-pulse" : "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
+                                )}>
+                                  {p.stock_actual} {p.unidad}
+                                </span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Min: {p.stock_minimo}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 lg:px-8 py-5 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => handleToggleDescontinuado(p)}
+                                  className={clsx(
+                                    "p-2 rounded-xl transition-all",
+                                    p.descontinuado
+                                      ? "bg-amber-100 dark:bg-amber-900/60 hover:bg-emerald-600 hover:text-white text-amber-700 dark:text-amber-300"
+                                      : "bg-slate-100 dark:bg-slate-800 hover:bg-amber-500 hover:text-white text-slate-600 dark:text-slate-300"
+                                  )}
+                                  title={p.descontinuado ? `Reactivar producto (Baja: ${p.motivo_baja || 'Baja venta'})` : "Desactivar por baja venta (Descontinuar)"}
+                                >
+                                  {p.descontinuado ? <RefreshCw className="w-4 h-4 lg:w-5 lg:h-5" /> : <Ban className="w-4 h-4 lg:w-5 lg:h-5" />}
+                                </button>
+                                <button 
+                                  onClick={() => { 
+                                    setSelectedForEdit(p);
+                                    setEditProductData({
+                                      sku: p.sku,
+                                      descripcion: p.descripcion,
+                                      precio_venta: p.precio_venta.toString(),
+                                      precio_costo: p.precio_costo?.toString() || '0',
+                                      stock_actual: p.stock_actual.toString(),
+                                      stock_minimo: p.stock_minimo.toString(),
+                                      stock_maximo: p.stock_maximo.toString(),
+                                      categoria: p.categoria,
+                                      unidad: p.unidad,
+                                      descontinuado: !!p.descontinuado,
+                                      motivo_baja: p.motivo_baja || ''
+                                    });
+                                    setShowEditProductModal(true); 
+                                  }}
+                                  className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl transition-all"
+                                  title="Editar Maestro"
+                                >
+                                  <Edit className="w-4 h-4 lg:w-5 lg:h-5" />
+                                </button>
+                                <button 
+                                  onClick={() => { setSelectedForAjuste(p); setShowAjusteModal(true); }}
+                                  className="px-3 lg:px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-900 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black transition-all"
+                                >
+                                  AJUSTAR
+                                </button>
+                              </div>
+                            </td>
                           </tr>
-                        )}
-                      </>
-                    );
-                  })()}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* --- PAGINACIÓN RESPONSIVA (MÓVIL Y DESKTOP) --- */}
+                {totalPages > 1 && (
+                  <div className="p-4 bg-slate-50/50 dark:bg-slate-800/40 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center sm:text-left">
+                      Mostrando {paginated.length} de {filteredAndSorted.length} productos
+                    </p>
+                    <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                      <button 
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all uppercase"
+                      >
+                        Anterior
+                      </button>
+                      <span className="text-xs font-black text-slate-600 dark:text-slate-300 px-2">
+                        {currentPage} / {totalPages}
+                      </span>
+                      <button 
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-slate-900 dark:bg-emerald-500 text-white rounded-xl text-xs font-black disabled:opacity-40 hover:bg-slate-800 dark:hover:bg-emerald-600 transition-all uppercase"
+                      >
+                        Siguiente
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       )}
 
