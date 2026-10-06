@@ -112,23 +112,23 @@ export default function Clients() {
   }
 
   return (
-    <div className="h-full flex flex-col p-8 bg-[var(--bg-main)]">
-      <div className="flex justify-between items-center mb-10">
+    <div className="h-full flex flex-col p-4 sm:p-6 lg:p-8 bg-[var(--bg-main)] overflow-y-auto custom-scrollbar">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
-          <h2 className="text-4xl font-black text-slate-800 tracking-tight italic uppercase">Gestión de Clientes</h2>
-          <p className="text-slate-400 font-bold uppercase text-xs tracking-widest mt-2">Control de créditos y cuentas por cobrar</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-800 dark:text-white tracking-tight italic uppercase">Gestión de Clientes</h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] sm:text-xs tracking-widest mt-1">Control de créditos y cuentas por cobrar</p>
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 dark:bg-emerald-500 text-white rounded-xl sm:rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/10 active:scale-95"
         >
           <UserPlus className="w-5 h-5" /> NUEVO CLIENTE
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 flex-1 min-h-0">
         {/* Listado de Clientes */}
-        <div className="w-full lg:w-[450px] flex flex-col bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden">
+        <div className="w-full lg:w-[380px] xl:w-[450px] flex flex-col bg-[var(--bg-card)] rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm overflow-hidden shrink-0 max-h-96 lg:max-h-none">
           <div className="p-8 border-b border-slate-50">
             <div className="relative group">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
@@ -179,28 +179,28 @@ export default function Clients() {
         </div>
 
         {/* Detalle del Cliente */}
-        <div className="flex-1 flex flex-col bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden p-10 relative">
+        <div className="flex-1 flex flex-col bg-[var(--bg-card)] rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm overflow-hidden p-5 sm:p-8 lg:p-10 relative">
           {!selectedClient ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-300">
-              <Users className="w-24 h-24 opacity-10 mb-6" />
-              <p className="text-xl font-bold uppercase tracking-widest">Selecciona un cliente</p>
-              <p className="text-sm font-medium mt-1">Para gestionar su línea de crédito y pagos</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-300 py-16">
+              <Users className="w-16 h-16 sm:w-24 sm:h-24 opacity-10 mb-4 sm:mb-6" />
+              <p className="text-base sm:text-xl font-bold uppercase tracking-widest">Selecciona un cliente</p>
+              <p className="text-xs sm:text-sm font-medium mt-1 text-slate-400">Para gestionar su línea de crédito y pagos</p>
             </div>
           ) : (
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="flex justify-between items-start mb-10 pb-10 border-b border-slate-50">
-                <div className="flex items-center gap-8">
-                  <div className="w-24 h-24 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-indigo-600/30">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-[var(--border-color)]">
+                <div className="flex items-center gap-4 sm:gap-6 min-w-0">
+                  <div className="w-14 h-14 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-indigo-600 rounded-2xl sm:rounded-[1.5rem] flex items-center justify-center text-white text-2xl sm:text-3xl font-black shadow-xl shadow-indigo-600/30 shrink-0">
                     {selectedClient.nombre.charAt(0)}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-3xl font-black text-slate-800 uppercase tracking-tight">{selectedClient.nombre}</h3>
-                      <button onClick={openEditModal} className="p-2 bg-slate-100 text-slate-400 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-[var(--text-main)] uppercase tracking-tight truncate">{selectedClient.nombre}</h3>
+                      <button onClick={openEditModal} className="p-1.5 sm:p-2 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all shrink-0">
                         <Edit className="w-4 h-4" />
                       </button>
                     </div>
-                    <div className="flex gap-4 mt-3">
+                    <div className="flex flex-wrap gap-2 sm:gap-4 mt-2">
                       <span className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
                         <Phone className="w-3.5 h-3.5" /> {selectedClient.telefono || 'N/A'}
                       </span>
@@ -210,8 +210,8 @@ export default function Clients() {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-3">
-                   <div className={`${selectedClient.betado ? 'bg-red-600 text-white' : (selectedClient.saldo_deudor < 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100')} p-6 rounded-[2rem] border text-right min-w-[200px] transition-all`}>
+                <div className="flex flex-col sm:items-end gap-3 w-full sm:w-auto">
+                   <div className={`${selectedClient.betado ? 'bg-red-600 text-white' : (selectedClient.saldo_deudor < 0 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900' : 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-100 dark:border-red-900')} p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border text-left sm:text-right w-full sm:min-w-[180px] transition-all`}>
                       <div className="flex justify-between items-center mb-1">
                         <p className="text-[10px] font-black uppercase tracking-widest opacity-70">
                           {selectedClient.saldo_deudor < 0 ? 'Saldo a Favor' : 'Saldo a Liquidar'}
@@ -219,12 +219,12 @@ export default function Clients() {
                         {selectedClient.betado && <ShieldAlert className="w-4 h-4" />}
                         {selectedClient.saldo_deudor < 0 && <CheckCircle2 className="w-4 h-4" />}
                       </div>
-                      <p className="text-4xl font-black">${Math.abs(selectedClient.saldo_deudor).toFixed(2)}</p>
+                      <p className="text-2xl sm:text-3xl lg:text-4xl font-black font-mono tabular-nums">${Math.abs(selectedClient.saldo_deudor).toFixed(2)}</p>
                    </div>
-                   <div className="flex gap-2">
+                   <div className="w-full sm:w-auto">
                     <button 
                       onClick={() => setShowAbonoModal(true)}
-                      className="flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white font-black text-xs rounded-2xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-emerald-500 text-white font-black text-xs rounded-xl sm:rounded-2xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95"
                     >
                       <DollarSign className="w-4 h-4" /> REGISTRAR ABONO
                     </button>
@@ -232,75 +232,75 @@ export default function Clients() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-8 mb-8">
-                 <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                 <div className="bg-slate-50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Límite de Crédito</p>
-                    <div className="flex items-center gap-3">
-                       <span className="text-2xl font-black text-slate-800">$</span>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                       <span className="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100">$</span>
                        <input 
                          type="number"
                          defaultValue={selectedClient.limite_credito}
                          onBlur={(e) => handleUpdateClient(selectedClient.id, { limite_credito: Number(e.target.value) })}
-                         className="bg-white border-0 rounded-xl px-4 py-2 w-full font-black text-xl text-indigo-600 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                         className="bg-white dark:bg-slate-900 border-0 rounded-xl px-3 sm:px-4 py-2 w-full font-black text-lg sm:text-xl text-indigo-600 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all"
                        />
                     </div>
                  </div>
 
-                 <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 flex flex-col justify-center">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Estatus de Cuenta</p>
+                 <div className="bg-slate-50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3">Estatus de Cuenta</p>
                     <button 
                       onClick={() => handleUpdateClient(selectedClient.id, { betado: !selectedClient.betado })}
-                      className={`flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${selectedClient.betado ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+                      className={`flex items-center justify-center gap-2 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${selectedClient.betado ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 border border-slate-200 dark:border-slate-700'}`}
                     >
                       {selectedClient.betado ? <><Ban className="w-4 h-4" /> VETADO / BLOQUEADO</> : <><CheckCircle2 className="w-4 h-4" /> CUENTA ACTIVA</>}
                     </button>
                  </div>
 
-                 <div className="bg-indigo-50 p-6 rounded-3xl border border-indigo-100 flex flex-col justify-center">
+                 <div className="bg-indigo-50 dark:bg-indigo-950/40 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-indigo-100 dark:border-indigo-900 flex flex-col justify-center">
                     <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Crédito Disponible</p>
-                    <p className={`text-2xl font-black ${(selectedClient.limite_credito - selectedClient.saldo_deudor) > 0 ? 'text-indigo-600' : 'text-red-500'}`}>
+                    <p className={`text-xl sm:text-2xl font-black ${(selectedClient.limite_credito - selectedClient.saldo_deudor) > 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500'}`}>
                       ${(selectedClient.limite_credito - selectedClient.saldo_deudor).toFixed(2)}
                     </p>
                  </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 flex-1 min-h-0 overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 flex-1 min-h-0 overflow-y-auto lg:overflow-hidden">
                 {/* Historial de Compras */}
-                <div className="flex flex-col min-h-0 bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100">
-                  <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <div className="flex flex-col min-h-[240px] lg:min-h-0 bg-slate-50 dark:bg-slate-800/40 rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 border border-slate-100 dark:border-slate-800">
+                  <h4 className="text-xs sm:text-sm font-black text-slate-400 uppercase tracking-widest mb-4 sm:mb-6 flex items-center gap-2">
                     <History className="w-4 h-4" /> Últimas Compras a Crédito
                   </h4>
-                  <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+                  <div className="flex-1 overflow-y-auto space-y-3 pr-1 sm:pr-2 custom-scrollbar">
                     {clientDetail?.ventas.filter((v:any) => v.metodo_pago === 'CREDITO').map((v: any) => (
-                      <div key={v.id} className="p-4 bg-white rounded-2xl border border-slate-100 flex justify-between items-center group">
+                      <div key={v.id} className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center group">
                         <div>
-                          <p className="text-xs font-black text-slate-800">TICKET #{v.id}</p>
+                          <p className="text-xs font-black text-slate-800 dark:text-slate-200">TICKET #{v.id}</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase">{new Date(v.fecha).toLocaleDateString()}</p>
                         </div>
-                        <span className="text-sm font-black text-slate-700">${v.total.toFixed(2)}</span>
+                        <span className="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300">${v.total.toFixed(2)}</span>
                       </div>
                     ))}
-                    {clientDetail?.ventas.length === 0 && <p className="text-center text-slate-300 py-10 font-bold italic">Sin compras recientes</p>}
+                    {clientDetail?.ventas.length === 0 && <p className="text-center text-slate-300 dark:text-slate-600 py-6 sm:py-10 font-bold italic text-xs sm:text-sm">Sin compras recientes</p>}
                   </div>
                 </div>
 
                 {/* Historial de Abonos */}
-                <div className="flex flex-col min-h-0 bg-indigo-50/50 rounded-[2.5rem] p-8 border border-indigo-50">
-                  <h4 className="text-sm font-black text-indigo-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <div className="flex flex-col min-h-[240px] lg:min-h-0 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 border border-indigo-50 dark:border-indigo-900/40">
+                  <h4 className="text-xs sm:text-sm font-black text-indigo-400 uppercase tracking-widest mb-4 sm:mb-6 flex items-center gap-2">
                     <ArrowUpRight className="w-4 h-4" /> Historial de Abonos
                   </h4>
-                  <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+                  <div className="flex-1 overflow-y-auto space-y-3 pr-1 sm:pr-2 custom-scrollbar">
                     {clientDetail?.abonos.map((a: any) => (
-                      <div key={a.id} className="p-4 bg-white rounded-2xl border border-indigo-100 flex justify-between items-center group">
+                      <div key={a.id} className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-indigo-100 dark:border-indigo-900/30 flex justify-between items-center group">
                         <div>
-                          <p className="text-xs font-black text-indigo-600">ABONO REALIZADO</p>
+                          <p className="text-xs font-black text-indigo-600 dark:text-indigo-400">ABONO REALIZADO</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase">{new Date(a.fecha).toLocaleDateString()}</p>
                           {a.notas && <p className="text-[8px] text-slate-400 italic mt-1">{a.notas}</p>}
                         </div>
-                        <span className="text-sm font-black text-emerald-600">+${a.monto.toFixed(2)}</span>
+                        <span className="text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400">+${a.monto.toFixed(2)}</span>
                       </div>
                     ))}
-                    {clientDetail?.abonos.length === 0 && <p className="text-center text-slate-300 py-10 font-bold italic">Sin abonos registrados</p>}
+                    {clientDetail?.abonos.length === 0 && <p className="text-center text-slate-300 dark:text-slate-600 py-6 sm:py-10 font-bold italic text-xs sm:text-sm">Sin abonos registrados</p>}
                   </div>
                 </div>
               </div>
@@ -316,25 +316,25 @@ export default function Clients() {
             e.preventDefault();
             await handleUpdateClient(selectedClient.id, editClient);
             setShowEditModal(false);
-          }} className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10">
-            <h3 className="text-2xl font-black text-slate-800 text-center mb-8 uppercase tracking-tight">Editar Cliente</h3>
-            <div className="space-y-4 mb-8">
+          }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white text-center mb-6 sm:mb-8 uppercase tracking-tight">Editar Cliente</h3>
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Nombre Completo</label>
-                <input type="text" required value={editClient.nombre} onChange={e => setEditClient({...editClient, nombre: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10" />
+                <input type="text" required value={editClient.nombre} onChange={e => setEditClient({...editClient, nombre: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl px-4 py-3 font-bold text-slate-700 dark:text-slate-100 focus:ring-4 focus:ring-indigo-500/10" />
               </div>
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Teléfono</label>
-                <input type="text" value={editClient.telefono} onChange={e => setEditClient({...editClient, telefono: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10" />
+                <input type="text" value={editClient.telefono} onChange={e => setEditClient({...editClient, telefono: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl px-4 py-3 font-bold text-slate-700 dark:text-slate-100 focus:ring-4 focus:ring-indigo-500/10" />
               </div>
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Dirección</label>
-                <input type="text" value={editClient.direccion} onChange={e => setEditClient({...editClient, direccion: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10" />
+                <input type="text" value={editClient.direccion} onChange={e => setEditClient({...editClient, direccion: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl px-4 py-3 font-bold text-slate-700 dark:text-slate-100 focus:ring-4 focus:ring-indigo-500/10" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <button type="button" onClick={() => setShowEditModal(false)} className="py-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">CANCELAR</button>
-              <button type="submit" className="py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl">GUARDAR</button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <button type="button" onClick={() => setShowEditModal(false)} className="py-3 sm:py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">CANCELAR</button>
+              <button type="submit" className="py-3 sm:py-4 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-indigo-700 transition-all shadow-xl">GUARDAR</button>
             </div>
           </form>
         </div>
@@ -343,25 +343,25 @@ export default function Clients() {
       {/* Modal Agregar Cliente */}
       {showAddModal && (
         <div className="fixed inset-0 z-[120] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
-          <form onSubmit={handleCreateClient} className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10">
-            <h3 className="text-2xl font-black text-slate-800 text-center mb-8 uppercase tracking-tight">Nuevo Cliente</h3>
-            <div className="space-y-4 mb-8">
+          <form onSubmit={handleCreateClient} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white text-center mb-6 sm:mb-8 uppercase tracking-tight">Nuevo Cliente</h3>
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase ml-2 mb-2 block">Nombre Completo</label>
-                <input required type="text" value={newClient.nombre} onChange={e => setNewClient({...newClient, nombre: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10" />
+                <input required type="text" value={newClient.nombre} onChange={e => setNewClient({...newClient, nombre: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-indigo-500/10" />
               </div>
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase ml-2 mb-2 block">Teléfono</label>
-                <input type="text" value={newClient.telefono || ''} onChange={e => setNewClient({...newClient, telefono: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10" />
+                <input type="text" value={newClient.telefono || ''} onChange={e => setNewClient({...newClient, telefono: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-indigo-500/10" />
               </div>
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase ml-2 mb-2 block">Dirección</label>
-                <input type="text" value={newClient.direccion || ''} onChange={e => setNewClient({...newClient, direccion: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10" />
+                <input type="text" value={newClient.direccion || ''} onChange={e => setNewClient({...newClient, direccion: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-indigo-500/10" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <button type="button" onClick={() => setShowAddModal(false)} className="py-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">CANCELAR</button>
-              <button type="submit" className="py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl">GUARDAR</button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <button type="button" onClick={() => setShowAddModal(false)} className="py-3 sm:py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">CANCELAR</button>
+              <button type="submit" className="py-3 sm:py-4 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-indigo-700 transition-all shadow-xl">GUARDAR</button>
             </div>
           </form>
         </div>
@@ -370,29 +370,29 @@ export default function Clients() {
       {/* Modal Registrar Abono */}
       {showAbonoModal && selectedClient && (
         <div className="fixed inset-0 z-[120] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
-          <form onSubmit={handleAbono} className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10">
-            <h3 className="text-2xl font-black text-slate-800 text-center mb-1 uppercase tracking-tight">Registrar Abono</h3>
-            <p className="text-slate-400 font-bold text-center mb-8 uppercase text-[10px] tracking-widest">Pago parcial de deuda</p>
+          <form onSubmit={handleAbono} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white text-center mb-1 uppercase tracking-tight">Registrar Abono</h3>
+            <p className="text-slate-400 font-bold text-center mb-6 sm:mb-8 uppercase text-[10px] tracking-widest">Pago parcial de deuda</p>
             
-            <div className="bg-red-50 p-6 rounded-[2rem] border border-red-100 mb-8 flex justify-between items-center">
+            <div className="bg-red-50 dark:bg-red-950/40 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-red-100 dark:border-red-900/50 mb-6 sm:mb-8 flex justify-between items-center">
               <span className="text-[10px] font-black text-red-400 uppercase">Deuda Actual</span>
-              <span className="text-2xl font-black text-red-600">${selectedClient.saldo_deudor.toFixed(2)}</span>
+              <span className="text-xl sm:text-2xl font-black font-mono text-red-600 dark:text-red-400">${selectedClient.saldo_deudor.toFixed(2)}</span>
             </div>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase ml-2 mb-2 block">Monto del Abono ($)</label>
-                <input required autoFocus type="number" step="0.01" value={abonoMonto} onChange={e => setAbonoMonto(e.target.value)} className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-black text-emerald-600 text-3xl outline-none focus:ring-4 focus:ring-emerald-500/10" placeholder="0.00" />
+                <input required autoFocus type="number" step="0.01" value={abonoMonto} onChange={e => setAbonoMonto(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-black text-emerald-600 dark:text-emerald-400 text-2xl sm:text-3xl outline-none focus:ring-4 focus:ring-emerald-500/10" placeholder="0.00" />
               </div>
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase ml-2 mb-2 block">Notas / Concepto</label>
-                <input type="text" value={abonoNotas} onChange={e => setAbonoNotas(e.target.value)} placeholder="Ej: Pago semanal, depósito, etc." className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10" />
+                <input type="text" value={abonoNotas} onChange={e => setAbonoNotas(e.target.value)} placeholder="Ej: Pago semanal, depósito, etc." className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-indigo-500/10" />
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <button type="button" onClick={() => setShowAbonoModal(false)} className="py-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">CANCELAR</button>
-              <button type="submit" className="py-4 bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20">REGISTRAR PAGO</button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <button type="button" onClick={() => setShowAbonoModal(false)} className="py-3 sm:py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">CANCELAR</button>
+              <button type="submit" className="py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 active:scale-95">REGISTRAR PAGO</button>
             </div>
           </form>
         </div>

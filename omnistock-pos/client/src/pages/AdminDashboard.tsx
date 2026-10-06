@@ -308,14 +308,14 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-8 bg-transparent min-h-full">
+    <div className="p-4 sm:p-6 lg:p-8 bg-transparent h-full overflow-y-auto custom-scrollbar">
       {/* --- Header --- */}
-      <div className="flex justify-between items-end mb-10">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 sm:mb-10">
         <div>
-          <h2 className="text-4xl font-black text-[var(--text-main)] tracking-tight italic">Panel de Control</h2>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-[var(--text-muted)] font-medium">Análisis de rendimiento y métricas clave</p>
-            <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--text-main)] tracking-tight italic">Panel de Control</h2>
+          <div className="flex flex-wrap items-center gap-2 mt-1">
+            <p className="text-[var(--text-muted)] font-medium text-xs sm:text-sm">Análisis de rendimiento y métricas clave</p>
+            <div className="flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-slate-100 dark:bg-slate-800 rounded-full">
               <div className="relative flex h-2 w-2">
                 <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></div>
                 <div className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></div>
@@ -323,69 +323,69 @@ export default function AdminDashboard() {
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">En Vivo</span>
             </div>
             {selectedDate && (
-              <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full uppercase animate-in fade-in zoom-in">
+              <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[10px] font-black rounded-full uppercase animate-in fade-in zoom-in">
                 Filtrado: {new Date(selectedDate).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric' })}
                 <button onClick={() => { setSelectedDate(null); fetchDashboard(); }} className="ml-1 hover:text-emerald-900">×</button>
               </span>
             )}
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           <button 
             onClick={() => setShowMonthlyModal(true)}
-            className="bg-indigo-500 text-white px-6 py-2 rounded-2xl shadow-xl hover:bg-indigo-600 transition-all font-black text-xs flex items-center gap-2"
+            className="flex-1 sm:flex-none bg-indigo-500 text-white px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-2xl shadow-lg hover:bg-indigo-600 transition-all font-black text-xs flex items-center justify-center gap-2 active:scale-95"
           >
             <Activity className="w-4 h-4" /> REPORTE MENSUAL
           </button>
           <button 
             onClick={() => setShowExpenseModal(true)}
-            className="bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-6 py-2 rounded-2xl shadow-sm hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-100 transition-all font-black text-xs flex items-center gap-2"
+            className="flex-1 sm:flex-none bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-2xl shadow-sm hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-100 transition-all font-black text-xs flex items-center justify-center gap-2 active:scale-95"
           >
             <DollarSign className="w-4 h-4 text-red-500" /> REGISTRAR GASTO
           </button>
           <button 
             onClick={() => handleShowCorte('all')}
-            className="bg-slate-900 dark:bg-emerald-500 text-white px-6 py-2 rounded-2xl shadow-xl hover:bg-slate-800 dark:hover:bg-emerald-600 transition-all font-black text-xs flex items-center gap-2"
+            className="w-full sm:w-auto bg-slate-900 dark:bg-emerald-500 text-white px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-2xl shadow-lg hover:bg-slate-800 dark:hover:bg-emerald-600 transition-all font-black text-xs flex items-center justify-center gap-2 active:scale-95"
           >
-            <DollarSign className="w-4 h-4 text-emerald-400" /> CORTE DE CAJA
+            <DollarSign className="w-4 h-4 text-emerald-400 dark:text-white" /> CORTE DE CAJA
           </button>
         </div>
       </div>
 
       {/* --- Métricas Principales --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 sm:mb-8">
         <div 
           onClick={() => scrollToSection('recent-sales')}
-          className="bg-[var(--bg-card)] rounded-[2.5rem] p-8 border border-[var(--border-color)] shadow-xl shadow-slate-200/50 relative overflow-hidden group hover:scale-[1.02] hover:border-emerald-500 transition-all cursor-pointer"
+          className="bg-[var(--bg-card)] rounded-2xl p-6 border border-[var(--border-color)] shadow-sm hover:shadow-md hover:border-emerald-500/50 relative overflow-hidden group transition-all cursor-pointer"
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 opacity-10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-          <div className="flex items-center justify-between mb-6 relative">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <TrendingUp className="text-white w-7 h-7" />
+          <div className="flex items-center justify-between mb-4 relative">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black">
+              <TrendingUp className="w-6 h-6" />
             </div>
-            <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 px-3 py-1.5 rounded-full uppercase">Neto: ${((data?.metrics.todayTotal || 0) - (data?.metrics.todayCost || 0)).toFixed(2)}</span>
+            <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 px-2.5 py-1 rounded-lg uppercase tracking-wider">
+              Neto: ${((data?.metrics.todayTotal || 0) - (data?.metrics.todayCost || 0)).toFixed(2)}
+            </span>
           </div>
-          <h3 className="text-[var(--text-muted)] text-xs font-black uppercase tracking-widest">{selectedDate ? 'Venta Bruta' : 'Ventas de Hoy'}</h3>
-          <p className="text-4xl font-black text-[var(--text-main)] mt-2 tracking-tighter">
+          <h3 className="text-[var(--text-muted)] text-[11px] font-bold uppercase tracking-wider">{selectedDate ? 'Venta Bruta' : 'Ventas de Hoy'}</h3>
+          <p className="text-3xl font-black text-[var(--text-main)] mt-1.5 tracking-tight font-mono tabular-nums">
             ${data?.metrics.todayTotal.toFixed(2)}
           </p>
         </div>
 
         <div 
           onClick={() => navigate('/admin/inventory')}
-          className="bg-[var(--bg-card)] rounded-[2.5rem] p-8 border border-[var(--border-color)] shadow-xl shadow-slate-200/50 relative overflow-hidden group hover:scale-[1.02] hover:border-red-500 transition-all cursor-pointer"
+          className="bg-[var(--bg-card)] rounded-2xl p-6 border border-[var(--border-color)] shadow-sm hover:shadow-md hover:border-red-500/50 relative overflow-hidden group transition-all cursor-pointer"
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 opacity-10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-          <div className="flex items-center justify-between mb-6 relative">
-            <div className="w-14 h-14 rounded-2xl bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/20">
-              <AlertTriangle className="text-white w-7 h-7" />
+          <div className="flex items-center justify-between mb-4 relative">
+            <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center font-black">
+              <AlertTriangle className="w-6 h-6" />
             </div>
             {data?.metrics.criticalCount! > 0 && (
-              <span className="text-xs font-black text-red-600 bg-red-100 px-3 py-1.5 rounded-full animate-pulse">REVISAR</span>
+              <span className="text-[10px] font-black text-red-600 bg-red-100 dark:bg-red-950/50 dark:text-red-400 px-2.5 py-1 rounded-lg uppercase tracking-wider animate-pulse">REVISAR</span>
             )}
           </div>
-          <h3 className="text-[var(--text-muted)] text-xs font-black uppercase tracking-widest">Stock Crítico</h3>
-          <p className="text-4xl font-black text-[var(--text-main)] mt-2 tracking-tighter">{data?.metrics.criticalCount}</p>
+          <h3 className="text-[var(--text-muted)] text-[11px] font-bold uppercase tracking-wider">Stock Crítico</h3>
+          <p className="text-3xl font-black text-[var(--text-main)] mt-1.5 tracking-tight font-mono tabular-nums">{data?.metrics.criticalCount}</p>
           
           {data?.metrics.criticalCount! > 0 && (
             <button 
@@ -395,43 +395,43 @@ export default function AdminDashboard() {
                 const msg = `Hola! Reporte de Stock Crítico en OmniStock:%0A%0A${list}`;
                 window.open(`https://wa.me/?text=${msg}`, '_blank');
               }}
-              className="mt-4 w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+              className="mt-3.5 w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-sm"
             >
-              <MessageSquare className="w-4 h-4" /> ENVIAR POR WHATSAPP
+              <MessageSquare className="w-3.5 h-3.5" /> ENVIAR POR WHATSAPP
             </button>
           )}
         </div>
 
         <div 
-          className={`bg-[var(--bg-card)] rounded-[2.5rem] p-8 border shadow-xl shadow-slate-200/50 relative overflow-hidden group hover:scale-[1.02] transition-all cursor-pointer ${ (data?.metrics as any).todayWastage > 0 ? 'border-orange-500 bg-orange-50/10' : 'border-[var(--border-color)]'}`}
+          className={`bg-[var(--bg-card)] rounded-2xl p-6 border shadow-sm hover:shadow-md relative overflow-hidden group transition-all cursor-pointer ${ (data?.metrics as any).todayWastage > 0 ? 'border-orange-500/50 bg-orange-50/5' : 'border-[var(--border-color)] hover:border-orange-500/50'}`}
         >
-          <div className={`absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110 ${ (data?.metrics as any).todayWastage > 0 ? 'bg-orange-100 opacity-10' : 'bg-blue-50 opacity-10'}`}></div>
-          <div className="flex items-center justify-between mb-6 relative">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-colors ${ (data?.metrics as any).todayWastage > 0 ? 'bg-orange-600 shadow-orange-500/20' : 'bg-blue-500 shadow-blue-500/20'}`}>
-              <AlertTriangle className="text-white w-7 h-7" />
+          <div className="flex items-center justify-between mb-4 relative">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black ${ (data?.metrics as any).todayWastage > 0 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'}`}>
+              <AlertTriangle className="w-6 h-6" />
             </div>
-            {(data?.metrics as any).todayWastage > 0 && <span className="text-[10px] font-black text-orange-600 bg-orange-100 px-2 py-1 rounded-lg uppercase tracking-widest">Pérdida Crítica</span>}
+            {(data?.metrics as any).todayWastage > 0 && (
+              <span className="text-[10px] font-black text-orange-600 bg-orange-100 dark:bg-orange-950/50 dark:text-orange-400 px-2.5 py-1 rounded-lg uppercase tracking-wider">Pérdida Crítica</span>
+            )}
           </div>
-          <h3 className="text-[var(--text-muted)] text-xs font-black uppercase tracking-widest">
+          <h3 className="text-[var(--text-muted)] text-[11px] font-bold uppercase tracking-wider">
             Mermas del Período
           </h3>
-          <p className="text-4xl font-black text-[var(--text-main)] mt-2 tracking-tighter">
+          <p className="text-3xl font-black text-[var(--text-main)] mt-1.5 tracking-tight font-mono tabular-nums">
             ${(data?.metrics as any).todayWastage.toFixed(2)}
           </p>
         </div>
 
         <div 
           onClick={() => navigate('/admin/inventory')}
-          className="bg-[var(--bg-card)] rounded-[2.5rem] p-8 border border-[var(--border-color)] shadow-xl shadow-slate-200/50 relative overflow-hidden group hover:scale-[1.02] hover:border-purple-500 transition-all cursor-pointer"
+          className="bg-[var(--bg-card)] rounded-2xl p-6 border border-[var(--border-color)] shadow-sm hover:shadow-md hover:border-purple-500/50 relative overflow-hidden group transition-all cursor-pointer"
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 opacity-10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-          <div className="flex items-center justify-between mb-6 relative">
-            <div className="w-14 h-14 rounded-2xl bg-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-              <PackageCheck className="text-white w-7 h-7" />
+          <div className="flex items-center justify-between mb-4 relative">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-black">
+              <PackageCheck className="w-6 h-6" />
             </div>
           </div>
-          <h3 className="text-[var(--text-muted)] text-xs font-black uppercase tracking-widest">Valor Inventario</h3>
-          <p className="text-4xl font-black text-[var(--text-main)] mt-2 tracking-tighter">
+          <h3 className="text-[var(--text-muted)] text-[11px] font-bold uppercase tracking-wider">Valor Inventario</h3>
+          <p className="text-3xl font-black text-[var(--text-main)] mt-1.5 tracking-tight font-mono tabular-nums">
             ${data?.metrics.inventoryValue.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
           </p>
         </div>
@@ -441,13 +441,13 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         
         {/* Gráfica de Ventas */}
-        <div id="performance-chart" className="lg:col-span-2 bg-[var(--bg-card)] rounded-[3rem] p-10 border border-[var(--border-color)] shadow-xl shadow-slate-200/40">
-          <div className="flex justify-between items-center mb-10">
+        <div id="performance-chart" className="lg:col-span-2 bg-[var(--bg-card)] rounded-2xl p-4 sm:p-6 lg:p-8 border border-[var(--border-color)] shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-6 sm:mb-8">
             <div>
-              <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight italic">Rendimiento Semanal</h3>
-              <p className="text-[var(--text-muted)] font-medium text-sm mt-1">Comparativa dinámica de crecimiento</p>
+              <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] tracking-tight italic">Rendimiento Semanal</h3>
+              <p className="text-[var(--text-muted)] font-medium text-xs sm:text-sm mt-0.5">Comparativa dinámica de crecimiento</p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-2.5 sm:gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hoy</span>
@@ -464,7 +464,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Selectores de Día */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-6 sm:mb-8">
             {data?.salesChart.map((day, idx) => (
               <button
                 key={idx}
@@ -472,10 +472,10 @@ export default function AdminDashboard() {
                   setSelectedDate(day.fullDate);
                   fetchDashboard(day.fullDate);
                 }}
-                className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest transition-all duration-300 ${
+                className={`px-3.5 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black tracking-widest transition-all duration-300 ${
                   selectedDate === day.fullDate 
-                  ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/40 scale-110 -translate-y-1' 
-                  : 'bg-slate-50 text-slate-400 hover:bg-slate-100 border border-slate-100 hover:scale-105'
+                  ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/40 scale-105 sm:scale-110 -translate-y-0.5 sm:-translate-y-1' 
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-100 dark:border-slate-700 hover:scale-105'
                 }`}
               >
                 {day.name.toUpperCase()}
@@ -593,30 +593,30 @@ export default function AdminDashboard() {
         </div>
 
         {/* Top Productos */}
-        <div className="bg-[var(--bg-card)] rounded-[3rem] p-10 border border-[var(--border-color)] shadow-xl shadow-slate-200/40 relative">
+        <div className="bg-[var(--bg-card)] rounded-2xl p-6 sm:p-8 border border-[var(--border-color)] shadow-sm relative">
           {loading && data && (
-             <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-[3rem]">
+             <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-2xl">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
              </div>
           )}
-          <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight mb-8 italic">Lo Más Vendido</h3>
-          <div className="space-y-6">
+          <h3 className="text-xl font-black text-[var(--text-main)] tracking-tight mb-6 italic">Lo Más Vendido</h3>
+          <div className="space-y-4">
             {data?.topProducts.length === 0 ? (
-              <div className="text-center py-20">
-                <Package className="w-12 h-12 text-[var(--text-muted)] opacity-20 mx-auto mb-4" />
-                <p className="text-[var(--text-muted)] font-bold">Sin datos este día</p>
+              <div className="text-center py-16">
+                <Package className="w-10 h-10 text-[var(--text-muted)] opacity-20 mx-auto mb-3" />
+                <p className="text-[var(--text-muted)] font-bold text-xs">Sin datos este día</p>
               </div>
             ) : (
               data?.topProducts.map((p, i) => (
-                <div key={i} className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 bg-[var(--bg-main)] rounded-2xl flex items-center justify-center text-[var(--text-muted)] group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-all font-black text-lg">
+                <div key={i} className="flex items-center gap-3.5 group">
+                  <div className="w-10 h-10 bg-[var(--bg-main)] rounded-xl flex items-center justify-center text-[var(--text-muted)] group-hover:bg-emerald-500/10 group-hover:text-emerald-500 transition-all font-black text-sm font-mono">
                     {i + 1}
                   </div>
-                  <div className="flex-1">
-                    <p className="font-black text-[var(--text-main)] text-sm uppercase truncate">{p.name}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{p.sales} unidades</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black text-[var(--text-main)] text-xs uppercase truncate">{p.name}</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono tabular-nums">{p.sales} unidades</p>
                   </div>
-                  <div className="w-24 bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div className="w-20 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden shrink-0">
                     <div 
                       className="bg-emerald-500 h-full rounded-full transition-all duration-1000" 
                       style={{ width: `${(p.sales / (data?.topProducts[0]?.sales || 1)) * 100}%` }}
@@ -629,20 +629,20 @@ export default function AdminDashboard() {
         </div>
 
         {/* Resumen por Cajas (NUEVO) */}
-        <div className="bg-[var(--bg-card)] rounded-[3rem] p-10 border border-[var(--border-color)] shadow-xl shadow-slate-200/40">
-           <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight mb-8 italic">Ingresos por Caja</h3>
-           <div className="space-y-4">
+        <div className="bg-[var(--bg-card)] rounded-2xl p-6 sm:p-8 border border-[var(--border-color)] shadow-sm">
+           <h3 className="text-xl font-black text-[var(--text-main)] tracking-tight mb-6 italic">Ingresos por Caja</h3>
+           <div className="space-y-3">
               {data?.salesByCaja?.length === 0 ? (
                 <div className="text-center py-10 opacity-30 italic text-sm">Sin ventas registradas</div>
               ) : (
                 data?.salesByCaja?.map((c, i) => (
-                  <div key={i} className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-3xl flex justify-between items-center border border-transparent hover:border-emerald-500/20 transition-all">
+                  <div key={i} className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl flex justify-between items-center border border-[var(--border-color)] hover:border-emerald-500/30 transition-all">
                     <div>
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{c.nombre}</p>
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">{c.nombre}</p>
                       <p className="text-[10px] font-bold text-emerald-500 uppercase">{c.cantidad} tickets generados</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-black text-[var(--text-main)]">${c.total.toFixed(2)}</p>
+                      <p className="text-lg font-black text-[var(--text-main)] font-mono tabular-nums">${c.total.toFixed(2)}</p>
                     </div>
                   </div>
                 ))
@@ -652,25 +652,25 @@ export default function AdminDashboard() {
       </div>
 
       {/* --- Tabla de Ventas Recientes --- */}
-      <div id="recent-sales" className="bg-[var(--bg-card)] rounded-[3rem] p-10 border border-[var(--border-color)] shadow-xl shadow-slate-200/40 relative">
+      <div id="recent-sales" className="bg-[var(--bg-card)] rounded-2xl p-4 sm:p-6 lg:p-8 border border-[var(--border-color)] shadow-sm relative">
         {loading && data && (
-            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-[3rem]">
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-2xl">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
             </div>
         )}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 sm:mb-8">
           <div>
-            <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight">Transacciones {selectedDate ? 'del Período' : 'Recientes'}</h3>
-            <p className="text-[var(--text-muted)] font-medium">Historial detallado de ventas y gastos</p>
+            <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] tracking-tight">Transacciones {selectedDate ? 'del Período' : 'Recientes'}</h3>
+            <p className="text-[var(--text-muted)] font-medium text-xs sm:text-sm">Historial detallado de ventas y gastos</p>
           </div>
-          <div className="flex gap-4">
-            <button onClick={() => navigate('/')} className="flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white font-black text-xs rounded-2xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all">
+          <div>
+            <button onClick={() => navigate('/')} className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-emerald-500 text-white font-black text-xs rounded-xl sm:rounded-2xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all active:scale-95">
               <ShoppingCart className="w-4 h-4" /> NUEVA VENTA
             </button>
           </div>
         </div>
         <div className="max-h-[500px] overflow-y-auto overflow-x-auto custom-scrollbar">
-          <table className="w-full relative">
+          <table className="w-full relative min-w-[640px]">
             <thead className="sticky top-0 bg-[var(--bg-card)] z-10">
               <tr className="text-left border-b border-[var(--border-color)] text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest bg-[var(--bg-card)]">
                 <th className="py-4">Folio</th>
@@ -811,23 +811,23 @@ export default function AdminDashboard() {
       {/* --- Visor de Ticket Digital --- */}
       {showTicketModal && selectedTicket && (
         <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl overflow-hidden flex flex-col p-8 relative">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col p-6 sm:p-7 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
             <button 
               onClick={() => setShowTicketModal(false)}
-              className="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all"
+              className="absolute top-5 right-5 p-2 bg-slate-100 dark:bg-slate-800 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all"
             >
               <ChevronRight className="w-5 h-5 rotate-180" />
             </button>
 
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-emerald-500/20">
-                <ShoppingCart className="w-8 h-8" />
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <ShoppingCart className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-black text-slate-900 uppercase">OmniStock POS</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Comprobante de Venta</p>
+              <h3 className="text-lg font-black text-[var(--text-main)] uppercase">OmniStock POS</h3>
+              <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider mt-0.5">Comprobante de Venta</p>
             </div>
 
-            <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 mb-6 flex-1 overflow-y-auto max-h-[400px]">
+            <div className="bg-[var(--bg-main)] rounded-xl p-5 border border-[var(--border-color)] mb-5 flex-1 overflow-y-auto max-h-[380px] custom-scrollbar">
               <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Folio: #{selectedTicket.id}</span>
                 <span className="text-[10px] font-bold text-slate-500">{new Date(selectedTicket.fecha).toLocaleString()}</span>
@@ -918,7 +918,7 @@ export default function AdminDashboard() {
       {/* --- Modal de Corte de Caja --- */}
       {showCorteModal && corteData && (
         <div className="fixed inset-0 z-[110] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col p-10 max-h-[90vh]">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col p-6 sm:p-8 max-h-[90vh]">
             <div className="flex justify-between items-center mb-8">
               <div>
                 <h3 className="text-3xl font-black text-slate-900 tracking-tight">Corte de Caja</h3>
@@ -965,15 +965,15 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-[2rem] p-8 text-white mb-8 relative overflow-hidden">
+            <div className="bg-slate-900 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 text-white mb-6 sm:mb-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Efectivo Esperado en Caja</p>
-              <p className="text-6xl font-black text-emerald-400 tracking-tighter">${corteData.efectivoEsperado.toFixed(2)}</p>
+              <p className="text-3xl sm:text-5xl lg:text-6xl font-black text-emerald-400 tracking-tighter font-mono tabular-nums">${corteData.efectivoEsperado.toFixed(2)}</p>
             </div>
 
             {/* Reconciliation Fields (NUEVO) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="p-6 bg-slate-50 border border-slate-200 rounded-[2rem]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl sm:rounded-[2rem]">
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Efectivo Físico Declarado ($)</label>
                 <input 
                   type="number" 
@@ -982,11 +982,11 @@ export default function AdminDashboard() {
                   placeholder="Ingresa efectivo real..."
                   value={efectivoFisicoDeclarado}
                   onChange={e => setEfectivoFisicoDeclarado(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-2xl p-4 font-bold text-slate-800 outline-none focus:ring-4 focus:ring-emerald-500/10 text-xl" 
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 sm:p-4 font-bold text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/10 text-lg sm:text-xl font-mono tabular-nums" 
                 />
               </div>
 
-              <div className="p-6 rounded-[2rem] flex flex-col justify-center border border-slate-200 bg-slate-50">
+              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] flex flex-col justify-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Resultado de Arqueo</span>
                 {efectivoFisicoDeclarado === '' ? (
                   <span className="text-slate-400 text-sm font-bold italic">Pendiente de declarar</span>
@@ -996,21 +996,21 @@ export default function AdminDashboard() {
                   if (Math.abs(diff) < 0.01) {
                     return (
                       <div>
-                        <p className="text-xl font-black text-emerald-600">Arqueo Cuadrado</p>
+                        <p className="text-lg sm:text-xl font-black text-emerald-600">Arqueo Cuadrado</p>
                         <p className="text-[10px] font-bold text-emerald-500 uppercase">Sin diferencias</p>
                       </div>
                     );
                   } else if (diff > 0) {
                     return (
                       <div>
-                        <p className="text-xl font-black text-indigo-600">Sobrante: +${diff.toFixed(2)}</p>
+                        <p className="text-lg sm:text-xl font-black text-indigo-600 font-mono tabular-nums">Sobrante: +${diff.toFixed(2)}</p>
                         <p className="text-[10px] font-bold text-indigo-500 uppercase">Dinero de más en caja</p>
                       </div>
                     );
                   } else {
                     return (
                       <div>
-                        <p className="text-xl font-black text-red-600">Faltante: -${Math.abs(diff).toFixed(2)}</p>
+                        <p className="text-lg sm:text-xl font-black text-red-600 font-mono tabular-nums">Faltante: -${Math.abs(diff).toFixed(2)}</p>
                         <p className="text-[10px] font-bold text-red-500 uppercase">Falta dinero en caja</p>
                       </div>
                     );
@@ -1019,53 +1019,53 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-2">
+            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
               <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Detalle de Gastos</h4>
               {corteData.gastos.detalles.length === 0 ? (
                 <p className="text-sm font-bold text-slate-300 italic">No hubo gastos registrados hoy</p>
               ) : (
                 <div className="space-y-3">
                   {corteData.gastos.detalles.map((g: any, i: number) => (
-                    <div key={i} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div key={i} className="flex justify-between items-center p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700">
                       <div>
-                        <p className="text-sm font-bold text-slate-800">{g.descripcion}</p>
+                        <p className="text-sm font-bold text-slate-800 dark:text-white">{g.descripcion}</p>
                         <div className="flex gap-2">
                           <p className="text-[10px] text-slate-400 font-bold uppercase">{new Date(g.fecha).toLocaleTimeString()}</p>
                           <span className="text-[10px] text-emerald-500 font-bold uppercase">• {g.usuario?.nombre_completo || 'Admin'}</span>
                         </div>
                       </div>
-                      <span className="font-black text-red-600">-${g.monto.toFixed(2)}</span>
+                      <span className="font-black text-red-600 font-mono tabular-nums">-${g.monto.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
               )}
 
               {corteData.cancelaciones.cantidad > 0 && (
-                <div className="mt-8 p-4 bg-orange-50 rounded-2xl border border-orange-100 flex justify-between items-center">
+                <div className="mt-6 sm:mt-8 p-4 bg-orange-50 dark:bg-orange-950/40 rounded-xl sm:rounded-2xl border border-orange-100 dark:border-orange-900/50 flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <AlertTriangle className="w-5 h-5 text-orange-500" />
+                    <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0" />
                     <div>
-                      <p className="text-sm font-black text-orange-700">{corteData.cancelaciones.cantidad} Ventas Canceladas</p>
-                      <p className="text-[10px] font-bold text-orange-600 uppercase">Monto no ingresado</p>
+                      <p className="text-sm font-black text-orange-700 dark:text-orange-300">{corteData.cancelaciones.cantidad} Ventas Canceladas</p>
+                      <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase">Monto no ingresado</p>
                     </div>
                   </div>
-                  <span className="text-lg font-black text-orange-700">${corteData.cancelaciones.total.toFixed(2)}</span>
+                  <span className="text-base sm:text-lg font-black text-orange-700 dark:text-orange-300 font-mono tabular-nums">${corteData.cancelaciones.total.toFixed(2)}</span>
                 </div>
               )}
             </div>
 
-            <div className="flex gap-4 mt-8">
+            <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
               <button 
                 onClick={() => setShowCorteModal(false)}
-                className="flex-1 py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[2rem] font-black text-sm transition-all uppercase tracking-widest"
+                className="flex-1 py-3.5 sm:py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm transition-all uppercase tracking-widest active:scale-95"
               >
                 CERRAR
               </button>
               <button 
                 onClick={handlePrintCorteTrigger}
-                className="flex-[2] py-5 bg-slate-900 text-white rounded-[2rem] font-black text-sm hover:bg-slate-800 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
+                className="flex-[2] py-3.5 sm:py-4 bg-slate-900 dark:bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-emerald-600 transition-all uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95"
               >
-                <DollarSign className="w-5 h-5 text-emerald-400" /> IMPRIMIR CORTE / PDF
+                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 dark:text-white" /> IMPRIMIR CORTE / PDF
               </button>
             </div>
           </div>
@@ -1073,32 +1073,32 @@ export default function AdminDashboard() {
       )}
       {/* --- Modal de Reporte Mensual --- */}
       {showMonthlyModal && (
-        <div className="absolute inset-0 z-[120] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
-          <div className="bg-white w-full max-w-5xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col p-10 max-h-[90vh]">
-            <div className="flex justify-between items-start mb-8">
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-indigo-100 rounded-3xl flex items-center justify-center text-indigo-600 shadow-inner">
-                  <Activity className="w-8 h-8" />
+        <div className="fixed inset-0 z-[120] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col p-4 sm:p-6 lg:p-8 max-h-[90vh]">
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-3 sm:gap-5">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 dark:bg-indigo-950/60 rounded-2xl sm:rounded-3xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-inner shrink-0">
+                  <Activity className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black text-slate-800 tracking-tight">Reporte Mensual</h3>
-                  <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-1">Análisis Financiero y de Rendimiento</p>
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-800 dark:text-white tracking-tight">Reporte Mensual</h3>
+                  <p className="text-slate-400 font-bold uppercase text-[9px] sm:text-[10px] tracking-widest mt-0.5">Análisis Financiero y de Rendimiento</p>
                 </div>
               </div>
               <button 
                 onClick={() => setShowMonthlyModal(false)}
-                className="w-12 h-12 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-xl sm:rounded-2xl flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all shrink-0"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="grid grid-cols-4 gap-4 mb-8">
-              <div className="col-span-2 flex gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6">
+              <div className="flex gap-2 flex-1 sm:max-w-xs">
                 <select 
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                  className="flex-1 bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/20"
+                  className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20"
                 >
                   <option value={1}>Enero</option><option value={2}>Febrero</option><option value={3}>Marzo</option>
                   <option value={4}>Abril</option><option value={5}>Mayo</option><option value={6}>Junio</option>
@@ -1108,17 +1108,17 @@ export default function AdminDashboard() {
                 <select 
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
-                  className="w-32 bg-slate-50 border-0 rounded-2xl px-4 py-3 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/20"
+                  className="w-24 sm:w-28 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20"
                 >
                   <option value={2024}>2024</option>
                   <option value={2025}>2025</option>
                   <option value={2026}>2026</option>
                 </select>
               </div>
-              <div className="col-span-2 flex justify-end">
+              <div className="flex justify-end">
                 <button 
                   onClick={exportMonthlyReportToCSV}
-                  className="bg-emerald-500 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-500/20 flex items-center gap-2 hover:bg-emerald-600 transition-all"
+                  className="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all active:scale-95"
                 >
                   <PackageCheck className="w-4 h-4" /> Exportar a Excel (CSV)
                 </button>
@@ -1130,29 +1130,29 @@ export default function AdminDashboard() {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto space-y-8 pr-2 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto space-y-6 sm:space-y-8 pr-1 custom-scrollbar">
                 {/* Métricas Mensuales */}
-                <div className="grid grid-cols-4 gap-6">
-                  <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+                  <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Ventas Brutas</p>
-                    <p className="text-3xl font-black text-slate-800">${monthlyReportData.totalSales.toFixed(2)}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white font-mono tabular-nums">${monthlyReportData.totalSales.toFixed(2)}</p>
                   </div>
-                  <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                  <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Utilidad Bruta</p>
-                    <p className="text-3xl font-black text-emerald-600">${monthlyReportData.grossProfit.toFixed(2)}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">${monthlyReportData.grossProfit.toFixed(2)}</p>
                   </div>
-                  <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                  <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Gastos Totales</p>
-                    <p className="text-3xl font-black text-red-500">${monthlyReportData.totalExpenses.toFixed(2)}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-red-500 font-mono tabular-nums">${monthlyReportData.totalExpenses.toFixed(2)}</p>
                   </div>
-                  <div className="p-6 bg-indigo-600 rounded-[2rem] shadow-xl shadow-indigo-600/10">
+                  <div className="p-4 sm:p-6 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-600/10">
                     <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Utilidad Neta</p>
-                    <p className="text-3xl font-black text-white">${monthlyReportData.netProfit.toFixed(2)}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-white font-mono tabular-nums">${monthlyReportData.netProfit.toFixed(2)}</p>
                   </div>
                 </div>
 
                 {/* Desglose por Método de Pago */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {monthlyReportData.paymentBreakdown?.map((pb: any) => (
                     <div key={pb.method} className={`p-6 rounded-[2rem] border ${pb.method === 'TARJETA' ? 'bg-indigo-50 border-indigo-100' : 'bg-emerald-50 border-emerald-100'}`}>
                       <div className="flex justify-between items-start mb-2">
@@ -1223,7 +1223,7 @@ export default function AdminDashboard() {
       {/* --- Modal de Gasto --- */}
       {showExpenseModal && (
         <div className="fixed inset-0 z-[120] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
-          <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl overflow-hidden flex flex-col p-10">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col p-6 sm:p-7 max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 mb-6 mx-auto">
               <DollarSign className="w-8 h-8" />
             </div>

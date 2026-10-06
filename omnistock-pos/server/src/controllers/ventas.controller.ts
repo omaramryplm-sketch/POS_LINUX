@@ -33,11 +33,28 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
       for (const item of items) {
         const product = await tx.producto.findUnique({ where: { id: item.id_producto } });
         if (!product) throw new Error(`PRODUCT_NOT_FOUND`);
+
+        // Bloqueo si el producto está descontinuado y ya no tiene stock
+        if (product.descontinuado && product.stock_actual <= 0) {
+          throw new Error(`PRODUCTO_DESCONTINUADO_AGOTADO`);
+        }
+
+        // Bloqueo si el producto está inactivo (no descontinuado)
+        if (!product.descontinuado && !product.activo) {
+          throw new Error(`PRODUCT_INACTIVE`);
+        }
+
         if (product.stock_actual < item.cantidad) throw new Error(`INSUFFICIENT_STOCK`);
+
+        const newStock = product.stock_actual - item.cantidad;
 
         await tx.producto.update({
           where: { id: item.id_producto },
-          data: { stock_actual: { decrement: item.cantidad } }
+          data: { 
+            stock_actual: { decrement: item.cantidad },
+            // Si era descontinuado y llega a 0, desactivar
+            ...(product.descontinuado && newStock <= 0 ? { activo: false } : {})
+          }
         });
       }
 
@@ -100,14 +117,16 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     const { q, limit, includeInactive } = req.query;
     const allowInactive = includeInactive === 'true';
 
-    // Filtro base: En el Punto de Venta solo se muestran productos activos
-    let baseFilter: any = {};
-    if (!allowInactive) {
-      baseFilter = {
-        descontinuado: false,
-        activo: true
-      };
-    }
+    // Filtro base: En el Punto de Venta se muestran productos activos normales,
+    // o productos descontinuados mientras tengan stock disponible para liquidación
+    const sellableCondition = {
+      OR: [
+        { descontinuado: false, activo: true },
+        { descontinuado: true, stock_actual: { gt: 0 } }
+      ]
+    };
+
+    let baseFilter: any = allowInactive ? {} : sellableCondition;
 
     if (q && typeof q === 'string' && q.trim() !== '') {
       const term = q.trim();
@@ -118,26 +137,40 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
       });
 
       if (exactProduct) {
-        if (!allowInactive && (exactProduct.descontinuado || !exactProduct.activo)) {
-          res.json({ 
-            status: 'success', 
-            data: [], 
-            message: 'PRODUCTO_DESCONTINUADO' 
-          });
-          return;
+        if (!allowInactive) {
+          // Si está descontinuado pero aún tiene stock > 0, SE PERMITE LA VENTA hasta agotarse
+          if (exactProduct.descontinuado && exactProduct.stock_actual <= 0) {
+            res.json({ 
+              status: 'success', 
+              data: [], 
+              message: 'PRODUCTO_DESCONTINUADO_AGOTADO' 
+            });
+            return;
+          }
+          if (!exactProduct.descontinuado && !exactProduct.activo) {
+            res.json({ 
+              status: 'success', 
+              data: [], 
+              message: 'PRODUCTO_INACTIVO' 
+            });
+            return;
+          }
         }
         res.json({ status: 'success', data: [exactProduct] });
         return;
       }
 
-      baseFilter = {
-        ...baseFilter,
+      const searchTerms = {
         OR: [
           { sku: { contains: term } },
           { descripcion: { contains: term } },
           { categoria: { contains: term } }
         ]
       };
+
+      baseFilter = !allowInactive 
+        ? { AND: [sellableCondition, searchTerms] }
+        : searchTerms;
     }
 
     const products = await prisma.producto.findMany({

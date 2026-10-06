@@ -5,7 +5,7 @@ RUN npm install -g pnpm@9
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 COPY . .
-RUN pnpm exec prisma generate
-RUN pnpm run build
+RUN npx prisma generate
+RUN npm run build
 EXPOSE 4000
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm run start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

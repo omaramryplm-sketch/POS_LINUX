@@ -39,19 +39,24 @@ export const createCompra = async (req: Request, res: Response): Promise<void> =
           throw new Error(`Product ${item.id_producto} not found`);
         }
 
+        if (product.descontinuado) {
+          throw new Error(`El producto "${product.descripcion}" está descontinuado y no admite nuevas compras.`);
+        }
+
         const oldStock = product.stock_actual;
         const oldCost = product.precio_costo;
         const newStock = oldStock + item.cantidad;
 
-        // Weighted Average Cost Formula
-        // (Old Stock * Old Cost) + (New Qty * New Cost) / Total New Stock
-        const newAverageCost = ((oldStock * oldCost) + (item.cantidad * item.precio_costo)) / newStock;
+        // Weighted Average Cost Formula with zero-division safeguard
+        const newAverageCost = newStock > 0 
+          ? ((oldStock * oldCost) + (item.cantidad * item.precio_costo)) / newStock 
+          : item.precio_costo;
 
         await tx.producto.update({
           where: { id: item.id_producto },
           data: {
             stock_actual: newStock,
-            precio_costo: parseFloat(newAverageCost.toFixed(2))
+            precio_costo: isNaN(newAverageCost) ? item.precio_costo : parseFloat(newAverageCost.toFixed(2))
           }
         });
       }

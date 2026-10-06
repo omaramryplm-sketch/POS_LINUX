@@ -175,24 +175,24 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-10 max-w-7xl mx-auto min-h-full pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto h-full overflow-y-auto custom-scrollbar pb-20">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 mb-6 sm:mb-10">
         <div>
-          <h2 className="text-4xl font-black text-[var(--text-main)] tracking-tight flex items-center gap-4 italic">
-            <SettingsIcon className="w-10 h-10 text-emerald-500" />
+          <h2 className="text-2xl sm:text-4xl font-black text-[var(--text-main)] tracking-tight flex items-center gap-3 sm:gap-4 italic">
+            <SettingsIcon className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-500" />
             Configuración
           </h2>
-          <p className="text-[var(--text-muted)] font-medium mt-2 text-lg">Gestiona usuarios, seguridad y preferencias del sistema.</p>
+          <p className="text-[var(--text-muted)] font-medium mt-1 sm:mt-2 text-sm sm:text-lg">Gestiona usuarios, seguridad y preferencias del sistema.</p>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex p-1.5 bg-[var(--bg-main)] rounded-[2rem] w-fit mb-12 backdrop-blur-sm border border-[var(--border-color)]">
+      <div className="flex flex-wrap sm:flex-nowrap p-1.5 bg-[var(--bg-main)] rounded-2xl sm:rounded-[2rem] w-full sm:w-fit gap-1 mb-8 sm:mb-12 backdrop-blur-sm border border-[var(--border-color)] overflow-x-auto">
         {currentUser?.rol === 'ADMIN' && (
           <button 
             onClick={() => setActiveTab('USUARIOS')}
             className={clsx(
-              "px-8 py-3 rounded-[1.5rem] text-sm font-black transition-all flex items-center gap-2",
+              "flex-1 sm:flex-none justify-center px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap",
               activeTab === 'USUARIOS' ? "bg-[var(--bg-card)] text-emerald-600 shadow-xl shadow-emerald-500/10" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
             )}
           >
@@ -202,7 +202,7 @@ export default function Settings() {
         <button 
           onClick={() => setActiveTab('PERFIL')}
           className={clsx(
-            "px-8 py-3 rounded-[1.5rem] text-sm font-black transition-all flex items-center gap-2",
+            "flex-1 sm:flex-none justify-center px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap",
             activeTab === 'PERFIL' ? "bg-[var(--bg-card)] text-emerald-600 shadow-xl shadow-emerald-500/10" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
           )}
         >
@@ -211,7 +211,7 @@ export default function Settings() {
         <button 
           onClick={() => setActiveTab('SISTEMA')}
           className={clsx(
-            "px-8 py-3 rounded-[1.5rem] text-sm font-black transition-all flex items-center gap-2",
+            "flex-1 sm:flex-none justify-center px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap",
             activeTab === 'SISTEMA' ? "bg-[var(--bg-card)] text-emerald-600 shadow-xl shadow-emerald-500/10" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
           )}
         >
@@ -221,7 +221,7 @@ export default function Settings() {
           <button 
             onClick={() => setActiveTab('CAJAS')}
             className={clsx(
-              "px-8 py-3 rounded-[1.5rem] text-sm font-black transition-all flex items-center gap-2",
+              "flex-1 sm:flex-none justify-center px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap",
               activeTab === 'CAJAS' ? "bg-[var(--bg-card)] text-emerald-600 shadow-xl shadow-emerald-500/10" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
             )}
           >
@@ -233,57 +233,57 @@ export default function Settings() {
       {/* TAB CONTENT: USUARIOS */}
       {activeTab === 'USUARIOS' && (
         <div className="animate-in slide-in-from-bottom-4 duration-300">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight italic">Control de Usuarios</h3>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+            <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] tracking-tight italic">Control de Usuarios</h3>
             <button 
               onClick={() => {
                 setUserForm({ nombre_completo: '', nombre_usuario: '', password: '', rol: 'CAJERO' });
                 setShowAddUser(true);
               }}
-              className="px-6 py-3 bg-emerald-500 text-white rounded-2xl font-black flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
+              className="w-full sm:w-auto justify-center px-5 sm:px-6 py-2.5 sm:py-3 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95 text-xs sm:text-sm"
             >
-              <UserPlus className="w-5 h-5" /> NUEVO USUARIO
+              <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" /> NUEVO USUARIO
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {users.map(u => (
-              <div key={u.id} className="bg-[var(--bg-card)] p-8 rounded-[3rem] border border-[var(--border-color)] shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group">
-                <div className="flex justify-between items-start mb-6">
+              <div key={u.id} className="bg-[var(--bg-card)] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] border border-[var(--border-color)] shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group">
+                <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div className={clsx(
-                    "w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all",
-                    u.rol === 'ADMIN' ? "bg-indigo-100 text-indigo-600" : "bg-emerald-100 text-emerald-600"
+                    "w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-[1.5rem] flex items-center justify-center transition-all",
+                    u.rol === 'ADMIN' ? "bg-indigo-100 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400" : "bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
                   )}>
-                    <UserIcon className="w-8 h-8" />
+                    <UserIcon className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                   <span className={clsx(
-                    "px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase",
-                    u.rol === 'ADMIN' ? "bg-indigo-50 text-indigo-700" : "bg-emerald-50 text-emerald-700"
+                    "px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase",
+                    u.rol === 'ADMIN' ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400" : "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400"
                   )}>
                     {u.rol}
                   </span>
                 </div>
                 
-                <h4 className="text-xl font-black text-[var(--text-main)] mb-1">{u.nombre_completo}</h4>
-                <p className="text-[var(--text-muted)] font-bold text-sm mb-6">@{u.username}</p>
+                <h4 className="text-lg sm:text-xl font-black text-[var(--text-main)] mb-1 truncate">{u.nombre_completo}</h4>
+                <p className="text-[var(--text-muted)] font-bold text-xs sm:text-sm mb-4 sm:mb-6">@{u.username}</p>
                 
-                <div className="flex gap-2 pt-4 border-t border-slate-50">
+                <div className="flex gap-2 pt-4 border-t border-[var(--border-color)]">
                   <button 
                     onClick={() => {
                       setSelectedUser(u);
                       setUserForm({ nombre_completo: u.nombre_completo, nombre_usuario: u.username, password: '', rol: u.rol });
                       setShowEditUser(true);
                     }}
-                    className="flex-1 py-3 bg-[var(--bg-main)] hover:bg-slate-900 hover:text-white dark:hover:bg-emerald-500 text-[var(--text-main)] rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 border border-[var(--border-color)]"
+                    className="flex-1 py-2.5 sm:py-3 bg-[var(--bg-main)] hover:bg-slate-900 hover:text-white dark:hover:bg-emerald-500 text-[var(--text-main)] rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 border border-[var(--border-color)]"
                   >
                     <Key className="w-4 h-4" /> EDITAR
                   </button>
                   {u.id !== currentUser?.id && (
                     <button 
                       onClick={() => handleDeleteUser(u.id)}
-                      className="w-12 h-12 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all flex items-center justify-center"
+                      className="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 dark:bg-red-950/40 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all flex items-center justify-center shrink-0"
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                   )}
                 </div>
@@ -292,9 +292,9 @@ export default function Settings() {
           </div>
 
           {users.length === 0 && (
-            <div className="text-center py-20 bg-[var(--bg-main)] rounded-[3rem] border-2 border-dashed border-[var(--border-color)]">
-              <UserIcon className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-              <p className="text-[var(--text-muted)] font-bold uppercase text-sm tracking-widest">No hay otros usuarios registrados</p>
+            <div className="text-center py-16 sm:py-20 bg-[var(--bg-main)] rounded-2xl sm:rounded-[3rem] border-2 border-dashed border-[var(--border-color)]">
+              <UserIcon className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+              <p className="text-[var(--text-muted)] font-bold uppercase text-xs sm:text-sm tracking-widest">No hay otros usuarios registrados</p>
             </div>
           )}
         </div>
@@ -303,36 +303,36 @@ export default function Settings() {
       {/* TAB CONTENT: PERFIL */}
       {activeTab === 'PERFIL' && (
         <div className="animate-in slide-in-from-bottom-4 duration-300 max-w-2xl mx-auto">
-          <div className="bg-[var(--bg-card)] p-10 rounded-[3rem] border border-[var(--border-color)] shadow-xl">
-            <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 rounded-3xl flex items-center justify-center mb-8 mx-auto">
-              <UserIcon className="w-10 h-10" />
+          <div className="bg-[var(--bg-card)] p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border border-[var(--border-color)] shadow-xl">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8 mx-auto">
+              <UserIcon className="w-8 h-8 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-2xl font-black text-[var(--text-main)] text-center mb-2 italic">{currentUser?.nombre_completo}</h3>
-            <p className="text-[var(--text-muted)] font-medium text-center mb-10">Gestiona tu seguridad y acceso.</p>
+            <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] text-center mb-1 sm:mb-2 italic">{currentUser?.nombre_completo}</h3>
+            <p className="text-[var(--text-muted)] font-medium text-center text-xs sm:text-sm mb-6 sm:mb-10">Gestiona tu seguridad y acceso.</p>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Contraseña Actual</label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
                   <input 
                     type="password" 
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-slate-700 outline-none focus:ring-4 focus:ring-emerald-500/20"
+                    className="w-full pl-12 pr-4 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-emerald-500/20 text-sm"
                     placeholder="••••••••"
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Nueva Contraseña</label>
-                  <input type="password" placeholder="••••••••" className="w-full px-4 py-4 bg-slate-50 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" />
+                  <input type="password" placeholder="••••••••" className="w-full px-4 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-emerald-500/20 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Confirmar</label>
-                  <input type="password" placeholder="••••••••" className="w-full px-4 py-4 bg-slate-50 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" />
+                  <input type="password" placeholder="••••••••" className="w-full px-4 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold text-slate-700 dark:text-slate-100 outline-none focus:ring-4 focus:ring-emerald-500/20 text-sm" />
                 </div>
               </div>
-              <button className="w-full py-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-black transition-all shadow-xl shadow-emerald-500/20 mt-4">
+              <button className="w-full py-3.5 sm:py-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl sm:rounded-2xl font-black transition-all shadow-xl shadow-emerald-500/20 mt-4 active:scale-95 text-xs sm:text-sm uppercase tracking-wider">
                 ACTUALIZAR MI PERFIL
               </button>
             </div>
@@ -343,25 +343,25 @@ export default function Settings() {
       {/* TAB CONTENT: SISTEMA */}
       {activeTab === 'SISTEMA' && (
         <div className="animate-in slide-in-from-bottom-4 duration-300">
-           <div className={`grid grid-cols-1 ${currentUser?.rol === 'ADMIN' ? 'md:grid-cols-2' : 'max-w-2xl'} gap-8 mx-auto`}>
+           <div className={`grid grid-cols-1 ${currentUser?.rol === 'ADMIN' ? 'lg:grid-cols-2' : 'max-w-2xl'} gap-6 sm:gap-8 mx-auto`}>
               {/* Apariencia */}
-              <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-xl dark:bg-slate-900 dark:border-slate-800">
-                <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center mb-8">
-                  <Palette className="w-8 h-8" />
+              <div className="bg-[var(--bg-card)] p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border border-[var(--border-color)] shadow-xl">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 text-amber-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8">
+                  <Palette className="w-7 h-7 sm:w-8 sm:h-8" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4">Apariencia</h3>
-                <p className="text-slate-500 dark:text-slate-400 font-medium mb-10 leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-2 sm:mb-4">Apariencia</h3>
+                <p className="text-[var(--text-muted)] font-medium text-xs sm:text-sm mb-6 sm:mb-10 leading-relaxed">
                   Personaliza cómo se ve tu punto de venta.
                 </p>
                 
-                <div className="space-y-8">
+                <div className="space-y-6 sm:space-y-8">
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Modo de Pantalla</label>
-                    <div className="flex p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl w-fit">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 sm:mb-4">Modo de Pantalla</label>
+                    <div className="flex p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl sm:rounded-2xl w-fit">
                       <button 
                         onClick={() => setMode('light')}
                         className={clsx(
-                          "px-6 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all",
+                          "px-4 sm:px-6 py-2 rounded-lg sm:rounded-xl text-xs font-black flex items-center gap-2 transition-all",
                           mode === 'light' ? "bg-[var(--bg-card)] text-[var(--text-main)] shadow-md" : "text-[var(--text-muted)]"
                         )}
                       >
@@ -370,7 +370,7 @@ export default function Settings() {
                       <button 
                         onClick={() => setMode('dark')}
                         className={clsx(
-                          "px-6 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all",
+                          "px-4 sm:px-6 py-2 rounded-lg sm:rounded-xl text-xs font-black flex items-center gap-2 transition-all",
                           mode === 'dark' ? "bg-slate-700 text-white shadow-md" : "text-slate-500"
                         )}
                       >
@@ -380,8 +380,8 @@ export default function Settings() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Color de Acento</label>
-                    <div className="flex flex-wrap gap-4">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 sm:mb-4">Color de Acento</label>
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
                        {[
                          { name: 'Esmeralda', hex: '#10b981' },
                          { name: 'Índigo', hex: '#6366f1' },
@@ -394,13 +394,13 @@ export default function Settings() {
                           key={c.hex}
                           onClick={() => setAccentColor(c.hex)}
                           className={clsx(
-                            "w-12 h-12 rounded-full transition-all hover:scale-110 relative",
+                            "w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all hover:scale-110 relative",
                             accentColor === c.hex ? "ring-4 ring-offset-4 ring-slate-200 dark:ring-slate-700" : ""
                           )}
                           style={{ backgroundColor: c.hex }}
                           title={c.name}
                          >
-                           {accentColor === c.hex && <Check className="w-6 h-6 text-white absolute inset-0 m-auto" />}
+                           {accentColor === c.hex && <Check className="w-5 h-5 sm:w-6 sm:h-6 text-white absolute inset-0 m-auto" />}
                          </button>
                        ))}
                     </div>
@@ -411,16 +411,16 @@ export default function Settings() {
               {currentUser?.rol === 'ADMIN' && (
                 <>
                   {/* Información del Sistema */}
-                  <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-xl dark:bg-slate-900 dark:border-slate-800">
-                     <div className="w-16 h-16 bg-slate-100 text-slate-600 rounded-3xl flex items-center justify-center mb-8">
-                      <SettingsIcon className="w-8 h-8" />
+                  <div className="bg-[var(--bg-card)] p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border border-[var(--border-color)] shadow-xl">
+                     <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8">
+                      <SettingsIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                     </div>
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 italic">Datos del Negocio</h3>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium mb-8">
+                    <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-2 sm:mb-4 italic">Datos del Negocio</h3>
+                    <p className="text-[var(--text-muted)] font-medium text-xs sm:text-sm mb-6 sm:mb-8">
                       Estos datos aparecerán impresos en tus tickets de venta.
                     </p>
                     
-                    <div className="space-y-4 mb-8">
+                    <div className="space-y-4 mb-6 sm:mb-8">
                       <div>
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Nombre Comercial</label>
                         <input 
@@ -428,17 +428,17 @@ export default function Settings() {
                           value={businessForm.business_name}
                           onChange={e => setBusinessForm({...businessForm, business_name: e.target.value})}
                           placeholder="Ej: Abarrotes 'La Esperanza'"
-                          className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                          className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">RFC</label>
                           <input 
                             type="text" 
                             value={businessForm.business_rfc}
                             onChange={e => setBusinessForm({...businessForm, business_rfc: e.target.value})}
-                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                           />
                         </div>
                         <div>
@@ -447,7 +447,7 @@ export default function Settings() {
                             type="text" 
                             value={businessForm.business_phone}
                             onChange={e => setBusinessForm({...businessForm, business_phone: e.target.value})}
-                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                           />
                         </div>
                       </div>
@@ -457,10 +457,10 @@ export default function Settings() {
                           type="text" 
                           value={businessForm.business_address}
                           onChange={e => setBusinessForm({...businessForm, business_address: e.target.value})}
-                          className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                          className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Sitio Web</label>
                           <input 
@@ -468,7 +468,7 @@ export default function Settings() {
                             value={businessForm.business_website}
                             onChange={e => setBusinessForm({...businessForm, business_website: e.target.value})}
                             placeholder="www.tuweb.com"
-                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                           />
                         </div>
                         <div>
@@ -478,7 +478,7 @@ export default function Settings() {
                             value={businessForm.business_social}
                             onChange={e => setBusinessForm({...businessForm, business_social: e.target.value})}
                             placeholder="@tusocial"
-                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                           />
                         </div>
                       </div>
@@ -486,37 +486,37 @@ export default function Settings() {
 
                     <button 
                       onClick={handleUpdateBusiness}
-                      className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest hover:bg-emerald-500 transition-all shadow-xl"
+                      className="w-full py-3.5 sm:py-4 bg-slate-900 dark:bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black text-xs tracking-widest hover:bg-emerald-600 transition-all shadow-xl active:scale-95 uppercase"
                     >
                       GUARDAR DATOS DEL TICKET
                     </button>
                   </div>
 
                   {/* Información Técnica */}
-                  <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-xl dark:bg-slate-900 dark:border-slate-800">
-                     <div className="w-16 h-16 bg-slate-100 text-slate-600 rounded-3xl flex items-center justify-center mb-8">
-                      <Shield className="w-8 h-8" />
+                  <div className="bg-[var(--bg-card)] p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border border-[var(--border-color)] shadow-xl">
+                     <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8">
+                      <Shield className="w-7 h-7 sm:w-8 sm:h-8" />
                     </div>
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4">Mantenimiento</h3>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium mb-6">
+                    <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-2 sm:mb-4">Mantenimiento</h3>
+                    <p className="text-[var(--text-muted)] font-medium text-xs sm:text-sm mb-4 sm:mb-6">
                       Descarga una copia completa de tu base de datos para seguridad externa.
                     </p>
                     <button 
                       onClick={handleDownloadBackup}
-                      className="w-full py-4 border-2 border-dashed border-slate-200 text-slate-500 hover:border-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl font-black text-xs tracking-widest transition-all mb-8 flex items-center justify-center gap-2"
+                      className="w-full py-3.5 sm:py-4 border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50/10 rounded-xl sm:rounded-2xl font-black text-xs tracking-widest transition-all mb-6 sm:mb-8 flex items-center justify-center gap-2 active:scale-95"
                     >
                       <Database className="w-4 h-4" /> DESCARGAR RESPALDO (.JSON)
                     </button>
 
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4">Información Técnica</h3>
-                    <div className="space-y-4">
-                      <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
-                        <p className="text-xs font-black text-slate-400 uppercase mb-1">Base de Datos</p>
-                        <p className="font-bold text-slate-700 dark:text-slate-200">Microsoft SQL Server</p>
+                    <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-2 sm:mb-4">Información Técnica</h3>
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800 rounded-xl sm:rounded-2xl">
+                        <p className="text-[10px] sm:text-xs font-black text-slate-400 uppercase mb-1">Base de Datos</p>
+                        <p className="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-sm">SQLite (Local Standalone / Offline-First)</p>
                       </div>
-                      <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
-                        <p className="text-xs font-black text-slate-400 uppercase mb-1">Versión</p>
-                        <p className="font-bold text-slate-700 dark:text-slate-200">v2.5.0-Enterprise</p>
+                      <div className="p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800 rounded-xl sm:rounded-2xl">
+                        <p className="text-[10px] sm:text-xs font-black text-slate-400 uppercase mb-1">Versión</p>
+                        <p className="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-sm">v2.5.0-Enterprise</p>
                       </div>
                     </div>
                   </div>
@@ -529,16 +529,16 @@ export default function Settings() {
       {/* MODAL: ADD USER */}
       {showAddUser && (
         <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[var(--bg-card)] w-full max-w-md rounded-[3rem] shadow-2xl p-10 animate-in zoom-in-95 duration-200 border border-[var(--border-color)]">
-            <h3 className="text-2xl font-black text-[var(--text-main)] mb-8 italic">Crear Nuevo Usuario</h3>
-            <div className="space-y-4 mb-8">
+          <div className="bg-[var(--bg-card)] w-full max-w-md rounded-2xl sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 animate-in zoom-in-95 duration-200 border border-[var(--border-color)] max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-6 sm:mb-8 italic">Crear Nuevo Usuario</h3>
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Nombre Completo</label>
                 <input 
                   type="text" 
                   value={userForm.nombre_completo}
                   onChange={e => setUserForm({...userForm, nombre_completo: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                 />
               </div>
               <div>
@@ -547,7 +547,7 @@ export default function Settings() {
                   type="text" 
                   value={userForm.nombre_usuario}
                   onChange={e => setUserForm({...userForm, nombre_usuario: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                 />
               </div>
               <div>
@@ -556,7 +556,7 @@ export default function Settings() {
                   type="password" 
                   value={userForm.password}
                   onChange={e => setUserForm({...userForm, password: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                 />
               </div>
               <div>
@@ -564,7 +564,7 @@ export default function Settings() {
                 <select 
                   value={userForm.rol}
                   onChange={e => setUserForm({...userForm, rol: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]"
                 >
                   <option value="CAJERO">Cajero (Solo POS)</option>
                   <option value="ADMIN">Administrador (Acceso Total)</option>
@@ -572,16 +572,16 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <button 
                 onClick={() => setShowAddUser(false)}
-                className="py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold transition-all"
+                className="py-3 sm:py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm"
               >
                 CANCELAR
               </button>
               <button 
                 onClick={handleCreateUser}
-                className="py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-black transition-all"
+                className="py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl sm:rounded-2xl font-black transition-all text-xs sm:text-sm active:scale-95 shadow-lg shadow-emerald-500/20"
               >
                 CREAR
               </button>
@@ -593,16 +593,16 @@ export default function Settings() {
       {/* MODAL: EDIT USER */}
       {showEditUser && (
         <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[var(--bg-card)] w-full max-w-md rounded-[3rem] shadow-2xl p-10 animate-in zoom-in-95 duration-200 border border-[var(--border-color)]">
-            <h3 className="text-2xl font-black text-[var(--text-main)] mb-8 italic">Editar Usuario</h3>
-            <div className="space-y-4 mb-8">
+          <div className="bg-[var(--bg-card)] w-full max-w-md rounded-2xl sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 animate-in zoom-in-95 duration-200 border border-[var(--border-color)] max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-6 sm:mb-8 italic">Editar Usuario</h3>
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Nombre Completo</label>
                 <input 
                   type="text" 
                   value={userForm.nombre_completo}
                   onChange={e => setUserForm({...userForm, nombre_completo: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                 />
               </div>
               <div>
@@ -611,7 +611,7 @@ export default function Settings() {
                   type="password" 
                   value={userForm.password}
                   onChange={e => setUserForm({...userForm, password: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20" 
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]" 
                 />
               </div>
               <div>
@@ -619,7 +619,7 @@ export default function Settings() {
                 <select 
                   value={userForm.rol}
                   onChange={e => setUserForm({...userForm, rol: e.target.value})}
-                  className="w-full bg-slate-50 border-0 rounded-2xl p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-0 rounded-xl sm:rounded-2xl p-3 sm:p-4 font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 text-xs sm:text-sm text-[var(--text-main)]"
                 >
                   <option value="CAJERO">Cajero</option>
                   <option value="ADMIN">Administrador</option>
@@ -627,16 +627,16 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <button 
                 onClick={() => setShowEditUser(false)}
-                className="py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold transition-all"
+                className="py-3 sm:py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm"
               >
                 CANCELAR
               </button>
               <button 
                 onClick={handleUpdateUser}
-                className="py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-black transition-all"
+                className="py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl sm:rounded-2xl font-black transition-all text-xs sm:text-sm active:scale-95 shadow-lg shadow-emerald-500/20"
               >
                 GUARDAR
               </button>
@@ -647,41 +647,41 @@ export default function Settings() {
 
       {/* --- Pestaña de Cajas --- */}
       {activeTab === 'CAJAS' && (
-        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-          <div className="flex justify-between items-center">
+        <div className="space-y-6 sm:space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight italic">Gestión de Cajas</h3>
-              <p className="text-[var(--text-muted)] font-bold text-xs uppercase tracking-widest mt-1">Administra los puntos de venta físicos</p>
+              <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] tracking-tight italic">Gestión de Cajas</h3>
+              <p className="text-[var(--text-muted)] font-bold text-[10px] sm:text-xs uppercase tracking-widest mt-1">Administra los puntos de venta físicos</p>
             </div>
             <button 
               onClick={() => setShowAddCaja(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 active:scale-95"
             >
               <Plus className="w-4 h-4" /> NUEVA CAJA
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {cajas.map((caja) => (
-              <div key={caja.id} className="bg-[var(--bg-card)] p-8 rounded-[2.5rem] border border-[var(--border-color)] shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+              <div key={caja.id} className="bg-[var(--bg-card)] p-5 sm:p-8 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
                  <div className={clsx(
                    "absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full blur-3xl opacity-10 transition-all",
                    caja.estado === 'ACTIVA' ? "bg-emerald-500" : "bg-slate-500"
                  )}></div>
 
-                 <div className="flex items-start justify-between mb-6">
+                 <div className="flex items-start justify-between mb-4 sm:mb-6">
                     <div className={clsx(
-                      "w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner",
-                      caja.estado === 'ACTIVA' ? "bg-emerald-50 text-emerald-500" : "bg-slate-50 text-slate-400"
+                      "w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-inner",
+                      caja.estado === 'ACTIVA' ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500" : "bg-slate-50 dark:bg-slate-800 text-slate-400"
                     )}>
-                      <Monitor className="w-7 h-7" />
+                      <Monitor className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
                     <div className="flex gap-1">
                       <button 
                         onClick={() => handleToggleCaja(caja.id, caja.estado)}
                         className={clsx(
                           "p-2 rounded-xl transition-all",
-                          caja.estado === 'ACTIVA' ? "bg-amber-50 text-amber-600 hover:bg-amber-100" : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                          caja.estado === 'ACTIVA' ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600 hover:bg-amber-100" : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 hover:bg-emerald-100"
                         )}
                         title={caja.estado === 'ACTIVA' ? "Desactivar" : "Activar"}
                       >
@@ -689,7 +689,7 @@ export default function Settings() {
                       </button>
                       <button 
                         onClick={() => handleDeleteCaja(caja.id)}
-                        className="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-all"
+                        className="p-2 bg-red-50 dark:bg-red-950/40 text-red-500 rounded-xl hover:bg-red-100 transition-all"
                         title="Eliminar"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -697,13 +697,13 @@ export default function Settings() {
                     </div>
                  </div>
 
-                 <h4 className="text-xl font-black text-[var(--text-main)] uppercase mb-1">{caja.nombre}</h4>
-                 <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-6 italic">ID de Registro: #{caja.id.toString().padStart(3, '0')}</p>
+                 <h4 className="text-lg sm:text-xl font-black text-[var(--text-main)] uppercase mb-1 truncate">{caja.nombre}</h4>
+                 <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 sm:mb-6 italic">ID de Registro: #{caja.id.toString().padStart(3, '0')}</p>
 
                  <div className="flex items-center gap-2">
                     <div className={clsx(
                       "w-2 h-2 rounded-full",
-                      caja.estado === 'ACTIVA' ? "bg-emerald-500 animate-pulse" : "bg-slate-300"
+                      caja.estado === 'ACTIVA' ? "bg-emerald-500 animate-pulse" : "bg-slate-300 dark:bg-slate-600"
                     )}></div>
                     <span className={clsx(
                       "text-[10px] font-black uppercase tracking-widest",
@@ -717,12 +717,12 @@ export default function Settings() {
           </div>
 
           {cajas.length === 0 && (
-            <div className="text-center py-20 bg-[var(--bg-main)] rounded-[3rem] border-2 border-dashed border-[var(--border-color)]">
-              <Monitor className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-              <p className="text-[var(--text-muted)] font-bold uppercase text-sm tracking-widest">No hay cajas registradas</p>
+            <div className="text-center py-16 sm:py-20 bg-[var(--bg-main)] rounded-2xl sm:rounded-[3rem] border-2 border-dashed border-[var(--border-color)]">
+              <Monitor className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+              <p className="text-[var(--text-muted)] font-bold uppercase text-xs sm:text-sm tracking-widest">No hay cajas registradas</p>
               <button 
                 onClick={() => setShowAddCaja(true)}
-                className="mt-6 text-emerald-600 font-black text-xs uppercase tracking-widest hover:underline"
+                className="mt-4 sm:mt-6 text-emerald-600 font-black text-xs uppercase tracking-widest hover:underline"
               >
                 Comienza agregando tu primera caja
               </button>
@@ -734,14 +734,14 @@ export default function Settings() {
       {/* --- Modal Nueva Caja --- */}
       {showAddCaja && (
         <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
-           <div className="bg-[var(--bg-card)] w-full max-w-md rounded-[3rem] shadow-2xl p-10 animate-in zoom-in duration-300 border border-[var(--border-color)]">
-              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 mx-auto">
-                 <ScanLine className="w-8 h-8" />
+           <div className="bg-[var(--bg-card)] w-full max-w-md rounded-2xl sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 animate-in zoom-in duration-300 border border-[var(--border-color)] max-h-[90vh] overflow-y-auto custom-scrollbar">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-100 dark:bg-emerald-950/40 rounded-2xl flex items-center justify-center text-emerald-600 mb-4 sm:mb-6 mx-auto">
+                 <ScanLine className="w-7 h-7 sm:w-8 sm:h-8" />
               </div>
-              <h3 className="text-2xl font-black text-[var(--text-main)] text-center mb-1 uppercase tracking-tight italic">Nueva Caja</h3>
-              <p className="text-[var(--text-muted)] font-bold text-center mb-8 uppercase text-[10px] tracking-widest">Identifica tu punto de venta</p>
+              <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] text-center mb-1 uppercase tracking-tight italic">Nueva Caja</h3>
+              <p className="text-[var(--text-muted)] font-bold text-center mb-6 sm:mb-8 uppercase text-[10px] tracking-widest">Identifica tu punto de venta</p>
               
-              <div className="space-y-6 mb-10">
+              <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-10">
                  <div>
                     <label className="text-[10px] font-black text-[var(--text-muted)] uppercase ml-2 mb-2 block tracking-widest">Nombre de la Caja</label>
                     <input 
@@ -750,22 +750,22 @@ export default function Settings() {
                       value={newCajaName}
                       onChange={(e) => setNewCajaName(e.target.value)}
                       placeholder="Ej: Caja 01 - Principal"
-                      className="w-full bg-[var(--bg-main)] border border-[var(--border-color)] rounded-2xl p-4 font-black text-[var(--text-main)] focus:ring-4 focus:ring-emerald-500/10 outline-none uppercase"
+                      className="w-full bg-[var(--bg-main)] border border-[var(--border-color)] rounded-xl sm:rounded-2xl p-3 sm:p-4 font-black text-[var(--text-main)] focus:ring-4 focus:ring-emerald-500/10 outline-none uppercase text-xs sm:text-sm"
                     />
                  </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                  <button 
                    onClick={() => setShowAddCaja(false)}
-                   className="py-4 bg-[var(--bg-main)] text-[var(--text-muted)] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all border border-[var(--border-color)]"
+                   className="py-3 sm:py-4 bg-[var(--bg-main)] text-[var(--text-muted)] rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-[var(--border-color)]"
                  >
                    CANCELAR
                  </button>
                  <button 
                    onClick={handleCreateCaja}
                    disabled={!newCajaName}
-                   className="py-4 bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 disabled:opacity-50"
+                   className="py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 disabled:opacity-50 active:scale-95"
                  >
                    CREAR CAJA
                  </button>

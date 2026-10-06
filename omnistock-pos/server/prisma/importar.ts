@@ -47,7 +47,7 @@ async function main() {
         update: {
           descripcion,
           precio_venta,
-          precio_compra,
+          precio_costo: precio_compra,
           stock_actual,
           categoria,
           unidad
@@ -56,7 +56,7 @@ async function main() {
           sku,
           descripcion,
           precio_venta,
-          precio_compra,
+          precio_costo: precio_compra,
           stock_actual,
           stock_minimo: 5,
           categoria,

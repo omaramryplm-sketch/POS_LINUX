@@ -16,6 +16,7 @@ import clientesRoutes from './routes/clientes.routes.js';
 import { initSqlite } from './lib/prisma.js';
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // Security Middleware
@@ -47,8 +48,9 @@ const globalLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { status: 429, message: 'Too many login attempts, please try again in 15 minutes.' },
+  max: 30,
+  skipSuccessfulRequests: true,
+  message: { status: 429, message: 'Too many failed login attempts, please try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
 });

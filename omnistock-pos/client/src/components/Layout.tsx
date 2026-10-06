@@ -95,15 +95,20 @@ export default function Layout() {
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="p-4 xl:p-6 pb-2 xl:pb-4">
-          <div className="flex items-center gap-3 mb-4 xl:mb-6">
-            <div className="w-9 h-9 xl:w-10 xl:h-10 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 transition-all duration-500 shrink-0">
-              <ShoppingCart className="w-5 h-5 xl:w-6 xl:h-6 text-white" />
+          <div className="flex items-center gap-3 mb-4 xl:mb-5">
+            <div className="w-9 h-9 xl:w-10 xl:h-10 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 transition-all duration-300 shrink-0">
+              <ShoppingCart className="w-5 h-5 xl:w-5.5 xl:h-5.5 text-white" />
             </div>
-            <div>
-              <h1 className="text-lg xl:text-xl font-black tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                OmniStock
-              </h1>
-              <p className="text-[9px] xl:text-[10px] font-black text-emerald-500 tracking-widest uppercase">Professional POS</p>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h1 className="text-base xl:text-lg font-black tracking-tight text-white leading-none">
+                  OmniStock
+                </h1>
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[8px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span> POS
+                </span>
+              </div>
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terminal Inteligente</p>
             </div>
           </div>
           

@@ -64,3 +64,4 @@ Thumbs.db
 *.exe
 prereq/
 *.ico
+docker-compose.override.yml
