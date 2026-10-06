@@ -214,3 +214,15 @@ model Config {
   descripcion String?
   updatedAt   DateTime @updatedAt
 }
+
+model RegistroDevolucion {
+  id              Int      @id @default(autoincrement())
+  id_venta        Int
+  id_usuario      String
+  monto_reembolso Float
+  motivo          String
+  fecha           DateTime @default(now())
+
+  @@index([id_venta], name: "idx_devolucion_venta")
+  @@index([fecha], name: "idx_devolucion_fecha")
+}

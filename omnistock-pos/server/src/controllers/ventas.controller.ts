@@ -55,6 +55,10 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
               throw new Error(`PRECIO_BAJO_LIMITE_CAJERO`);
             }
           }
+          // Regla de Negocio: No permitir a cajeros vender por debajo del costo de compra (anti-dumping / colusión)
+          if (userRole !== 'ADMIN' && product.precio_costo > 0 && customPrice < product.precio_costo) {
+            throw new Error(`PRECIO_MENOR_A_COSTO_CAJERO`);
+          }
           unitPrice = customPrice;
         }
 
@@ -70,7 +74,7 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
 
         const newStock = product.stock_actual - item.cantidad;
 
-        await tx.producto.update({
+        const updatedProd = await tx.producto.update({
           where: { id: item.id_producto },
           data: { 
             stock_actual: { decrement: item.cantidad },
@@ -78,6 +82,11 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
             ...(product.descontinuado && newStock <= 0 ? { activo: false } : {})
           }
         });
+
+        // Prevención estricta de sobreventa concurrente: Si dos transacciones intentan vender el último artículo
+        if (updatedProd.stock_actual < 0) {
+          throw new Error(`INSUFFICIENT_STOCK`);
+        }
       }
 
       totalCatalogo = Math.round(totalCatalogo * 100) / 100;

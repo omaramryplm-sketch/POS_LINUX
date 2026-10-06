@@ -328,7 +328,18 @@ export const cancelSale = async (req: Request, res: Response) => {
         });
       }
 
-      // 3. Marcar como cancelada
+      // 3. Registrar en nueva tabla de auditoría de devoluciones sin alterar tablas existentes
+      const userId = (req as any).user?.id || 'ADMIN';
+      await (tx as any).registroDevolucion.create({
+        data: {
+          id_venta: Number(id),
+          id_usuario: userId,
+          monto_reembolso: v.total,
+          motivo: (req.body && req.body.motivo) ? String(req.body.motivo) : 'Cancelación de venta'
+        }
+      });
+
+      // 4. Marcar como cancelada
       await tx.venta.update({
         where: { id: Number(id) },
         data: { estado: 'CANCELADA' } as any
@@ -458,11 +469,24 @@ export const bulkAdjustInventory = async (req: Request, res: Response): Promise<
 export const addGasto = async (req: Request, res: Response) => {
   const { descripcion, monto, categoria } = req.body;
   const userId = (req as any).user?.id; // Capturamos el usuario del token
+  const userRole = (req as any).user?.rol;
+  const montoNum = Number(monto);
+
+  // Seguridad y Prevención de Pérdidas: Cajeros limitados a gastos menores de caja chica ($500 máx)
+  if (userRole !== 'ADMIN' && montoNum > 500) {
+    res.status(400).json({ 
+      status: 'error', 
+      code: 'GASTO_EXCEDE_LIMITE_CAJERO', 
+      message: 'Los cajeros solo pueden registrar gastos menores de caja chica de hasta $500.00 MXN' 
+    });
+    return;
+  }
+
   try {
     const gasto = await (prisma as any).gasto.create({
       data: { 
         descripcion, 
-        monto: Number(monto), 
+        monto: montoNum, 
         categoria: categoria || 'GENERAL',
         id_usuario: userId
       }
@@ -489,8 +513,27 @@ export const getCorteCaja = async (req: Request, res: Response) => {
       whereClause.id_caja = parseInt(id_caja as string);
     }
 
+    // 1. Ventas activas totales y desglosadas por método de pago
     const ventasActivas = await prisma.venta.aggregate({
       where: { ...whereClause, estado: 'COMPLETA' } as any,
+      _sum: { total: true },
+      _count: { id: true }
+    });
+
+    const ventasEfectivo = await prisma.venta.aggregate({
+      where: { ...whereClause, estado: 'COMPLETA', metodo_pago: 'EFECTIVO' } as any,
+      _sum: { total: true },
+      _count: { id: true }
+    });
+
+    const ventasTarjeta = await prisma.venta.aggregate({
+      where: { ...whereClause, estado: 'COMPLETA', metodo_pago: 'TARJETA' } as any,
+      _sum: { total: true },
+      _count: { id: true }
+    });
+
+    const ventasCredito = await prisma.venta.aggregate({
+      where: { ...whereClause, estado: 'CREDITO' } as any,
       _sum: { total: true },
       _count: { id: true }
     });
@@ -501,10 +544,24 @@ export const getCorteCaja = async (req: Request, res: Response) => {
       _count: { id: true }
     });
 
-    // Los gastos por ahora siguen siendo generales o por usuario, 
-    // pero si filtramos por caja, podríamos omitirlos del "Efectivo Esperado"
-    // o simplemente mostrarlos si decidimos asociar gastos a cajas en el futuro.
-    const gastos = await (prisma as any).gasto.aggregate({
+    // 2. Abonos de crédito cobrados en efectivo durante el turno
+    const abonosEfectivo = await prisma.abonoCredito.aggregate({
+      where: { fecha: { gte: start, lte: end }, metodo_pago: 'EFECTIVO' },
+      _sum: { monto: true },
+      _count: { id: true }
+    });
+
+    // 3. Gastos operativos de caja física (excluyendo compras de inventario pagadas por bancos)
+    const gastosCaja = await (prisma as any).gasto.aggregate({
+      where: { 
+        fecha: { gte: start, lte: end },
+        categoria: { not: 'COMPRA_INVENTARIO' }
+      },
+      _sum: { monto: true },
+      _count: { id: true }
+    });
+
+    const gastosTotales = await (prisma as any).gasto.aggregate({
       where: { fecha: { gte: start, lte: end } },
       _sum: { monto: true },
       _count: { id: true }
@@ -517,8 +574,21 @@ export const getCorteCaja = async (req: Request, res: Response) => {
     });
 
     const vActivas = ventasActivas as any;
+    const vEfectivo = ventasEfectivo as any;
+    const vTarjeta = ventasTarjeta as any;
+    const vCredito = ventasCredito as any;
     const vCanceladas = ventasCanceladas as any;
-    const gTotales = gastos as any;
+    const aEfectivo = abonosEfectivo as any;
+    const gCaja = gastosCaja as any;
+    const gTotales = gastosTotales as any;
+
+    const totalVentasEfectivo = vEfectivo._sum?.total || 0;
+    const totalAbonosEfectivo = aEfectivo._sum?.monto || 0;
+    const totalGastosCaja = gCaja._sum?.monto || 0;
+
+    // Efectivo real esperado en gaveta:
+    // Ventas en Efectivo + Abonos de Fiado en Efectivo - Gastos retirados de caja
+    const efectivoEsperado = Math.round((totalVentasEfectivo + totalAbonosEfectivo - totalGastosCaja) * 100) / 100;
 
     res.json({
       status: 'success',
@@ -528,6 +598,13 @@ export const getCorteCaja = async (req: Request, res: Response) => {
         ventas: {
           total: vActivas._sum?.total || 0,
           cantidad: vActivas._count?.id || 0,
+          efectivo: totalVentasEfectivo,
+          tarjeta: vTarjeta._sum?.total || 0,
+          credito: vCredito._sum?.total || 0
+        },
+        abonos: {
+          total: totalAbonosEfectivo,
+          cantidad: aEfectivo._count?.id || 0
         },
         cancelaciones: {
           total: vCanceladas._sum?.total || 0,
@@ -535,10 +612,11 @@ export const getCorteCaja = async (req: Request, res: Response) => {
         },
         gastos: {
           total: gTotales._sum?.monto || 0,
+          totalCaja: totalGastosCaja,
           cantidad: gTotales._count?.id || 0,
           detalles: listaGastos
         },
-        efectivoEsperado: (vActivas._sum?.total || 0) - (id_caja && id_caja !== 'all' ? 0 : (gTotales._sum?.monto || 0))
+        efectivoEsperado: efectivoEsperado
       }
     });
   } catch (err) {

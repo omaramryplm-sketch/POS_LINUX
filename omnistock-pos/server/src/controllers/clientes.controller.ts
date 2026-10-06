@@ -85,22 +85,23 @@ export const registrarAbono = async (req: Request, res: Response) => {
         throw new Error('CLIENT_NOT_FOUND');
       }
 
-      if (montoAbono > clienteActual.saldo_deudor) {
-        throw new Error('AMOUNT_EXCEEDS_DEBT');
-      }
+      // Lógica Operativa: Se permite abonar más de la deuda para generar saldo a favor (anticipos)
+      const nuevoSaldo = Math.round((clienteActual.saldo_deudor - montoAbono) * 100) / 100;
+      const userDisplay = (req as any).user?.nombre_completo || (req as any).user?.username || 'Cajero';
+      const auditNota = notas ? `${notas} [Cobrado por: ${userDisplay}]` : `[Cobrado por: ${userDisplay}]`;
 
       const abono = await tx.abonoCredito.create({
         data: {
           id_cliente: Number(id_cliente),
           monto: montoAbono,
-          metodo_pago: metodo_pago || 'EFECTIVO',
-          notas
+          metodo_pago: (metodo_pago === 'TARJETA' || metodo_pago === 'TRANSFERENCIA') ? metodo_pago : 'EFECTIVO',
+          notas: auditNota
         }
       });
 
       const cliente = await tx.cliente.update({
         where: { id: Number(id_cliente) },
-        data: { saldo_deudor: { decrement: montoAbono } }
+        data: { saldo_deudor: nuevoSaldo }
       });
 
       return { abono, cliente };

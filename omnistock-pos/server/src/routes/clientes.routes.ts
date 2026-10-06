@@ -14,8 +14,8 @@ const router = Router();
 
 router.get('/', authGuard, getClientes);
 router.post('/', authGuard, roleGuard(['ADMIN']), validate(createClienteSchema), createCliente);
-router.get('/:id', authGuard, roleGuard(['ADMIN']), getClienteDetail);
-router.post('/abono', authGuard, roleGuard(['ADMIN']), validate(abonoSchema), registrarAbono);
+router.get('/:id', authGuard, getClienteDetail);
+router.post('/abono', authGuard, roleGuard(['ADMIN', 'CAJERO']), validate(abonoSchema), registrarAbono);
 router.put('/:id', authGuard, roleGuard(['ADMIN']), validate(updateClienteSchema), updateCliente);
 
 export default router;
