@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
+import { useAuthStore } from '../store/authStore';
 import { 
   Users, Search, UserPlus, Phone, MapPin, 
   DollarSign, History, ShieldAlert, Ban, CheckCircle2, ArrowUpRight, Edit
 } from 'lucide-react';
 
 export default function Clients() {
+  const { user } = useAuthStore();
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -233,24 +235,30 @@ export default function Clients() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                 <div className="bg-slate-50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Límite de Crédito</p>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                      Límite de Crédito {user?.rol !== 'ADMIN' && <span className="text-[9px] text-amber-500 font-mono">(Solo Admin)</span>}
+                    </p>
                     <div className="flex items-center gap-2 sm:gap-3">
                        <span className="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100">$</span>
                        <input 
                          type="number"
+                         disabled={user?.rol !== 'ADMIN'}
                          defaultValue={selectedClient.limite_credito}
                          onBlur={(e) => handleUpdateClient(selectedClient.id, { limite_credito: Number(e.target.value) })}
-                         className="bg-white dark:bg-slate-900 border-0 rounded-xl px-3 sm:px-4 py-2 w-full font-black text-lg sm:text-xl text-indigo-600 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                         className="bg-white dark:bg-slate-900 border-0 rounded-xl px-3 sm:px-4 py-2 w-full font-black text-lg sm:text-xl text-indigo-600 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                        />
                     </div>
                  </div>
 
                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3">Estatus de Cuenta</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3">
+                      Estatus de Cuenta {user?.rol !== 'ADMIN' && <span className="text-[9px] text-amber-500 font-mono">(Solo Admin)</span>}
+                    </p>
                     <button 
+                      disabled={user?.rol !== 'ADMIN'}
                       onClick={() => handleUpdateClient(selectedClient.id, { betado: !selectedClient.betado })}
-                      className={`flex items-center justify-center gap-2 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${selectedClient.betado ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 border border-slate-200 dark:border-slate-700'}`}
+                      className={`flex items-center justify-center gap-2 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed ${selectedClient.betado ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 border border-slate-200 dark:border-slate-700'}`}
                     >
                       {selectedClient.betado ? <><Ban className="w-4 h-4" /> VETADO / BLOQUEADO</> : <><CheckCircle2 className="w-4 h-4" /> CUENTA ACTIVA</>}
                     </button>
