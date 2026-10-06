@@ -1,4 +1,4 @@
-﻿services:
+services:
   backend:
     build:
       context: ./omnistock-pos/server
@@ -7,9 +7,10 @@
       - db_data:/app/prisma/data
     restart: unless-stopped
     environment:
-      - ALLOWED_ORIGINS=*
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:8080,http://192.168.10.127:8080,http://pos.192.168.10.127.nip.io}
       - PORT=4000
       - DATABASE_URL=file:./data/omnistock.db
+      - JWT_SECRET=${JWT_SECRET}
     networks:
       - internal
 

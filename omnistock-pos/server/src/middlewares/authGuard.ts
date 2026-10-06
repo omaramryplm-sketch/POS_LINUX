@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jose from 'jose';
 import prisma from '../lib/prisma.js';
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'super_secret_omnistock_key_2024_bank_grade_key'
-);
+import { JWT_SECRET } from '../lib/config.js';
 
 export const authGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;

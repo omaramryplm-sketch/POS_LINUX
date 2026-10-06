@@ -320,7 +320,15 @@ export const cancelSale = async (req: Request, res: Response) => {
         });
       }
 
-      // 2. Marcar como cancelada
+      // 2. Revertir saldo deudor del cliente si la venta fue a crédito
+      if ((v.metodo_pago === 'CREDITO' || v.metodo_pago === 'CREDIT') && v.id_cliente) {
+        await tx.cliente.update({
+          where: { id: v.id_cliente },
+          data: { saldo_deudor: { decrement: v.total } }
+        });
+      }
+
+      // 3. Marcar como cancelada
       await tx.venta.update({
         where: { id: Number(id) },
         data: { estado: 'CANCELADA' } as any

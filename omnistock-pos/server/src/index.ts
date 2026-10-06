@@ -22,14 +22,19 @@ const PORT = process.env.PORT || 3000;
 // Security Middleware
 app.use(helmet());
 
-// Dynamic CORS Configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'];
+// Dynamic CORS Configuration (Strict Zero Trust - no wildcard reflection with credentials)
+const rawOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim()).filter(Boolean);
+const allowedOrigins = (rawOrigins && rawOrigins.length > 0) 
+  ? rawOrigins 
+  : ['http://localhost:8080', 'http://localhost:5173', 'http://127.0.0.1:8080'];
+
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+    // Permitir solicitudes sin header Origin (mismo origen Nginx o curl/mobile) o verificar origen permitido
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Blocked by Zero Trust CORS Policy'));
+      callback(new Error(`Blocked by Zero Trust CORS Policy: ${origin}`));
     }
   },
   credentials: true

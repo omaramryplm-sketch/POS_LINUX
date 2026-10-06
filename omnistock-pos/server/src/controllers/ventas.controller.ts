@@ -5,8 +5,9 @@ import { mapToVentaDTO } from '../dtos/venta.dto.js';
 export const createVenta = async (req: Request, res: Response): Promise<void> => {
   const errorId = `ERR-SALE-${Date.now()}`;
   try {
-    const { items, total, metodo_pago, referencia_pago, id_cliente, descuento, id_caja } = req.body;
+    const { items, metodo_pago, referencia_pago, id_cliente, descuento, id_caja } = req.body;
     const userId = (req as any).user?.id;
+    const userRole = (req as any).user?.rol;
 
     if (!userId) {
       res.status(401).json({ status: 'error', code: 'UNAUTHORIZED' });
@@ -15,21 +16,10 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
 
     // Atomic Transaction for Sale and Stock Deduction
     const ventaResult = await prisma.$transaction(async (tx) => {
-      // 0. Verify Client Status and Limits
-      if (id_cliente) {
-        const client = await tx.cliente.findUnique({ where: { id: Number(id_cliente) } });
-        if (client?.betado) {
-          throw new Error(`CLIENT_BANNED`);
-        }
-        if (metodo_pago === 'CREDITO' || metodo_pago === 'CREDIT') {
-          const projectedDebt = client!.saldo_deudor + total;
-          if (projectedDebt > client!.limite_credito) {
-            throw new Error(`INSUFFICIENT_CREDIT`);
-          }
-        }
-      }
+      // 1. Process items, verify stock and calculate server-side pricing
+      let calculatedGrossTotal = 0;
+      const processedDetails = [];
 
-      // 1. Verify stock and deduct
       for (const item of items) {
         const product = await tx.producto.findUnique({ where: { id: item.id_producto } });
         if (!product) throw new Error(`PRODUCT_NOT_FOUND`);
@@ -46,6 +36,34 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
 
         if (product.stock_actual < item.cantidad) throw new Error(`INSUFFICIENT_STOCK`);
 
+        // Determinación flexible y segura del precio unitario (soporte para pronta caducidad / ofertas)
+        let unitPrice = product.precio_venta;
+        if (item.precio_unitario !== undefined && item.precio_unitario !== null) {
+          const customPrice = parseFloat(item.precio_unitario);
+          if (isNaN(customPrice) || customPrice <= 0) {
+            throw new Error(`PRECIO_UNITARIO_INVALIDO`);
+          }
+          // Si el precio es menor al de lista
+          if (customPrice < product.precio_venta) {
+            // Piso de seguridad para cajeros: máximo 50% de descuento permitido
+            const minAllowedPrice = Math.round(product.precio_venta * 0.50 * 100) / 100;
+            if (userRole !== 'ADMIN' && customPrice < minAllowedPrice) {
+              throw new Error(`PRECIO_BAJO_LIMITE_CAJERO`);
+            }
+          }
+          unitPrice = customPrice;
+        }
+
+        const subtotal = Math.round(unitPrice * item.cantidad * 100) / 100;
+        calculatedGrossTotal += subtotal;
+
+        processedDetails.push({
+          id_producto: product.id,
+          cantidad: item.cantidad,
+          precio_unitario: unitPrice,
+          subtotal: subtotal
+        });
+
         const newStock = product.stock_actual - item.cantidad;
 
         await tx.producto.update({
@@ -58,24 +76,46 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
         });
       }
 
-      // 3. Create Sale
+      calculatedGrossTotal = Math.round(calculatedGrossTotal * 100) / 100;
+
+      // 2. Validación de descuento global
+      const parsedDiscount = Math.max(0, parseFloat(descuento) || 0);
+      if (userRole !== 'ADMIN' && parsedDiscount > Math.round(calculatedGrossTotal * 0.50 * 100) / 100) {
+        throw new Error(`DESCUENTO_EXCEDE_LIMITE_CAJERO`);
+      }
+      if (parsedDiscount > calculatedGrossTotal) {
+        throw new Error(`DESCUENTO_MAYOR_AL_TOTAL`);
+      }
+
+      const calculatedFinalTotal = Math.round((calculatedGrossTotal - parsedDiscount) * 100) / 100;
+
+      // 3. Verify Client Status and Limits using strictly verified calculatedFinalTotal
+      if (id_cliente) {
+        const client = await tx.cliente.findUnique({ where: { id: Number(id_cliente) } });
+        if (client?.betado) {
+          throw new Error(`CLIENT_BANNED`);
+        }
+        if (metodo_pago === 'CREDITO' || metodo_pago === 'CREDIT') {
+          const projectedDebt = client!.saldo_deudor + calculatedFinalTotal;
+          if (projectedDebt > client!.limite_credito) {
+            throw new Error(`INSUFFICIENT_CREDIT`);
+          }
+        }
+      }
+
+      // 4. Create Sale with server-calculated totals
       const newVenta = await tx.venta.create({
         data: {
           id_usuario: userId,
           id_cliente: id_cliente ? Number(id_cliente) : null,
           id_caja: Number(id_caja),
-          total: total,
-          descuento: parseFloat(descuento) || 0,
+          total: calculatedFinalTotal,
+          descuento: parsedDiscount,
           metodo_pago: (metodo_pago === 'CREDIT' || metodo_pago === 'CREDITO') ? 'CREDITO' : metodo_pago || 'EFECTIVO',
           estado: (metodo_pago === 'CREDIT' || metodo_pago === 'CREDITO') ? 'CREDITO' : 'COMPLETA',
           referencia_pago: referencia_pago,
           detalles: {
-            create: items.map((item: any) => ({
-              id_producto: item.id_producto,
-              cantidad: item.cantidad,
-              precio_unitario: item.precio_unitario,
-              subtotal: item.subtotal
-            }))
+            create: processedDetails
           }
         },
         include: {
@@ -84,13 +124,13 @@ export const createVenta = async (req: Request, res: Response): Promise<void> =>
         }
       });
 
-      // 4. Update client debt if credit
+      // 5. Update client debt if credit
       if ((metodo_pago === 'CREDITO' || metodo_pago === 'CREDIT') && id_cliente) {
         await tx.cliente.update({
           where: { id: Number(id_cliente) },
           data: {
             saldo_deudor: {
-              increment: total
+              increment: calculatedFinalTotal
             }
           }
         });

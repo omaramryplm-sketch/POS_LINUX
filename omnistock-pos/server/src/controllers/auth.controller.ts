@@ -2,10 +2,7 @@ import { Request, Response } from 'express';
 import * as argon2 from 'argon2';
 import * as jose from 'jose';
 import prisma from '../lib/prisma.js';
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'super_secret_omnistock_key_2024_bank_grade_key'
-);
+import { JWT_SECRET } from '../lib/config.js';
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const errorId = `ERR-AUTH-${Date.now()}`;
@@ -19,7 +16,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     });
 
     if (!user) {
-      // Blind Error Handling: Use same generic message for non-existent users
+      // Blind Error Handling & Timing-Attack Mitigation:
+      // Verify against a dummy hash so invalid usernames take the exact same compute time (~150ms)
+      await argon2.verify('$argon2id$v=19$m=65536,t=3,p=4$IXPxy5FaSA8+WmwgZZGJQA$e85C9SO91j9to9+THnd8XnOlIUO8OLUPCp8MKtgkzu8', password).catch(() => false);
       res.status(401).json({ status: 'error', code: 'INVALID_CREDENTIALS' });
       return;
     }
