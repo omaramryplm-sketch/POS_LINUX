@@ -182,7 +182,7 @@ export default function Layout() {
       <main className="flex-1 overflow-hidden bg-[var(--bg-main)] relative flex flex-col h-full transition-colors duration-500 min-w-0">
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full -mr-48 -mt-48 blur-3xl pointer-events-none"></div>
         
-        <div key={location.pathname} className="relative z-10 flex-1 overflow-hidden flex flex-col h-full">
+        <div key={location.pathname} className="relative z-10 flex-1 overflow-hidden flex flex-col h-full min-w-0 w-full">
           <Outlet />
         </div>
       </main>

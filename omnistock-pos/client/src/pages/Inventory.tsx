@@ -687,7 +687,7 @@ export default function Inventory() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto h-full overflow-y-auto custom-scrollbar">
+    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto h-full w-full min-w-0 overflow-y-auto overflow-x-hidden custom-scrollbar">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 sm:mb-8">
         <div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--text-main)] tracking-tight italic">Logística e Inventario</h2>
@@ -696,7 +696,7 @@ export default function Inventory() {
       </div>
 
       {/* TABS */}
-      <div className="flex gap-2 sm:gap-4 mb-6 sm:mb-8 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto no-scrollbar whitespace-nowrap">
+      <div className="flex gap-2 sm:gap-4 mb-6 sm:mb-8 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto no-scrollbar whitespace-nowrap w-full max-w-full min-w-0 touch-pan-x">
         <button 
           onClick={() => setActiveTab('CATALOGO')}
           className={`pb-3 sm:pb-4 px-3 sm:px-4 font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shrink-0 ${activeTab === 'CATALOGO' ? 'border-b-4 border-emerald-500 text-emerald-600 dark:text-emerald-400' : 'text-slate-400 hover:text-slate-600'}`}
@@ -725,26 +725,27 @@ export default function Inventory() {
 
       {/* --- TAB: CATÁLOGO --- */}
       {activeTab === 'CATALOGO' && (
-        <div className="animate-in slide-in-from-right-4 duration-300">
-          <div className="flex flex-col lg:flex-row gap-3 mb-6 sm:mb-8">
-            <div className="relative w-full lg:flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <div className="animate-in slide-in-from-right-4 duration-300 w-full min-w-0">
+          <div className="flex flex-col lg:flex-row gap-3 mb-6 sm:mb-8 w-full min-w-0">
+            <div className="relative w-full lg:flex-1 min-w-0">
+              <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar por nombre, SKU o categoría..."
-                className="w-full pl-12 pr-4 py-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl sm:rounded-2xl text-[var(--text-main)] focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none text-xs sm:text-sm"
+                className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl sm:rounded-2xl text-[var(--text-main)] focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none text-xs sm:text-sm"
               />
             </div>
-            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full lg:w-auto min-w-0">
               <button
                 onClick={() => setShowAddProductModal(true)}
-                className="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 order-first sm:order-last"
+                className="w-full sm:w-auto bg-emerald-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 order-first sm:order-last"
               >
                 <Plus className="w-4 h-4" /> NUEVO PRODUCTO
               </button>
-              <div className="grid grid-cols-3 sm:flex gap-2">
+              <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} accept=".csv" />
+              <div className="grid grid-cols-3 sm:flex gap-1.5 sm:gap-2 w-full sm:w-auto min-w-0">
                 <button 
                   onClick={() => handleExportCSV(
                     products,
@@ -761,10 +762,10 @@ export default function Inventory() {
                       { key: 'unidad', label: 'Unidad' }
                     ]
                   )}
-                  className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1 sm:gap-1.5 active:scale-95 min-w-0"
                   title="Exportar Catálogo a Excel/CSV"
                 >
-                  <Download className="w-3.5 h-3.5" /> EXPORTAR
+                  <Download className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">EXPORTAR</span>
                 </button>
                 <button
                   onClick={() => {
@@ -777,60 +778,61 @@ export default function Inventory() {
                     link.click();
                     link.remove();
                   }}
-                  className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 shadow-sm active:scale-95"
+                  className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 shadow-sm active:scale-95 min-w-0"
+                  title="Descargar Plantilla CSV"
                 >
-                  <Download className="w-3.5 h-3.5" /> PLANTILLA
+                  <Download className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">PLANTILLA</span>
                 </button>
-                <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept=".csv" />
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-indigo-500 text-white px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs hover:bg-indigo-600 transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/20 active:scale-95"
+                  className="bg-indigo-500 text-white px-2 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs hover:bg-indigo-600 transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/20 active:scale-95 min-w-0"
+                  title="Importar Catálogo desde CSV"
                 >
-                  <Upload className="w-3.5 h-3.5" /> IMPORTAR
+                  <Upload className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">IMPORTAR</span>
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 shrink-0">
-                <Package className="w-5 h-5 sm:w-7 sm:h-7" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6 mb-6 sm:mb-8 w-full min-w-0">
+            <div className="bg-[var(--bg-card)] p-3 sm:p-6 rounded-xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-2.5 sm:gap-4 min-w-0 overflow-hidden">
+              <div className="w-9 h-9 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 shrink-0">
+                <Package className="w-4 h-4 sm:w-7 sm:h-7" />
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Total Productos</p>
-                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">{(products || []).length}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Total Productos</p>
+                <p className="text-lg sm:text-2xl font-black text-[var(--text-main)] truncate">{(products || []).length}</p>
               </div>
             </div>
-            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 shrink-0">
-                <Check className="w-5 h-5 sm:w-7 sm:h-7" />
+            <div className="bg-[var(--bg-card)] p-3 sm:p-6 rounded-xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-2.5 sm:gap-4 min-w-0 overflow-hidden">
+              <div className="w-9 h-9 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 shrink-0">
+                <Check className="w-4 h-4 sm:w-7 sm:h-7" />
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Activos POS</p>
-                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Activos POS</p>
+                <p className="text-lg sm:text-2xl font-black text-[var(--text-main)] truncate">
                   {(products || []).filter(p => !p.descontinuado).length}
                 </p>
               </div>
             </div>
-            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-red-600 shrink-0">
-                <AlertTriangle className="w-5 h-5 sm:w-7 sm:h-7" />
+            <div className="bg-[var(--bg-card)] p-3 sm:p-6 rounded-xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-2.5 sm:gap-4 min-w-0 overflow-hidden">
+              <div className="w-9 h-9 sm:w-14 sm:h-14 bg-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-red-600 shrink-0">
+                <AlertTriangle className="w-4 h-4 sm:w-7 sm:h-7" />
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Bajo Stock</p>
-                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Bajo Stock</p>
+                <p className="text-lg sm:text-2xl font-black text-[var(--text-main)] truncate">
                   {(products || []).filter(p => !p.descontinuado && p.stock_actual <= p.stock_minimo).length}
                 </p>
               </div>
             </div>
-            <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-amber-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-600 shrink-0">
-                <Ban className="w-5 h-5 sm:w-7 sm:h-7" />
+            <div className="bg-[var(--bg-card)] p-3 sm:p-6 rounded-xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-sm flex items-center gap-2.5 sm:gap-4 min-w-0 overflow-hidden">
+              <div className="w-9 h-9 sm:w-14 sm:h-14 bg-amber-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-600 shrink-0">
+                <Ban className="w-4 h-4 sm:w-7 sm:h-7" />
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Descontinuados</p>
-                <p className="text-xl sm:text-2xl font-black text-[var(--text-main)]">
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] sm:text-xs font-black text-[var(--text-muted)] uppercase tracking-wider truncate">Descontinuados</p>
+                <p className="text-lg sm:text-2xl font-black text-[var(--text-main)] truncate">
                   {(products || []).filter(p => p.descontinuado).length}
                 </p>
               </div>
@@ -838,12 +840,12 @@ export default function Inventory() {
           </div>
 
           {/* Filtros de Estado del Catálogo */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 px-1">
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-0.5 w-full min-w-0">
+            <div className="grid grid-cols-2 sm:flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/60 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl w-full sm:w-auto min-w-0">
               <button
                 onClick={() => { setStatusFilter('ALL'); setCurrentPage(1); }}
                 className={clsx(
-                  "flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all text-center",
+                  "px-2.5 sm:px-4 py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all text-center truncate min-w-0",
                   statusFilter === 'ALL'
                     ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                     : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -854,28 +856,28 @@ export default function Inventory() {
               <button
                 onClick={() => { setStatusFilter('ACTIVE'); setCurrentPage(1); }}
                 className={clsx(
-                  "flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5",
+                  "px-2.5 sm:px-4 py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 truncate min-w-0",
                   statusFilter === 'ACTIVE'
                     ? "bg-emerald-500 text-white shadow-sm"
                     : "text-slate-500 hover:text-emerald-600"
                 )}
               >
-                <Check className="w-3.5 h-3.5" /> ACTIVOS ({(products || []).filter(p => !p.descontinuado).length})
+                <Check className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">ACTIVOS ({(products || []).filter(p => !p.descontinuado).length})</span>
               </button>
               <button
                 onClick={() => { setStatusFilter('DISCONTINUED'); setCurrentPage(1); }}
                 className={clsx(
-                  "w-full sm:w-auto px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5",
+                  "col-span-2 sm:col-auto px-2.5 sm:px-4 py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 truncate min-w-0",
                   statusFilter === 'DISCONTINUED'
                     ? "bg-amber-500 text-white shadow-sm"
                     : "text-slate-500 hover:text-amber-600"
                 )}
               >
-                <Ban className="w-3.5 h-3.5" /> DESCONTINUADOS ({(products || []).filter(p => p.descontinuado).length})
+                <Ban className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">DESCONTINUADOS ({(products || []).filter(p => p.descontinuado).length})</span>
               </button>
             </div>
             {statusFilter === 'DISCONTINUED' && (
-              <span className="text-xs text-amber-700 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 px-3 py-1.5 rounded-xl">
+              <span className="text-[11px] sm:text-xs text-amber-700 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 px-3 py-1.5 rounded-xl self-start sm:self-auto">
                 Fuera de venta regular POS
               </span>
             )}
@@ -916,7 +918,7 @@ export default function Inventory() {
             const paginated = filteredAndSorted.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
             return (
-              <div className="bg-[var(--bg-card)] rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-xl overflow-hidden">
+              <div className="bg-[var(--bg-card)] rounded-2xl sm:rounded-[2.5rem] border border-[var(--border-color)] shadow-xl overflow-hidden w-full min-w-0">
                 {/* --- VISTA MÓVIL (TARJETAS) --- */}
                 <div className="md:hidden divide-y divide-[var(--border-color)]">
                   {loading ? (
@@ -2429,7 +2431,7 @@ export default function Inventory() {
       )}
 
       {/* Off-screen Printable Report */}
-      <div className="absolute left-[-9999px] top-[-9999px]">
+      <div className="fixed -left-[99999px] -top-[99999px] pointer-events-none opacity-0 invisible" aria-hidden="true">
         <ReporteConteoComponent 
           ref={printRef}
           productos={conteoProductos}
