@@ -6,7 +6,8 @@ import { useThemeStore } from '../store/themeStore';
 import { 
   TrendingUp, AlertTriangle, Activity, PackageCheck, 
   ShoppingCart, ChevronRight, Package, DollarSign,
-  MessageSquare, User as UserIcon, X
+  MessageSquare, User as UserIcon, X,
+  Calculator, Banknote, Coins, Receipt, CreditCard, CheckCircle2, ArrowUpRight, ArrowDownRight, Printer
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, 
@@ -943,193 +944,444 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-      {/* --- Modal de Corte de Caja --- */}
+      {/* --- Modal de Corte y Arqueo de Caja (Rediseñado Responsive Desktop/Mobile) --- */}
       {showCorteModal && corteData && (
-        <div className="fixed inset-0 z-[110] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col p-6 sm:p-8 max-h-[90vh]">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Corte de Caja</h3>
-                <p className="text-slate-500 font-medium">Resumen financiero del {new Date(corteData.fecha).toLocaleDateString()}</p>
-              </div>
-              <button onClick={() => setShowCorteModal(false)} className="p-3 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all">
-                <ChevronRight className="w-6 h-6 rotate-180" />
-              </button>
-            </div>
-
-            {/* Selector de Caja en el Corte (NUEVO) */}
-            <div className="flex gap-2 mb-8 p-1.5 bg-slate-100 rounded-2xl overflow-x-auto custom-scrollbar no-scrollbar">
-              <button
-                onClick={() => handleShowCorte('all')}
-                className={clsx(
-                  "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all",
-                  selectedCajaCorte === 'all' ? "bg-white text-emerald-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
-                )}
-              >
-                Resumen General
-              </button>
-              {availableCajas.map((caja) => (
-                <button
-                  key={caja.id}
-                  onClick={() => handleShowCorte(caja.id.toString())}
-                  className={clsx(
-                    "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all",
-                    selectedCajaCorte === caja.id.toString() ? "bg-white text-emerald-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
-                  )}
-                >
-                  {caja.nombre}
-                </button>
-              ))}
-            </div>
-
-            {/* Desglose Operativo de Medios de Pago */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-950/30 rounded-2xl border border-emerald-100 dark:border-emerald-900/50">
-                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Ventas Efectivo</p>
-                <p className="text-xl font-black text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">${(corteData.ventas.efectivo || 0).toFixed(2)}</p>
-              </div>
-              <div className="p-4 bg-teal-50 dark:bg-teal-950/30 rounded-2xl border border-teal-100 dark:border-teal-900/50">
-                <p className="text-[9px] font-black text-teal-600 uppercase tracking-widest mb-1">Abonos Cobrados</p>
-                <p className="text-xl font-black text-teal-700 dark:text-teal-400 font-mono tabular-nums">+${(corteData.abonos?.total || 0).toFixed(2)}</p>
-              </div>
-              <div className="p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50">
-                <p className="text-[9px] font-black text-red-600 uppercase tracking-widest mb-1">Caja Chica (Gastos)</p>
-                <p className="text-xl font-black text-red-700 dark:text-red-400 font-mono tabular-nums">-${(corteData.gastos?.totalCaja || 0).toFixed(2)}</p>
-              </div>
-              <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-100 dark:border-blue-900/50">
-                <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Ventas Tarjeta</p>
-                <p className="text-xl font-black text-blue-700 dark:text-blue-400 font-mono tabular-nums">${(corteData.ventas.tarjeta || 0).toFixed(2)}</p>
-              </div>
-              <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/50">
-                <p className="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1">Ventas Crédito</p>
-                <p className="text-xl font-black text-amber-700 dark:text-amber-400 font-mono tabular-nums">${(corteData.ventas.credito || 0).toFixed(2)}</p>
-              </div>
-            </div>
-
-            <div className="bg-slate-900 rounded-2xl sm:rounded-[2rem] p-5 sm:p-7 text-white mb-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="fixed inset-0 z-[110] bg-slate-950/75 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 animate-in fade-in duration-200">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-4xl rounded-t-[2rem] sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] transition-all">
+            
+            {/* Header Sticky */}
+            <div className="flex items-center justify-between px-5 sm:px-7 py-4 border-b border-[var(--border-color)] bg-slate-50/70 dark:bg-slate-900/70 shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <Calculator className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Flujo Neto de Efectivo del Turno</p>
-                  <p className="text-xs text-slate-500 font-semibold">(Ventas Efectivo + Cobranza de Abonos - Gastos de Mostrador)</p>
-                </div>
-                <p className="text-3xl sm:text-5xl font-black text-emerald-400 tracking-tighter font-mono tabular-nums">${corteData.efectivoEsperado.toFixed(2)}</p>
-              </div>
-            </div>
-
-            {/* Reconciliation Fields con Fondo Inicial */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">(+) Fondo Inicial de Caja ($)</label>
-                <p className="text-[9px] text-slate-400 mb-2">Dinero base para cambio al abrir turno</p>
-                <input 
-                  type="number" 
-                  min="0"
-                  step="0.01"
-                  placeholder="Ej. 500.00"
-                  value={fondoInicialCaja}
-                  onChange={e => setFondoInicialCaja(e.target.value)}
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 font-bold text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/10 text-lg font-mono tabular-nums" 
-                />
-              </div>
-
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Efectivo Físico Contado ($)</label>
-                <p className="text-[9px] text-slate-400 mb-2">Total de billetes y monedas en gaveta</p>
-                <input 
-                  type="number" 
-                  min="0"
-                  step="0.01"
-                  placeholder="Ingresa conteo físico..."
-                  value={efectivoFisicoDeclarado}
-                  onChange={e => setEfectivoFisicoDeclarado(e.target.value)}
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 font-bold text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-emerald-500/10 text-lg font-mono tabular-nums" 
-                />
-              </div>
-
-              <div className="p-4 rounded-2xl flex flex-col justify-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Resultado de Arqueo</span>
-                {efectivoFisicoDeclarado === '' ? (
-                  <span className="text-slate-400 text-xs font-bold italic">Pendiente de contar gaveta</span>
-                ) : (() => {
-                  const fondo = parseFloat(fondoInicialCaja) || 0;
-                  const declarado = parseFloat(efectivoFisicoDeclarado) || 0;
-                  const esperadoTotal = Math.round((fondo + corteData.efectivoEsperado) * 100) / 100;
-                  const diff = Math.round((declarado - esperadoTotal) * 100) / 100;
-                  return (
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-500 uppercase">Esperado en gaveta: <span className="font-mono font-black text-slate-800 dark:text-slate-200">${esperadoTotal.toFixed(2)}</span></p>
-                      {Math.abs(diff) < 0.01 ? (
-                        <div className="mt-1">
-                          <p className="text-lg font-black text-emerald-600">Arqueo Cuadrado</p>
-                          <p className="text-[9px] font-bold text-emerald-500 uppercase">Sin faltantes ni sobrantes</p>
-                        </div>
-                      ) : diff > 0 ? (
-                        <div className="mt-1">
-                          <p className="text-lg font-black text-indigo-600 font-mono tabular-nums">Sobrante: +${diff.toFixed(2)}</p>
-                          <p className="text-[9px] font-bold text-indigo-500 uppercase">Dinero de más en gaveta</p>
-                        </div>
-                      ) : (
-                        <div className="mt-1">
-                          <p className="text-lg font-black text-red-600 font-mono tabular-nums">Faltante: -${Math.abs(diff).toFixed(2)}</p>
-                          <p className="text-[9px] font-bold text-red-500 uppercase">Falta dinero en gaveta</p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Detalle de Gastos</h4>
-              {corteData.gastos.detalles.length === 0 ? (
-                <p className="text-sm font-bold text-slate-300 italic">No hubo gastos registrados hoy</p>
-              ) : (
-                <div className="space-y-3">
-                  {corteData.gastos.detalles.map((g: any, i: number) => (
-                    <div key={i} className="flex justify-between items-center p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700">
-                      <div>
-                        <p className="text-sm font-bold text-slate-800 dark:text-white">{g.descripcion}</p>
-                        <div className="flex gap-2">
-                          <p className="text-[10px] text-slate-400 font-bold uppercase">{new Date(g.fecha).toLocaleTimeString()}</p>
-                          <span className="text-[10px] text-emerald-500 font-bold uppercase">• {g.usuario?.nombre_completo || 'Admin'}</span>
-                        </div>
-                      </div>
-                      <span className="font-black text-red-600 font-mono tabular-nums">-${g.monto.toFixed(2)}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {corteData.cancelaciones.cantidad > 0 && (
-                <div className="mt-6 sm:mt-8 p-4 bg-orange-50 dark:bg-orange-950/40 rounded-xl sm:rounded-2xl border border-orange-100 dark:border-orange-900/50 flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0" />
-                    <div>
-                      <p className="text-sm font-black text-orange-700 dark:text-orange-300">{corteData.cancelaciones.cantidad} Ventas Canceladas</p>
-                      <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase">Monto no ingresado</p>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg sm:text-2xl font-black text-[var(--text-main)] tracking-tight">Corte y Arqueo de Caja</h3>
+                    <span className="hidden sm:inline-flex px-2 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">
+                      Oficial
+                    </span>
                   </div>
-                  <span className="text-base sm:text-lg font-black text-orange-700 dark:text-orange-300 font-mono tabular-nums">${corteData.cancelaciones.total.toFixed(2)}</span>
+                  <p className="text-xs sm:text-sm text-[var(--text-muted)] font-medium mt-0.5">
+                    Resumen financiero del {new Date(corteData.fecha).toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })}
+                  </p>
                 </div>
-              )}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
+              </div>
               <button 
                 onClick={() => setShowCorteModal(false)}
-                className="flex-1 py-3.5 sm:py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm transition-all uppercase tracking-widest active:scale-95"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-red-50 hover:text-red-600 dark:bg-slate-800 dark:hover:bg-red-950/40 text-slate-400 transition-all flex items-center justify-center active:scale-95"
+                title="Cerrar modal"
               >
-                CERRAR
-              </button>
-              <button 
-                onClick={handlePrintCorteTrigger}
-                className="flex-[2] py-3.5 sm:py-4 bg-slate-900 dark:bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-emerald-600 transition-all uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95"
-              >
-                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 dark:text-white" /> IMPRIMIR CORTE / PDF
+                <X className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Selector de Caja en Pestañas (Píldoras limpias sin desborde) */}
+            <div className="px-5 sm:px-7 pt-3.5 pb-1 shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <button
+                  type="button"
+                  onClick={() => handleShowCorte('all')}
+                  className={clsx(
+                    "px-4 sm:px-5 py-2 rounded-xl text-xs font-bold leading-normal tracking-wide whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0",
+                    selectedCajaCorte === 'all' 
+                      ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm font-black" 
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+                  )}
+                >
+                  <span>🏢 Resumen General</span>
+                </button>
+                {availableCajas.map((caja) => (
+                  <button
+                    key={caja.id}
+                    type="button"
+                    onClick={() => handleShowCorte(caja.id.toString())}
+                    className={clsx(
+                      "px-4 sm:px-5 py-2 rounded-xl text-xs font-bold leading-normal tracking-wide whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0",
+                      selectedCajaCorte === caja.id.toString() 
+                        ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm font-black" 
+                        : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+                    )}
+                  >
+                    <span>💻 {caja.nombre}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Contenido Principal con Scroll Interno Elegante */}
+            <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-4 space-y-4 sm:space-y-5 custom-scrollbar">
+
+              {/* Banner Destacado: Flujo Neto de Efectivo del Turno */}
+              {(() => {
+                const flujo = corteData.efectivoEsperado || 0;
+                const isPos = flujo >= 0;
+                return (
+                  <div className={clsx(
+                    "rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white relative overflow-hidden shadow-lg border transition-all",
+                    isPos 
+                      ? "bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/70 border-emerald-900/40" 
+                      : "bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/70 border-rose-900/40"
+                  )}>
+                    <div className={clsx(
+                      "absolute -right-10 -top-10 w-44 h-44 rounded-full blur-3xl pointer-events-none",
+                      isPos ? "bg-emerald-500/15" : "bg-rose-500/15"
+                    )} />
+
+                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">
+                            Flujo Neto de Efectivo del Turno
+                          </span>
+                          <span className={clsx(
+                            "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider",
+                            isPos ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
+                          )}>
+                            {isPos ? 'Balance Positivo' : 'Salidas superan ingresos'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 font-medium">
+                          (Ventas Efectivo + Cobranza de Abonos − Salidas Caja Chica)
+                        </p>
+                      </div>
+
+                      <div className="text-left sm:text-right shrink-0">
+                        <p className={clsx(
+                          "text-3xl sm:text-4xl md:text-5xl font-black font-mono tabular-nums tracking-tight leading-none",
+                          isPos ? "text-emerald-400" : "text-rose-400"
+                        )}>
+                          {isPos ? `+$${flujo.toFixed(2)}` : `-$${Math.abs(flujo).toFixed(2)}`}
+                        </p>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">
+                          Moneda: MXN
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Desglose Operativo por Medio de Pago (5 Tarjetas Adaptativas) */}
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <h4 className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)]">
+                    Desglose Operativo por Medio de Pago
+                  </h4>
+                  <span className="text-[10px] font-bold text-slate-400">5 Categorías</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+                  {/* 1. Ventas Efectivo */}
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Ventas Efectivo</p>
+                        <Banknote className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <p className="text-[10px] text-emerald-600/80 dark:text-emerald-400/70 font-medium">En gaveta física (+)</p>
+                    </div>
+                    <p className="text-lg sm:text-xl font-black text-emerald-700 dark:text-emerald-300 font-mono tabular-nums mt-2">
+                      ${(corteData.ventas?.efectivo || 0).toFixed(2)}
+                    </p>
+                  </div>
+
+                  {/* 2. Abonos Cobrados */}
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-teal-50/70 dark:bg-teal-950/20 border border-teal-200/60 dark:border-teal-900/40 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[10px] font-black text-teal-700 dark:text-teal-400 uppercase tracking-wider">Abonos Fiado</p>
+                        <Coins className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                      </div>
+                      <p className="text-[10px] text-teal-600/80 dark:text-teal-400/70 font-medium">Cobranza recibida (+)</p>
+                    </div>
+                    <p className="text-lg sm:text-xl font-black text-teal-700 dark:text-teal-300 font-mono tabular-nums mt-2">
+                      +${(corteData.abonos?.total || 0).toFixed(2)}
+                    </p>
+                  </div>
+
+                  {/* 3. Caja Chica (Gastos) */}
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/20 border border-rose-200/60 dark:border-rose-900/40 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[10px] font-black text-rose-700 dark:text-rose-400 uppercase tracking-wider">Caja Chica</p>
+                        <Receipt className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+                      </div>
+                      <p className="text-[10px] text-rose-600/80 dark:text-rose-400/70 font-medium">Retiros de gaveta (−)</p>
+                    </div>
+                    <p className="text-lg sm:text-xl font-black text-rose-700 dark:text-rose-300 font-mono tabular-nums mt-2">
+                      -${(corteData.gastos?.totalCaja || 0).toFixed(2)}
+                    </p>
+                  </div>
+
+                  {/* 4. Ventas Tarjeta */}
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/40 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[10px] font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider">Ventas Tarjeta</p>
+                        <CreditCard className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <p className="text-[10px] text-blue-600/80 dark:text-blue-400/70 font-medium">Terminal bancaria</p>
+                    </div>
+                    <p className="text-lg sm:text-xl font-black text-blue-700 dark:text-blue-300 font-mono tabular-nums mt-2">
+                      ${(corteData.ventas?.tarjeta || 0).toFixed(2)}
+                    </p>
+                  </div>
+
+                  {/* 5. Ventas Crédito */}
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 col-span-2 sm:col-span-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-wider">Ventas Crédito</p>
+                        <DollarSign className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <p className="text-[10px] text-amber-600/80 dark:text-amber-400/70 font-medium">Fiado pendiente</p>
+                    </div>
+                    <p className="text-lg sm:text-xl font-black text-amber-700 dark:text-amber-300 font-mono tabular-nums mt-2">
+                      ${(corteData.ventas?.credito || 0).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Panel de Arqueo Físico y Conciliación con Fondo Inicial */}
+              <div className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-700/70">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-black text-[var(--text-main)] uppercase tracking-wider">
+                      Arqueo Físico y Conciliación de Gaveta
+                    </h4>
+                    <p className="text-[11px] text-[var(--text-muted)] font-medium">
+                      Fórmula: Fondo Inicial + Flujo Neto = Total en Gaveta Esperado
+                    </p>
+                  </div>
+                  <span className="hidden sm:inline-flex text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    Auditoría en vivo
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-stretch">
+                  {/* Campo 1: Fondo Inicial */}
+                  <div className="md:col-span-4 bg-white dark:bg-slate-800 p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between shadow-sm">
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5">
+                        (+) Fondo Inicial (Apertura)
+                      </label>
+                      <p className="text-[10px] text-slate-400 mb-2">Dinero base para cambio al abrir turno</p>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                        <input 
+                          type="number" 
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={fondoInicialCaja}
+                          onChange={e => setFondoInicialCaja(e.target.value)}
+                          className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-7 pr-3 py-2.5 font-bold text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500/20 text-base font-mono tabular-nums" 
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-1.5 mt-2.5">
+                      {[200, 500, 1000].map(amt => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => setFondoInicialCaja(amt.toString())}
+                          className="flex-1 py-1 px-1 text-[10px] font-black rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-all"
+                        >
+                          ${amt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Campo 2: Conteo Físico Real */}
+                  <div className="md:col-span-4 bg-white dark:bg-slate-800 p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between shadow-sm">
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5">
+                        (=) Conteo Físico Real
+                      </label>
+                      <p className="text-[10px] text-slate-400 mb-2">Total de billetes y monedas en gaveta</p>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                        <input 
+                          type="number" 
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={efectivoFisicoDeclarado}
+                          onChange={e => setEfectivoFisicoDeclarado(e.target.value)}
+                          className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-7 pr-3 py-2.5 font-bold text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500/20 text-base font-mono tabular-nums" 
+                        />
+                      </div>
+                    </div>
+                    {(() => {
+                      const fondo = parseFloat(fondoInicialCaja) || 0;
+                      const esperado = Math.round((fondo + (corteData.efectivoEsperado || 0)) * 100) / 100;
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => setEfectivoFisicoDeclarado(esperado.toFixed(2))}
+                          className="mt-2.5 py-1 px-2 text-[10px] font-black rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 transition-all text-center"
+                        >
+                          Rellenar con total esperado (${esperado.toFixed(2)})
+                        </button>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Campo 3: Veredicto de Arqueo en Vivo */}
+                  {(() => {
+                    const fondo = parseFloat(fondoInicialCaja) || 0;
+                    const declarado = parseFloat(efectivoFisicoDeclarado) || 0;
+                    const esperadoTotal = Math.round((fondo + (corteData.efectivoEsperado || 0)) * 100) / 100;
+                    const diff = Math.round((declarado - esperadoTotal) * 100) / 100;
+                    const hasInput = efectivoFisicoDeclarado !== '';
+
+                    return (
+                      <div className={clsx(
+                        "md:col-span-4 p-4 rounded-2xl border flex flex-col justify-between transition-all shadow-sm",
+                        !hasInput
+                          ? "bg-slate-100/70 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700"
+                          : Math.abs(diff) < 0.01
+                            ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800"
+                            : diff > 0
+                              ? "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800"
+                              : "bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800"
+                      )}>
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
+                            Resultado de Arqueo
+                          </span>
+                          <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                            Esperado en gaveta: <span className="font-mono font-black text-slate-900 dark:text-white">${esperadoTotal.toFixed(2)}</span>
+                          </p>
+                        </div>
+
+                        <div className="mt-3">
+                          {!hasInput ? (
+                            <div>
+                              <span className="inline-flex items-center gap-1.5 text-xs font-black text-slate-500 dark:text-slate-400">
+                                <span>⏳</span> Pendiente de conteo
+                              </span>
+                              <p className="text-[10px] text-slate-400 mt-0.5">Ingresa el conteo físico para validar</p>
+                            </div>
+                          ) : Math.abs(diff) < 0.01 ? (
+                            <div>
+                              <span className="inline-flex items-center gap-1.5 text-base font-black text-emerald-700 dark:text-emerald-400">
+                                <CheckCircle2 className="w-4 h-4" /> Arqueo Cuadrado
+                              </span>
+                              <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400/80 uppercase tracking-wide">
+                                Diferencia: $0.00 (Sin faltantes)
+                              </p>
+                            </div>
+                          ) : diff > 0 ? (
+                            <div>
+                              <span className="inline-flex items-center gap-1.5 text-base font-black text-indigo-700 dark:text-indigo-400 font-mono tabular-nums">
+                                <ArrowUpRight className="w-4 h-4" /> Sobrante: +${diff.toFixed(2)}
+                              </span>
+                              <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400/80 uppercase tracking-wide">
+                                Hay dinero de más en gaveta
+                              </p>
+                            </div>
+                          ) : (
+                            <div>
+                              <span className="inline-flex items-center gap-1.5 text-base font-black text-rose-700 dark:text-rose-400 font-mono tabular-nums">
+                                <ArrowDownRight className="w-4 h-4" /> Faltante: -${Math.abs(diff).toFixed(2)}
+                              </span>
+                              <p className="text-[10px] font-bold text-rose-600 dark:text-rose-400/80 uppercase tracking-wide">
+                                Falta dinero en la gaveta
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Detalle de Salidas y Gastos */}
+              <div className="border border-[var(--border-color)] rounded-2xl p-4 sm:p-5 bg-white dark:bg-slate-900/40">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Receipt className="w-4 h-4 text-slate-400" />
+                    <h4 className="text-xs sm:text-sm font-black text-[var(--text-main)] uppercase tracking-wider">
+                      Detalle de Salidas y Gastos ({corteData.gastos?.detalles?.length || 0})
+                    </h4>
+                  </div>
+                  <span className="text-[11px] font-mono font-black text-rose-600 dark:text-rose-400">
+                    Total: -${(corteData.gastos?.totalCaja || 0).toFixed(2)}
+                  </span>
+                </div>
+
+                {!corteData.gastos?.detalles || corteData.gastos.detalles.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-2">No se registraron gastos de caja chica en este turno.</p>
+                ) : (
+                  <div className="max-h-44 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                    {corteData.gastos.detalles.map((g: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700 text-xs">
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-slate-800 dark:text-slate-100">{g.descripcion}</p>
+                          <div className="flex items-center gap-2 text-[10px] text-slate-400">
+                            <span>{new Date(g.fecha).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span>•</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{g.usuario?.nombre_completo || 'Admin'}</span>
+                            <span>•</span>
+                            <span className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 uppercase text-[9px] font-bold">
+                              {g.categoria || 'GENERAL'}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="font-black text-rose-600 dark:text-rose-400 font-mono tabular-nums shrink-0 ml-3">
+                          -${g.monto.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {corteData.cancelaciones?.cantidad > 0 && (
+                  <div className="mt-3 p-3 bg-orange-50 dark:bg-orange-950/30 rounded-xl border border-orange-200/80 dark:border-orange-800/60 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-orange-500 shrink-0" />
+                      <div>
+                        <p className="text-xs font-black text-orange-800 dark:text-orange-200">
+                          {corteData.cancelaciones.cantidad} Ventas Canceladas
+                        </p>
+                        <p className="text-[10px] text-orange-600 dark:text-orange-400">
+                          Monto de devoluciones registrado en auditoría
+                        </p>
+                      </div>
+                    </div>
+                    <span className="font-black text-orange-700 dark:text-orange-300 font-mono tabular-nums text-sm">
+                      ${corteData.cancelaciones.total.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+            {/* Sticky Footer */}
+            <div className="px-5 sm:px-7 py-3 sm:py-4 border-t border-[var(--border-color)] bg-slate-50/70 dark:bg-slate-900/70 flex flex-col-reverse sm:flex-row gap-2.5 sm:gap-3 shrink-0">
+              <button 
+                type="button"
+                onClick={() => setShowCorteModal(false)}
+                className="w-full sm:w-auto sm:px-6 py-3 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-black text-xs uppercase tracking-wider transition-all order-2 sm:order-1 active:scale-95 text-center"
+              >
+                Cerrar
+              </button>
+              <button 
+                type="button"
+                onClick={handlePrintCorteTrigger}
+                className="w-full sm:flex-1 py-3 px-6 bg-slate-900 hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 order-1 sm:order-2"
+              >
+                <Printer className="w-4 h-4 text-emerald-400 dark:text-white" />
+                <span>Imprimir Corte de Caja (Ticket / PDF)</span>
+              </button>
+            </div>
+
           </div>
         </div>
       )}
