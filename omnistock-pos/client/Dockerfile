@@ -1,5 +1,14 @@
+# =======================================================
+# Process .......: SPA OmniStock POS (React + Vite)
+# Function ......: Punto de Venta / Frontend
+# Type ..........: Operaciones (Equiv. LANSA Integrator)
+# Author ........: OMONROY
+# Date ..........: 20261022
+# CONTROL DE CAMBIOS:
+# 20261022 OMONROY: build Node 20 (EOL) -> Node 22 LTS; runtime nginx.
+# =======================================================
 # Build stage
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 RUN npm install -g pnpm@9
 COPY package.json pnpm-lock.yaml ./
